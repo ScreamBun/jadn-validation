@@ -1,5 +1,6 @@
 from pydantic import ValidationError
-from jadn import Info
+
+from jadnvalidation.models.jadn import Info
 
 
 def test_package():

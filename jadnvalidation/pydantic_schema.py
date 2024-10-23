@@ -70,7 +70,7 @@ def dict_model(name: str, dict_def: dict) -> type[BaseModel]:
             fields[field_name]=(dict_model(f'{name}_{field_name}', value), ...)
         else:
             raise ValueError(f"Field {field_name}:{value} has invalid syntax")
-    return create_model(name, **fields)
+    return create_model(name, **fields) 
 
 
 # ref: https://docs.pydantic.dev/2.9/concepts/models/#dynamic-model-creation

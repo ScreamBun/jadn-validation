@@ -1,6 +1,6 @@
 {
     "python.testing.pytestArgs": [
-        "tests",
+        "jadnvalidation/tests",
         "-s"
     ],
     "python.testing.unittestEnabled": false,

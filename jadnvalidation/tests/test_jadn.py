@@ -1,6 +1,6 @@
 import pprint
 from pydantic import ValidationError, create_model
-from jadn import Config, Info, Jadn
+from jadnvalidation.models.jadn import Config, Info, Jadn
 from pydantic_schema import build_pyd_fields
 
 simple_jadn = {
