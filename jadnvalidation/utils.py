@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import Field
 from consts import ALLOWED_TYPE_OPTIONS
-from jadnvalidation.models.pyd.pyd_field import Pyd_Field_Mapper
+from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
 
 def convert_to_pyd_type(type_str: str) -> type:
