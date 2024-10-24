@@ -212,10 +212,10 @@ def test_get_type_opt_id_val():
   assert opt_char_id == "/"
   assert opt_val == "date-time"
   
-  test_opt_5 = "%[0-9"
+  test_opt_5 = "%[0-9]"
   opt_char_id, opt_val = split_on_first_char(test_opt_5)
   assert opt_char_id == "%"
-  assert opt_val == "[0-9"   
+  assert opt_val == "[0-9]"   
 
 
 def test_jadn():
