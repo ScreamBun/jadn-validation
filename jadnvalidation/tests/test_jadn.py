@@ -49,6 +49,114 @@ def test_string_pattern():
         print(e)        
         
     assert error_count == 2
+    
+
+def test_string_time():
+  
+    jadn_string_time = {
+      "types": [
+        ["String-Time", "String", ["/time"], ""]
+      ]
+    }
+
+    now = datetime.datetime.now()
+    current_time = now.time()
+
+    string_date_time_1 = {'String-Time': current_time}
+    string_date_time_invalid_1 = {'String-Time': 'hfdkjlajfdkl'}
+    string_date_time_invalid_2 = {'String-Time': 1596542285000}
+  
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_time)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_date_time_1)
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+        
+    assert error_count == 0
+    
+    try:
+        custom_jadn_schema.model_validate(string_date_time_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_date_time_invalid_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)             
+        
+    assert error_count == 2
+    
+
+def test_string_date():
+  
+    jadn_string_date = {
+      "types": [
+        ["String-Date", "String", ["/date"], ""]
+      ]
+    }
+
+    string_date_data_1 = {'String-Date': '2024-01-01'}
+    string_date_data_invalid_1 = {'String-Date': 'hfdkjlajfdkl'}
+    string_date_data_invalid_2 = {'String-Date': 'yy2024-01-01zz'}  
+    string_date_data_invalid_3 = {'String-Date': datetime.datetime.now()}
+    string_date_data_invalid_4 = {'String-Date': 1596542285000}
+  
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_date)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_date_data_1)
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+        
+    assert error_count == 0
+    
+    try:
+        custom_jadn_schema.model_validate(string_date_data_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_date_data_invalid_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_date_data_invalid_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_date_data_invalid_4)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                
+        
+    assert error_count == 4
+    
 
 def test_string_datetime():
   

@@ -57,7 +57,11 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
             case "/":           # format - Semantic validation keyword (Section 3.2.1.5)
                 if opt_val == "date-time":
+                    pyd_field_mapper.is_datetime = True
+                elif opt_val == "date":
                     pyd_field_mapper.is_date = True
+                elif opt_val == "time":
+                    pyd_field_mapper.is_time = True                    
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
             case "y":           # minf - Minimum real number value (Section 3.2.1.7)
