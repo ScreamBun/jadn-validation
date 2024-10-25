@@ -58,6 +58,17 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
             case "/":           # format - Semantic validation keyword (Section 3.2.1.5)
                 if opt_val == "date-time":
                     pyd_field_mapper.is_date = True
+                if opt_val == "duration":
+                    pyd_field_mapper.is_duration = True
+                if opt_val == "i8":
+                    pyd_field_mapper.min_value = -128
+                    pyd_field_mapper.max_value = 127
+                if opt_val == "i16":
+                    pyd_field_mapper.min_value = -32768
+                    pyd_field_mapper.max_value = 32767
+                if opt_val == "i32":
+                    pyd_field_mapper.min_value = -2147483648
+                    pyd_field_mapper.max_value = 2147483647
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
             case "y":           # minf - Minimum real number value (Section 3.2.1.7)
