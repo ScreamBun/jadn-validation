@@ -4,5 +4,6 @@ class Pyd_Field_Mapper():
     is_date: bool = False
     is_datetime: bool = False
     is_email: bool = False
+    is_idn_email: bool = False
     is_time: bool = False
     pattern: str = None
