@@ -6,6 +6,51 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_idn_hostname():
+  
+    jadn_string_idn_hostname = {
+      "types": [
+        ["String-Idn-Hostname", "String", ["/idn-hostname"], ""]
+      ]
+    }
+    
+    string_idn_hostname_1 = {'String-Idn-Hostname': 'example.com'}
+    string_idn_hostname_2 = {'String-Idn-Hostname': 'xn----gtbspbbmkef.xn--p1ai'}
+    string_idn_hostname_invalid_1 = {'String-Idn-Hostname': 'qwerasdf'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_idn_hostname)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_idn_hostname_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_idn_hostname_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)        
+        
+    assert error_count == 0        
+        
+    try:
+        custom_jadn_schema.model_validate(string_idn_hostname_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 1           
+    
+
 def test_string_hostname():
   
     jadn_string_hostname = {

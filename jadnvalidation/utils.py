@@ -1,5 +1,6 @@
-from typing import List
-from pydantic import Field
+from validators import domain
+from typing import Annotated, List
+from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -37,6 +38,23 @@ def split_on_first_char(string):
 
     return [string[0], string[1:]]
 
+# Not used yet, cannot failed '192.168.123.132' but should pass
+def validate_domain(val: str):
+    result = domain(val, rfc_2782=True)
+    
+    if not result:
+        raise ValueError('Not a valid domain')
+    
+    return val
+
+def validate_idn_domain(val: str):
+    result = domain(val, rfc_2782=True)
+    
+    if not result:
+        raise ValueError('Not a valid idn-domain')
+    
+    return val
+
 def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -68,7 +86,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "idn-email":
                     pyd_field_mapper.is_idn_email = True
                 elif opt_val == "hostname":
-                    pyd_field_mapper.is_hostname = True                                           
+                    pyd_field_mapper.is_hostname = True
+                elif opt_val == "idn-hostname":
+                    pyd_field_mapper.is_idn_hostname = True                                                       
                   
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
@@ -94,3 +114,8 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
                 
     return pyd_field_mapper
+
+# custom pyd types
+Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
+# Hostname = Annotated[str, BeforeValidator(validate_domain)]
+IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
