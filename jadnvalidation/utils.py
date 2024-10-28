@@ -56,7 +56,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
             case ">":           # pointer - Extension: Enumerated type pointers derived from a specified type (Section 3.3.5)
                 py_field = ""
             case "/":           # format - Semantic validation keyword (Section 3.2.1.5)
-                if opt_val == "date-time":
+                if opt_val == "email":
+                    pyd_field_mapper.is_email = True                
+                elif opt_val == "date-time":
                     pyd_field_mapper.is_datetime = True
                 elif opt_val == "date":
                     pyd_field_mapper.is_date = True

@@ -6,6 +6,78 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_email():
+  
+    jadn_string_email = {
+      "types": [
+        ["String-Email", "String", ["/email"], ""]
+      ]
+    }
+
+    string_pattern_email_1 = {'String-Email': 'jarvis@stark.com'}
+    string_pattern_email_2 = {'String-Email': 'jarvis@stark.eng.com'}
+    string_pattern_email_3 = {'String-Email': 'jarvis@stark-eng.com'}
+    string_pattern_email_4 = {'String-Email': '1jarvis@stark-eng.com'}
+    string_pattern_email_invalid_1 = {'String-Email': '@jarvis@stark.com'}
+    string_pattern_email_invalid_2 = {'String-Email': 'zzjarviszz'}  
+    string_pattern_email_invalid_3 = {'String-Email': 'jarvis@stark-eng.com1'}  
+  
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_email)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_pattern_email_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)   
+    
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_4)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e) 
+        
+    assert error_count == 0                           
+        
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_invalid_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_pattern_email_invalid_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                      
+        
+    assert error_count == 3
+
 def test_string_pattern():
   
     jadn_string_pattern = {
