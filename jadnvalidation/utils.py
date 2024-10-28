@@ -66,7 +66,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "email":
                     pyd_field_mapper.is_email = True
                 elif opt_val == "idn-email":
-                    pyd_field_mapper.is_idn_email = True                      
+                    pyd_field_mapper.is_idn_email = True
+                elif opt_val == "hostname":
+                    pyd_field_mapper.is_hostname = True                                           
                   
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val

@@ -1,6 +1,7 @@
 import datetime
-from pydantic import EmailStr, Field
-from jadnvalidation.consts import REGEX_EMAIL
+from typing import Annotated
+from pydantic import AnyUrl, EmailStr, Field, UrlConstraints
+from jadnvalidation.consts import REGEX_EMAIL, DomainName
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import convert_to_pyd_type, map_type_opts
 
@@ -25,7 +26,10 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         
     elif pyd_field_mapping.is_idn_email:
         # Note: email-validation handles internationilzation out-of-the-box
-        pyd_type = EmailStr       
+        pyd_type = EmailStr
+        
+    elif pyd_field_mapping.is_hostname:
+        pyd_type = DomainName
     
     pyd_field = (pyd_type,
                    Field(..., 
