@@ -38,12 +38,15 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = IPv6Address               
         
     elif pyd_field_mapping.is_uri:
-        pyd_type = AnyUrl
+        pyd_type = AnyUrl      
         
     elif pyd_field_mapping.is_uri_ref:
         # note: pypi rfc3986 could be used here if AnyUrl is too broad
         # https://pypi.org/project/rfc3986/ 
-        pyd_type = AnyUrl          
+        pyd_type = AnyUrl
+        
+    elif pyd_field_mapping.is_uri_template:
+        pyd_type = AnyUrl
     
     pyd_field = (pyd_type,
                    Field(..., 

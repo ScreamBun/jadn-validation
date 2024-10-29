@@ -1,4 +1,5 @@
 from validators import domain
+from uritemplate import URITemplate
 from typing import Annotated, List
 from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
 from consts import ALLOWED_TYPE_OPTIONS
@@ -96,7 +97,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "uri":
                     pyd_field_mapper.is_uri = True
                 elif opt_val == "uri-reference":
-                    pyd_field_mapper.is_uri_ref = True                                                                                                                                
+                    pyd_field_mapper.is_uri_ref = True
+                elif opt_val == "uri-template":
+                    pyd_field_mapper.is_uri_template = True                                                                                                                                                  
                   
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
