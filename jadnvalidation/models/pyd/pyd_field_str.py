@@ -46,6 +46,8 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = AnyUrl
         
     elif pyd_field_mapping.is_uri_template:
+        # note: more validation could be added here using the uritemplate lib if needed
+        # https://pypi.org/project/uritemplate/
         pyd_type = AnyUrl
     
     pyd_field = (pyd_type,
