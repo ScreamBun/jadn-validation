@@ -6,6 +6,118 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_uri_ref():
+  
+    jadn_schema = {
+      "types": [
+        ["String-Uri-Ref", "String", ["/uri-reference"], ""]
+      ]
+    }
+    
+    valid_data_1 = {'String-Uri-Ref': 'http://www.example.com/questions/3456/my-document'}
+    valid_data_2 = {'String-Uri-Ref': 'mailto:info@example.com'}
+    valid_data_3 = {'String-Uri-Ref': 'file://localhost/absolute/path/to/file'}
+    invalid_data_1 = {'String-Uri-Ref': 'zzzz'}
+    invalid_data_2 = {'String-Uri-Ref': '//./file_at_current_dir'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                     
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(invalid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)            
+        
+    assert error_count == 2
+
+def test_string_uri():
+  
+    jadn_string_uri = {
+      "types": [
+        ["String-Uri", "String", ["/uri"], ""]
+      ]
+    }
+    
+    string_uri_1 = {'String-Uri': 'http://www.example.com/questions/3456/my-document'}
+    string_uri_2 = {'String-Uri': 'mailto:info@example.com'}
+    string_uri_3 = {'String-Uri': 'foo://example.com:8042/over/there?name=ferret#nose'}
+    string_uri_invalid_1 = {'String-Uri': 'zzzz'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_uri)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_uri_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_uri_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_uri_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                 
+        
+    assert error_count == 0        
+        
+    try:
+        custom_jadn_schema.model_validate(string_uri_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 1 
+
 def test_string_ipv6():
   
     jadn_string_ipv6 = {

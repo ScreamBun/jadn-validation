@@ -1,6 +1,6 @@
 import datetime
 from ipaddress import IPv4Address, IPv6Address
-from pydantic import EmailStr, Field
+from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname
 
@@ -35,7 +35,15 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = IPv4Address
         
     elif pyd_field_mapping.is_ipv6:
-        pyd_type = IPv6Address                   
+        pyd_type = IPv6Address               
+        
+    elif pyd_field_mapping.is_uri:
+        pyd_type = AnyUrl
+        
+    elif pyd_field_mapping.is_uri_ref:
+        # note: pypi rfc3986 could be used here if AnyUrl is too broad
+        # https://pypi.org/project/rfc3986/ 
+        pyd_type = AnyUrl          
     
     pyd_field = (pyd_type,
                    Field(..., 
