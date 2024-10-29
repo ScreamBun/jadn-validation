@@ -1,4 +1,5 @@
 import datetime
+from ipaddress import IPv4Address, IPv6Address
 from pydantic import EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname
@@ -28,7 +29,13 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = Hostname
         
     elif pyd_field_mapping.is_idn_hostname:
-        pyd_type = IdnHostname        
+        pyd_type = IdnHostname
+        
+    elif pyd_field_mapping.is_ipv4:
+        pyd_type = IPv4Address
+        
+    elif pyd_field_mapping.is_ipv6:
+        pyd_type = IPv6Address                   
     
     pyd_field = (pyd_type,
                    Field(..., 

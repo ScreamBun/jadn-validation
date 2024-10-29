@@ -8,4 +8,6 @@ class Pyd_Field_Mapper():
     is_time: bool = False
     is_hostname: bool = False
     is_idn_hostname: bool = False
+    is_ipv4: bool = False
+    is_ipv6: bool = False
     pattern: str = None

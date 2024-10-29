@@ -6,6 +6,101 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_ipv6():
+  
+    jadn_string_ipv6 = {
+      "types": [
+        ["String-Ipv6", "String", ["/ipv6"], ""]
+      ]
+    }
+    
+    string_ipv6_1 = {'String-Ipv6': '2001:0db8:85a3:0000:0000:8a2e:0370:7334'}
+    string_ipv6_2 = {'String-Ipv6': '2001:db8::'}
+    string_ipv6_3 = {'String-Ipv6': 42540766411282592856903984951653826560}
+    string_ipv6_invalid_1 = {'String-Ipv6': 'zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_ipv6)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_ipv6_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_ipv6_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_ipv6_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)               
+        
+    assert error_count == 0        
+        
+    try:
+        custom_jadn_schema.model_validate(string_ipv6_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 1   
+
+def test_string_ipv4():
+  
+    jadn_string_ipv4 = {
+      "types": [
+        ["String-Ipv4", "String", ["/ipv4"], ""]
+      ]
+    }
+    
+    string_ipv4_1 = {'String-Ipv4': '127.0.0.1'}
+    string_ipv4_2 = {'String-Ipv4': 2130706433}
+    string_ipv4_invalid_1 = {'String-Ipv4': 'zzzz127.0.0.1zzzz'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_string_ipv4)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(string_ipv4_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(string_ipv4_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)        
+        
+    assert error_count == 0        
+        
+    try:
+        custom_jadn_schema.model_validate(string_ipv4_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 1   
+
 def test_string_idn_hostname():
   
     jadn_string_idn_hostname = {
