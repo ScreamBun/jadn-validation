@@ -6,6 +6,65 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_iri_template():
+  
+    jadn_schema = {
+      "types": [
+        ["String-Iri", "String", ["/iri"], ""]
+      ]
+    }
+    
+    valid_data_1 = {'String-Iri': 'http://puny£code.com'}
+    valid_data_2 = {'String-Iri': 'https://www.аррӏе.com/'}
+    valid_data_3 = {'String-Iri': 'https://www.example.珠宝/'}
+    invalid_data_1 = {'String-Iri': 'zzzz'}
+    invalid_data_2 = {'String-Iri': ':///items.starfox'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)              
+        
+    try:
+        pyd_model.model_validate(valid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+        
+    try:
+        pyd_model.model_validate(valid_data_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                  
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(invalid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)            
+        
+    assert error_count == 2
+
 def test_string_uri_template():
   
     jadn_schema = {

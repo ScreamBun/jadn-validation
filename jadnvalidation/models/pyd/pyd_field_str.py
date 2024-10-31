@@ -37,6 +37,9 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
     elif pyd_field_mapping.is_ipv6:
         pyd_type = IPv6Address               
         
+    elif pyd_field_mapping.is_iri:
+        pyd_type = AnyUrl          
+        
     elif pyd_field_mapping.is_uri:
         pyd_type = AnyUrl      
         

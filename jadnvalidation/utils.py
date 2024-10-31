@@ -94,6 +94,8 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                     pyd_field_mapper.is_ipv4 = True
                 elif opt_val == "ipv6":
                     pyd_field_mapper.is_ipv6 = True
+                elif opt_val == "iri":
+                    pyd_field_mapper.is_iri = True                    
                 elif opt_val == "uri":
                     pyd_field_mapper.is_uri = True
                 elif opt_val == "uri-reference":
