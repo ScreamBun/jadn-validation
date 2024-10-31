@@ -6,6 +6,58 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
+def test_string_relative_json_pointer():
+  
+    jadn_schema = {
+      "types": [
+        ["String-Relative-Json-Pointer", "String", ["/relative-json-pointer"], ""]
+      ]
+    }
+    
+    valid_data_1 = {'String-Relative-Json-Pointer': '0/foo'}
+    valid_data_2 = {'String-Relative-Json-Pointer': '1/sin-city'}
+    invalid_data_1 = {'String-Relative-Json-Pointer': '/foo/0'}
+    invalid_data_2 = {'String-Relative-Json-Pointer': '-1/sin-city'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)              
+        
+    try:
+        pyd_model.model_validate(valid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                     
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(invalid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)            
+        
+    assert error_count == 2
+
 def test_string_json_pointer():
   
     jadn_schema = {

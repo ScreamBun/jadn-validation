@@ -71,6 +71,27 @@ def validate_json_pointer(val: str):
     
     return val
 
+def validate_rel_json_pointer(val: str):
+    """
+    Validate Relative JSON Pointer - RFC-8259
+    """
+    
+    non_negative_integer, rest = [], ""
+    for i, character in enumerate(val):
+        if character.isdigit():
+            non_negative_integer.append(character)
+            continue
+        if not non_negative_integer:
+            raise ValueError("invalid relative json pointer given")
+        rest = val[i:]
+        break
+    try:
+        (rest == "#") or JsonPointer(rest)
+    except JsonPointerException as ex:
+        raise ValueError(ex)
+    
+    return val
+
 def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -114,7 +135,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "iri-reference":
                     pyd_field_mapper.is_iri_ref = True
                 elif opt_val == "json-pointer":
-                    pyd_field_mapper.is_json_pointer = True                                                         
+                    pyd_field_mapper.is_json_pointer = True
+                elif opt_val == "relative-json-pointer":
+                    pyd_field_mapper.is_relative_json_pointer = True                                                                             
                 elif opt_val == "uri":
                     pyd_field_mapper.is_uri = True
                 elif opt_val == "uri-reference":
@@ -152,3 +175,4 @@ Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
 PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
+PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
