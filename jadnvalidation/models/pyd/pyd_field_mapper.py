@@ -14,6 +14,7 @@ class Pyd_Field_Mapper():
     is_iri_ref: bool = False
     is_json_pointer: bool = False
     is_relative_json_pointer: bool = False
+    is_regex: bool = False
     is_uri: bool = False
     is_uri_ref: bool = False
     is_uri_template: bool = False
