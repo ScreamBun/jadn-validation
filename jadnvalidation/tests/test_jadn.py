@@ -6,7 +6,66 @@ from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
-def test_string_iri_template():
+def test_string_iri_ref():
+  
+    jadn_schema = {
+      "types": [
+        ["String-Iri-Reference", "String", ["/iri-reference"], ""]
+      ]
+    }
+    
+    valid_data_1 = {'String-Iri-Reference': 'mailto:info@example.com'}
+    valid_data_2 = {'String-Iri-Reference': 'file://localhost/absolute/path/to/file'}
+    valid_data_3 = {'String-Iri-Reference': 'https://www.example.珠宝/'}
+    invalid_data_1 = {'String-Iri-Reference': 'zzzz'}
+    invalid_data_2 = {'String-Iri-Reference': ':///items.starfox'}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)              
+        
+    try:
+        pyd_model.model_validate(valid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+        
+    try:
+        pyd_model.model_validate(valid_data_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                  
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(invalid_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)            
+        
+    assert error_count == 2
+
+def test_string_iri():
   
     jadn_schema = {
       "types": [

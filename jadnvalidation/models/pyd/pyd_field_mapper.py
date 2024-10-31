@@ -11,6 +11,7 @@ class Pyd_Field_Mapper():
     is_ipv4: bool = False
     is_ipv6: bool = False
     is_iri: bool = False
+    is_iri_ref: bool = False
     is_uri: bool = False
     is_uri_ref: bool = False
     is_uri_template: bool = False
