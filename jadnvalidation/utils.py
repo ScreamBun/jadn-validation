@@ -1,5 +1,7 @@
-from typing import List
-from pydantic import Field
+from validators import domain
+from uritemplate import URITemplate
+from typing import Annotated, List
+from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -37,6 +39,23 @@ def split_on_first_char(string):
 
     return [string[0], string[1:]]
 
+# Not used yet, cannot failed '192.168.123.132' but should pass
+def validate_domain(val: str):
+    result = domain(val, rfc_2782=True)
+    
+    if not result:
+        raise ValueError('Not a valid domain')
+    
+    return val
+
+def validate_idn_domain(val: str):
+    result = domain(val, rfc_2782=True)
+    
+    if not result:
+        raise ValueError('Not a valid idn-domain')
+    
+    return val
+
 def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -55,9 +74,11 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
             case ">":           # pointer - Extension: Enumerated type pointers derived from a specified type (Section 3.3.5)
                 py_field = ""
-            case "/":           # format - Semantic validation keyword (Section 3.2.1.5)
-                if opt_val == "date-time":
+            case "/":           # format - Semantic validation keyword (Section 3.2.1.5)   
+                                             
+                if opt_val == "date":
                     pyd_field_mapper.is_date = True
+<<<<<<< HEAD
                 if opt_val == "duration":
                     pyd_field_mapper.is_duration = True
                 if opt_val == "i8":
@@ -69,6 +90,35 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 if opt_val == "i32":
                     pyd_field_mapper.min_value = -2147483648
                     pyd_field_mapper.max_value = 2147483647
+=======
+                elif opt_val == "date-time":
+                    pyd_field_mapper.is_datetime = True
+                elif opt_val == "time":
+                    pyd_field_mapper.is_time = True                                       
+                elif opt_val == "email":
+                    pyd_field_mapper.is_email = True
+                elif opt_val == "idn-email":
+                    pyd_field_mapper.is_idn_email = True
+                elif opt_val == "hostname":
+                    pyd_field_mapper.is_hostname = True
+                elif opt_val == "idn-hostname":
+                    pyd_field_mapper.is_idn_hostname = True
+                elif opt_val == "ipv4":
+                    pyd_field_mapper.is_ipv4 = True
+                elif opt_val == "ipv6":
+                    pyd_field_mapper.is_ipv6 = True
+                elif opt_val == "iri":
+                    pyd_field_mapper.is_iri = True
+                elif opt_val == "iri-reference":
+                    pyd_field_mapper.is_iri_ref = True                                       
+                elif opt_val == "uri":
+                    pyd_field_mapper.is_uri = True
+                elif opt_val == "uri-reference":
+                    pyd_field_mapper.is_uri_ref = True
+                elif opt_val == "uri-template":
+                    pyd_field_mapper.is_uri_template = True                                                                                                                                                  
+                  
+>>>>>>> origin/main
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
             case "y":           # minf - Minimum real number value (Section 3.2.1.7)
@@ -93,3 +143,8 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
                 
     return pyd_field_mapper
+
+# custom pyd types
+Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
+# Hostname = Annotated[str, BeforeValidator(validate_domain)]
+IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
