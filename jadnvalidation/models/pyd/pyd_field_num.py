@@ -1,6 +1,7 @@
 from pydantic import Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.utils import convert_to_pyd_type
+from jadnvalidation.utils import convert_to_pyd_type, map_type_opts
+
 
 
 def build_pyd_num_field(jadn_type: Jadn_Type) -> Field:
@@ -8,7 +9,10 @@ def build_pyd_num_field(jadn_type: Jadn_Type) -> Field:
     
     pyd_field = (pyd_data_type,
                    Field(..., 
-                        description=jadn_type.type_description,
+                            description=jadn_type.type_description,
+                            min_length=pyd_field_mapping.min_length,
+                            max_length=pyd_field_mapping.max_length,
+                            pattern=pyd_field_mapping.format
                         )
                 )    
     
