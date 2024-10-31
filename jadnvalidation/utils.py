@@ -1,7 +1,7 @@
+from jsonpointer import JsonPointer, JsonPointerException
 from validators import domain
-from uritemplate import URITemplate
 from typing import Annotated, List
-from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
+from pydantic import BeforeValidator, StringConstraints
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -56,6 +56,21 @@ def validate_idn_domain(val: str):
     
     return val
 
+def validate_json_pointer(val: str):
+    """
+    Validate JSON Pointer - RFC 6901
+    """
+    try:
+        res = JsonPointer(val)
+        
+        if not isinstance(res, JsonPointer):
+            raise ValueError("Not a valid Json Pointer")    
+        
+    except JsonPointerException as ex:
+        raise ValueError(ex)
+    
+    return val
+
 def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -97,7 +112,9 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "iri":
                     pyd_field_mapper.is_iri = True
                 elif opt_val == "iri-reference":
-                    pyd_field_mapper.is_iri_ref = True                                       
+                    pyd_field_mapper.is_iri_ref = True
+                elif opt_val == "json-pointer":
+                    pyd_field_mapper.is_json_pointer = True                                                         
                 elif opt_val == "uri":
                     pyd_field_mapper.is_uri = True
                 elif opt_val == "uri-reference":
@@ -134,3 +151,4 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
 Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
+PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]

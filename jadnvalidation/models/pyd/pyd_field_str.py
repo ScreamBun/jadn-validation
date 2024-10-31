@@ -2,7 +2,7 @@ import datetime
 from ipaddress import IPv4Address, IPv6Address
 from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname
+from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname, PydJsonPointer
 
 
 def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
@@ -41,7 +41,10 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = AnyUrl
         
     elif pyd_field_mapping.is_iri_ref:
-        pyd_type = AnyUrl       
+        pyd_type = AnyUrl
+        
+    elif pyd_field_mapping.is_json_pointer:
+        pyd_type = PydJsonPointer               
         
     elif pyd_field_mapping.is_uri:
         pyd_type = AnyUrl      
