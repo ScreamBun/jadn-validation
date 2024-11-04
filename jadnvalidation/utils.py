@@ -1,8 +1,8 @@
+import re
+from jsonpointer import JsonPointer, JsonPointerException
 from validators import domain
-from uritemplate import URITemplate
-from typing import List
-from typing_extensions import Annotated
-from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
+from typing import Annotated, List
+from pydantic import BeforeValidator, StringConstraints
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -57,6 +57,57 @@ def validate_idn_domain(val: str):
     
     return val
 
+def validate_json_pointer(val: str):
+    """
+    Validate JSON Pointer - RFC 6901
+    """
+    try:
+        res = JsonPointer(val)
+        
+        if not isinstance(res, JsonPointer):
+            raise ValueError("Not a valid Json Pointer")    
+        
+    except JsonPointerException as ex:
+        raise ValueError(ex)
+    
+    return val
+
+def validate_rel_json_pointer(val: str):
+    """
+    Validate Relative JSON Pointer - RFC-8259
+    """
+    
+    non_negative_integer, rest = [], ""
+    for i, character in enumerate(val):
+        if character.isdigit():
+            non_negative_integer.append(character)
+            continue
+        if not non_negative_integer:
+            raise ValueError("invalid relative json pointer given")
+        rest = val[i:]
+        break
+    try:
+        (rest == "#") or JsonPointer(rest)
+    except JsonPointerException as ex:
+        raise ValueError(ex)
+    
+    return val
+
+def validate_regex(val: str):
+    """
+    Validate Regular Expression - ECMA 262
+    """
+    try:
+        res = re.compile(val)
+        
+        if not isinstance(res, re.Pattern):
+            raise ValueError("Not a valid regex")          
+        
+    except Exception as ex:
+        raise ValueError(ex)
+    
+    return val
+
 def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -98,7 +149,13 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "iri":
                     pyd_field_mapper.is_iri = True
                 elif opt_val == "iri-reference":
-                    pyd_field_mapper.is_iri_ref = True                                       
+                    pyd_field_mapper.is_iri_ref = True
+                elif opt_val == "json-pointer":
+                    pyd_field_mapper.is_json_pointer = True
+                elif opt_val == "relative-json-pointer":
+                    pyd_field_mapper.is_relative_json_pointer = True
+                elif opt_val == "regex":
+                    pyd_field_mapper.is_regex = True                                                                                                
                 elif opt_val == "uri":
                     pyd_field_mapper.is_uri = True
                 elif opt_val == "uri-reference":
@@ -170,3 +227,6 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
 Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
+PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
+PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
+PydRegex = Annotated[str, BeforeValidator(validate_regex)]
