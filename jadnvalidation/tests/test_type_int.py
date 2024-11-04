@@ -70,7 +70,7 @@ def test_type_int_duration():
     integer_instance_data_duration_2 = {'Integer-Instance': 0}
     integer_instance_data_invalid_duration_1 = {'Integer-Instance': 1.75}
     integer_instance_data_invalid_duration_2 = {'Integer-Instance': "one-minute"}  
-    integer_instance_data_invalid_duration_3 = {'Integer-Instance': -5000}
+    integer_instance_data_invalid_duration_3 = {'Integer-Instance': "-5000"}
   
     error_count = 0
     try:
@@ -137,7 +137,6 @@ def test_type_int_min():
         
         custom_jadn_schema = create_model(
             "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
             **user_custom_fields
         )
         
@@ -162,24 +161,15 @@ def test_type_int_min():
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
-    except ValueError as e:
-        error_count = error_count +1
-        print(e)
-
         
     try:
         custom_jadn_schema.model_validate(integer_instance_data_invalid_min_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
-    except TypeError as e:
-        error_count = error_count +1
-        print(e)
+
     try:
         custom_jadn_schema.model_validate(integer_instance_data_invalid_min_3)
-    except TypeError as e:
-        error_count = error_count +1
-        print(e)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -206,7 +196,6 @@ def test_type_int_max():
         
         custom_jadn_schema = create_model(
             "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
             **user_custom_fields
         )
         
@@ -231,24 +220,15 @@ def test_type_int_max():
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
-    except ValueError as e:
-        error_count = error_count +1
-        print(e)
-
         
     try:
         custom_jadn_schema.model_validate(integer_instance_data_invalid_max_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
-    except TypeError as e:
-        error_count = error_count +1
-        print(e)
+
     try:
         custom_jadn_schema.model_validate(integer_instance_data_invalid_max_3)
-    except TypeError as e:
-        error_count = error_count +1
-        print(e)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)

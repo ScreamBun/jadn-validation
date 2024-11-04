@@ -2,7 +2,7 @@ import re
 from jsonpointer import JsonPointer, JsonPointerException
 from validators import domain
 from typing import Annotated, List
-from pydantic import BeforeValidator, StringConstraints
+from pydantic import BeforeValidator, Field, StringConstraints
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -14,6 +14,7 @@ def convert_to_pyd_type(type_str: str) -> type:
     type_mapping = {
         "String": str,
         "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
+        # "Integer": int,
         "Number": float,
         "Boolean": bool,
         "Array": list,
@@ -108,7 +109,7 @@ def validate_regex(val: str):
     
     return val
 
-def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
+def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
     for type_opt in type_opts:
@@ -182,32 +183,32 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                if type == str:
+                if jdn_type == "String":
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.min_length = minv
                     except TypeError as e:
-                        print("Invalid option: requires integer value: "+e)
-                elif type == int|float:
+                        print("Invalid option: requires integer value: " + e)
+                elif jdn_type == "Integer" or jdn_type == "Number":
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.ge = minv
                     except TypeError as e:
-                        print("Invalid option: requires integer value: "+e)
+                        print("Invalid option: requires integer value: " + e)
                         
             case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                if type == str:
+                if jdn_type == 'String':
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.max_length = maxv
                     except TypeError as e:
-                        print("Invalid option: requires integer value: "+e)
-                elif type == int|float:
+                        print("Invalid option: requires integer value: " + e)
+                elif jdn_type == "Integer" or jdn_type == "Number":
                     try:
-                        minv = int(opt_val)
+                        maxv = int(opt_val)
                         pyd_field_mapper.le = maxv
                     except TypeError as e:
-                        print("Invalid option: requires integer value: "+e)
+                        print("Invalid option: requires integer value: " + e)
             case "q":           # unique - ArrayOf instance must not contain duplicate values (Section 3.2.1.8)
                 py_field = ""
             case "s":           # set - ArrayOf instance is unordered and unique (Section 3.2.1.9)
