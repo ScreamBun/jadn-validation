@@ -1,6 +1,7 @@
 from validators import domain
 from uritemplate import URITemplate
-from typing import Annotated, List
+from typing import List
+from typing_extensions import Annotated
 from pydantic import AfterValidator, BeforeValidator, Field, StringConstraints, ValidationError
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
@@ -12,7 +13,7 @@ def convert_to_pyd_type(type_str: str) -> type:
     """
     type_mapping = {
         "String": str,
-        "Integer": int,
+        "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
         "Number": float,
         "Boolean": bool,
         "Array": list,
@@ -107,25 +108,49 @@ def map_type_opts(type_opts: List[str]) -> Pyd_Field_Mapper:
                   
                 elif opt_val == "duration":
                     pyd_field_mapper.is_duration = True
+                    pyd_field_mapper.ge = 0
                 elif opt_val == "i8":
-                    pyd_field_mapper.min_value = -128
-                    pyd_field_mapper.max_value = 127
+                    pyd_field_mapper.ge = -128
+                    pyd_field_mapper.le = 127
                 elif opt_val == "i16":
-                    pyd_field_mapper.min_value = -32768
-                    pyd_field_mapper.max_value = 32767
+                    pyd_field_mapper.ge = -32768
+                    pyd_field_mapper.le = 32767
                 elif opt_val == "i32":
-                    pyd_field_mapper.min_value = -2147483648
-                    pyd_field_mapper.max_value = 2147483647
+                    pyd_field_mapper.ge = -2147483648
+                    pyd_field_mapper.le = 2147483647
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
-            case "y":           # minf - Minimum real number value (Section 3.2.1.7)
+            case "y":           # minf - Minimum real number value (Section 3.2.1.7). Being deprecated for new JADN
                 py_field = ""
-            case "z":           # maxf - Maximum real number value
+            case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                pyd_field_mapper.min_length = opt_val
+                if type == str:
+                    try:
+                        minv = int(opt_val)
+                        pyd_field_mapper.min_length = minv
+                    except TypeError as e:
+                        print("Invalid option: requires integer value: "+e)
+                elif type == int|float:
+                    try:
+                        minv = int(opt_val)
+                        pyd_field_mapper.ge = minv
+                    except TypeError as e:
+                        print("Invalid option: requires integer value: "+e)
+                        
             case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                pyd_field_mapper.max_length = opt_val
+                if type == str:
+                    try:
+                        maxv = int(opt_val)
+                        pyd_field_mapper.max_length = maxv
+                    except TypeError as e:
+                        print("Invalid option: requires integer value: "+e)
+                elif type == int|float:
+                    try:
+                        minv = int(opt_val)
+                        pyd_field_mapper.le = maxv
+                    except TypeError as e:
+                        print("Invalid option: requires integer value: "+e)
             case "q":           # unique - ArrayOf instance must not contain duplicate values (Section 3.2.1.8)
                 py_field = ""
             case "s":           # set - ArrayOf instance is unordered and unique (Section 3.2.1.9)

@@ -11,15 +11,15 @@ def build_pyd_int_field(jadn_type: Jadn_Type) -> Field:
 
     if pyd_field_mapping.is_duration:
         pyd_type = datetime.datetime
+
     
     pyd_field = (pyd_type,
                    Field(..., 
                             description=jadn_type.type_description,
-                            min_length=pyd_field_mapping.min_length,
-                            max_length=pyd_field_mapping.max_length,
+                            ge=pyd_field_mapping.ge,
+                            le=pyd_field_mapping.le,
                             pattern=pyd_field_mapping.format
                         )
                 )    
-    
   
     return pyd_field
