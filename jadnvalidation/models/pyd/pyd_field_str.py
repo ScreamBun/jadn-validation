@@ -2,14 +2,17 @@ import datetime
 from ipaddress import IPv4Address, IPv6Address
 from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname, PydJsonPointer, PydRelJsonPointer, PydRegex
+from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname, PydJsonPointer, PydRelJsonPointer, PydRegex, BinaryHex
 
 
 def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
     pyd_type = convert_to_pyd_type(jadn_type.base_type)
     pyd_field_mapping = map_type_opts(jadn_type.type_options)      
 
-    if pyd_field_mapping.is_date:
+    if jadn_type.base_type == "Binary":
+        pyd_type = BinaryHex
+
+    elif pyd_field_mapping.is_date:
         pyd_type = datetime.date
     
     elif pyd_field_mapping.is_datetime:

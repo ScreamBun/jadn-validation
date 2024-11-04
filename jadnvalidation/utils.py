@@ -12,16 +12,21 @@ def convert_to_pyd_type(type_str: str) -> type:
     Converts a jadn type to its corresponding Python type.
     """
     type_mapping = {
-        "String": str,
-        "Integer": int,
-        "Number": float,
+        "Binary": str,
         "Boolean": bool,
+        "Integer": int,
+        "Number": float,        
+        "String": str,
         "Array": list,
         "Record": dict
         # Add more mappings as needed
-        # Binary?
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
+
+def convert_binary_to_hex(binary_string):
+    """Converts a binary string to its hexadecimal representation."""
+
+    return hex(int(binary_string, 2))[2:]  # [2:] removes the '0x' prefix
 
 def convert_list_to_dict(lst):
     res_dict = {}
@@ -48,6 +53,15 @@ def validate_domain(val: str):
         raise ValueError('Not a valid domain')
     
     return val
+
+def validate_hex(cls, v):
+    """
+    The validate_hex function checks if all characters in the string are valid hexadecimal digits (0-9, A-F, a-f). 
+    If not, it raises a ValueError.    
+    """
+    if not re.match(r'^[0-9a-fA-F]+$', v):
+        raise ValueError('Invalid binary hex value')
+    return v
 
 def validate_idn_domain(val: str):
     result = domain(val, rfc_2782=True)
@@ -195,3 +209,4 @@ IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
 PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
 PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
 PydRegex = Annotated[str, BeforeValidator(validate_regex)]
+BinaryHex = Annotated[str, BeforeValidator(validate_hex)]
