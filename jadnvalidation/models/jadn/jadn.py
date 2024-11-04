@@ -1,5 +1,6 @@
 from typing import Tuple
 from pydantic import BaseModel, Field, HttpUrl
+from typing_extensions import Annotated
 
 
 class Config(BaseModel):

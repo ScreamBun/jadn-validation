@@ -1,6 +1,8 @@
 class Pyd_Field_Mapper():
     min_length: int = None
     max_length: int = None
+    ge: int = None
+    le: int = None
     is_date: bool = False
     is_datetime: bool = False
     is_email: bool = False
@@ -18,4 +20,6 @@ class Pyd_Field_Mapper():
     is_uri: bool = False
     is_uri_ref: bool = False
     is_uri_template: bool = False
+    is_duration: bool = False
     pattern: str = None
+    format: str = None
