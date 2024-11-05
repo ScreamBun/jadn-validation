@@ -1,10 +1,12 @@
 from typing import Annotated, List
 
-from pydantic import Field
+from pydantic import BeforeValidator, Field
 
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 from jadnvalidation.models.utils import general_utils
 from math import pow
+
+from jadnvalidation.models.utils.custom_annotation import validate_bytes
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -12,7 +14,7 @@ def convert_to_pyd_type(type_str: str) -> type:
     Converts a jadn type to its corresponding Python type.
     """
     type_mapping = {
-        "Binary": bytes,
+        "Binary": Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
         "Boolean": bool,
         "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
         # "Integer": int,

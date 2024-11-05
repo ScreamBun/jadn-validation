@@ -27,7 +27,7 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         case "Boolean":
             py_field = build_pyd_bool_field(jadn_type) 
         case "Binary":
-            py_field = build_pyd_bool_field(jadn_type)             
+            py_field = build_pyd_binary_field(jadn_type)             
         #TODO: Add other types      
         case default:
             py_field = build_pyd_binary_field(jadn_type)
@@ -45,5 +45,4 @@ def build_pyd_fields(jadn_schema: dict) -> dict:
             pyd_fields[jadn_type.type_name] = pyd_field
 
         return pyd_fields
-
-
+      

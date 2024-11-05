@@ -1,8 +1,35 @@
 import re
-from typing import Annotated
+from typing import Annotated, Union
 from pydantic import BeforeValidator, StringConstraints
 from jsonpointer import JsonPointer, JsonPointerException
 from validators import domain
+
+def validate_bytes(data: Union[str, bytes, bytearray]):
+    bytes_data = data
+    
+    if isinstance(data, str):
+        bytes_data = data.encode('utf-8')
+    
+    if isinstance(bytes_data, bytearray):
+        if not all(0 <= byte <= 255 for byte in data):
+            raise ValueError('Not valid byte array data, decoding error')
+        
+        bytes_data = bytes(data)
+        try:
+            bytes_data.decode('utf-8')
+        except UnicodeDecodeError:
+            raise ValueError('Not valid byte data, decoding error from bytearray')        
+        
+    elif isinstance(bytes_data, bytes):    
+        try:
+            bytes_data.decode('utf-8')
+        except UnicodeDecodeError:
+            raise ValueError('Not valid byte data, decoding error')
+        
+    else:
+        raise ValueError('Not valid byte data')
+           
+    return bytes_data
 
 # Not used yet, cannot failed '192.168.123.132' but should pass
 def validate_domain(val: str):
