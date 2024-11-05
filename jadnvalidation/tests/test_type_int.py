@@ -411,3 +411,71 @@ def test_type_int_i32():
         print(e)  
 
     assert error_count == 3
+
+def test_type_int_uN():
+  
+    jadn_integer_instance_uN = {
+      "types": [
+        ["Integer-Instance", "Integer", ["/u2"], ""]
+      ]
+    }
+      
+    uN_instance_data_1 = {'Integer-Instance': 1}
+    uN_instance_data_2 = {'Integer-Instance': 0}
+    uN_instance_data_3 = {'Integer-Instance': 3}
+    uN_instance_data_invalid_1 = {'Integer-Instance': 5}
+    uN_instance_data_invalid_2 = {'Integer-Instance': -1}  
+    uN_instance_data_invalid_3 = {'Integer-Instance': "pi"}  
+  
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_integer_instance_uN)
+        
+        custom_jadn_schema = create_model(
+            "custom_jadn_schema", 
+            # __base__= BaseLearnerNode, 
+            **user_custom_fields
+        )
+        
+        custom_jadn_schema.model_validate(uN_instance_data_1)   
+        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+        
+    assert error_count == 0  
+
+    try:
+        custom_jadn_schema.model_validate(uN_instance_data_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 0  
+
+    try:
+        custom_jadn_schema.model_validate(uN_instance_data_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    assert error_count == 0  
+    
+    try:
+        custom_jadn_schema.model_validate(uN_instance_data_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        custom_jadn_schema.model_validate(uN_instance_data_invalid_2)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+    try:
+        custom_jadn_schema.model_validate(uN_instance_data_invalid_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)  
+
+    assert error_count == 3

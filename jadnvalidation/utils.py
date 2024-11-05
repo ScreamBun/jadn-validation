@@ -5,6 +5,7 @@ from typing import Annotated, List
 from pydantic import BeforeValidator, Field, StringConstraints
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
+from math import pow
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -15,7 +16,8 @@ def convert_to_pyd_type(type_str: str) -> type:
         "String": str,
         "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
         # "Integer": int,
-        "Number": float,
+        "Number": Annotated [float, Field(strict= True, ge=None, le=None)],
+        # "Number": float
         "Boolean": bool,
         "Array": list,
         "Record": dict
@@ -40,6 +42,14 @@ def split_on_first_char(string):
         return []
 
     return [string[0], string[1:]]
+
+def split_on_second_char(string):
+    """Splits a string on the first character."""
+
+    if not string:
+        return []
+
+    return [string[:2], string[2:]]
 
 # Not used yet, cannot failed '192.168.123.132' but should pass
 def validate_domain(val: str):
@@ -176,6 +186,17 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "i32":
                     pyd_field_mapper.ge = -2147483648
                     pyd_field_mapper.le = 2147483647
+                elif jdn_type == "Integer":
+                    format_designator, possible_unsigned = split_on_first_char(opt_val) 
+                    if format_designator == "u":
+                        try:
+                            unsigned_value = int(possible_unsigned)
+                            print("uN value is 2^"+str(unsigned_value))
+                            pyd_field_mapper.ge = 0
+                            pyd_field_mapper.le = pow(2,unsigned_value)
+                        except ValueError as e:
+                            print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
+
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
             case "y":           # minf - Minimum real number value (Section 3.2.1.7). Being deprecated for new JADN
