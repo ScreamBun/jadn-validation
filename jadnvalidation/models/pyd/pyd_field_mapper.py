@@ -1,5 +1,5 @@
 class Pyd_Field_Mapper():
-    min_length: int = None
+    min_length: int = None 
     max_length: int = None
     ge: int = None
     le: int = None

@@ -1,10 +1,9 @@
-import re
-from jsonpointer import JsonPointer, JsonPointerException
-from validators import domain
 from typing import Annotated, List
-from pydantic import BeforeValidator, Field, StringConstraints
-from consts import ALLOWED_TYPE_OPTIONS
+
+from pydantic import Field
+
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
+from jadnvalidation.models.utils import general_utils
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -12,7 +11,7 @@ def convert_to_pyd_type(type_str: str) -> type:
     Converts a jadn type to its corresponding Python type.
     """
     type_mapping = {
-        "Binary": str,
+        "Binary": bytes,
         "Boolean": bool,
         "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
         "Number": float,        
@@ -23,111 +22,12 @@ def convert_to_pyd_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
 
-def convert_binary_to_hex(binary_string):
-    """Converts a binary string to its hexadecimal representation."""
-
-    return hex(int(binary_string, 2))[2:]  # [2:] removes the '0x' prefix
-
-def convert_list_to_dict(lst):
-    res_dict = {}
-    for i in range(0, len(lst), 2):
-        res_dict[lst[i]] = lst[i + 1]
-    return res_dict
-
-def get_jadn_type_opts(jadn_type_name: str) -> tuple:
-    return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
-
-def split_on_first_char(string):
-    """Splits a string on the first character."""
-
-    if not string:
-        return []
-
-    return [string[0], string[1:]]
-
-# Not used yet, cannot failed '192.168.123.132' but should pass
-def validate_domain(val: str):
-    result = domain(val, rfc_2782=True)
-    
-    if not result:
-        raise ValueError('Not a valid domain')
-    
-    return val
-
-def validate_hex(cls, v):
-    """
-    The validate_hex function checks if all characters in the string are valid hexadecimal digits (0-9, A-F, a-f). 
-    If not, it raises a ValueError.    
-    """
-    if not re.match(r'^[0-9a-fA-F]+$', v):
-        raise ValueError('Invalid binary hex value')
-    return v
-
-def validate_idn_domain(val: str):
-    result = domain(val, rfc_2782=True)
-    
-    if not result:
-        raise ValueError('Not a valid idn-domain')
-    
-    return val
-
-def validate_json_pointer(val: str):
-    """
-    Validate JSON Pointer - RFC 6901
-    """
-    try:
-        res = JsonPointer(val)
-        
-        if not isinstance(res, JsonPointer):
-            raise ValueError("Not a valid Json Pointer")    
-        
-    except JsonPointerException as ex:
-        raise ValueError(ex)
-    
-    return val
-
-def validate_rel_json_pointer(val: str):
-    """
-    Validate Relative JSON Pointer - RFC-8259
-    """
-    
-    non_negative_integer, rest = [], ""
-    for i, character in enumerate(val):
-        if character.isdigit():
-            non_negative_integer.append(character)
-            continue
-        if not non_negative_integer:
-            raise ValueError("invalid relative json pointer given")
-        rest = val[i:]
-        break
-    try:
-        (rest == "#") or JsonPointer(rest)
-    except JsonPointerException as ex:
-        raise ValueError(ex)
-    
-    return val
-
-def validate_regex(val: str):
-    """
-    Validate Regular Expression - ECMA 262
-    """
-    try:
-        res = re.compile(val)
-        
-        if not isinstance(res, re.Pattern):
-            raise ValueError("Not a valid regex")          
-        
-    except Exception as ex:
-        raise ValueError(ex)
-    
-    return val
-
 def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
     for type_opt in type_opts:
         
-        opt_char_id, opt_val = split_on_first_char(type_opt)
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
         
         match opt_char_id:
             case "=":           # id - Items and Fields are denoted by FieldID rather than FieldName (Section 3.2.1.1)
@@ -222,6 +122,7 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                         pyd_field_mapper.le = maxv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
+                        
             case "q":           # unique - ArrayOf instance must not contain duplicate values (Section 3.2.1.8)
                 py_field = ""
             case "s":           # set - ArrayOf instance is unordered and unique (Section 3.2.1.9)
@@ -236,12 +137,3 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
                 
     return pyd_field_mapper
-
-# custom pyd types
-Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
-# Hostname = Annotated[str, BeforeValidator(validate_domain)]
-IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
-PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
-PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
-PydRegex = Annotated[str, BeforeValidator(validate_regex)]
-BinaryHex = Annotated[str, BeforeValidator(validate_hex)]

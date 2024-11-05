@@ -2,15 +2,15 @@ import datetime
 from ipaddress import IPv4Address, IPv6Address
 from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.utils import convert_to_pyd_type, map_type_opts, Hostname, IdnHostname, PydJsonPointer, PydRelJsonPointer, PydRegex, BinaryHex
+from jadnvalidation.models.utils import custom_annotation, mapping_utils
 
 
 def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
-    pyd_type = convert_to_pyd_type(jadn_type.base_type)
-    pyd_field_mapping = map_type_opts(jadn_type.type_options)      
+    pyd_type = mapping_utils.convert_to_pyd_type(jadn_type.base_type)
+    pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)      
 
     if jadn_type.base_type == "Binary":
-        pyd_type = BinaryHex
+        pyd_type = custom_annotation.BinaryHex
 
     elif pyd_field_mapping.is_date:
         pyd_type = datetime.date
@@ -29,10 +29,10 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = EmailStr
         
     elif pyd_field_mapping.is_hostname: 
-        pyd_type = Hostname
+        pyd_type = custom_annotation.Hostname
         
     elif pyd_field_mapping.is_idn_hostname:
-        pyd_type = IdnHostname
+        pyd_type = custom_annotation.IdnHostname
         
     elif pyd_field_mapping.is_ipv4:
         pyd_type = IPv4Address
@@ -47,13 +47,13 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = AnyUrl
         
     elif pyd_field_mapping.is_json_pointer:
-        pyd_type = PydJsonPointer   
+        pyd_type = custom_annotation.PydJsonPointer   
         
     elif pyd_field_mapping.is_relative_json_pointer:
-        pyd_type = PydRelJsonPointer            
+        pyd_type = custom_annotation.PydRelJsonPointer            
       
     elif pyd_field_mapping.is_regex:
-        pyd_type = PydRegex      
+        pyd_type = custom_annotation.PydRegex      
         
     elif pyd_field_mapping.is_uri:
         pyd_type = AnyUrl      

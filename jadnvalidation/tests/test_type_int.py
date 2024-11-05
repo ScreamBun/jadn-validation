@@ -1,7 +1,4 @@
-import pprint
 from pydantic import ValidationError, create_model
-from jadnvalidation.models.jadn.jadn import Config, Info, Jadn
-from jadnvalidation.utils import split_on_first_char
 from pydantic_schema import build_pyd_fields
 
 
