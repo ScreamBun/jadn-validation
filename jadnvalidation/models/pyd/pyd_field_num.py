@@ -4,7 +4,7 @@ from jadnvalidation.models.utils import mapping_utils
 
 
 def build_pyd_num_field(jadn_type: Jadn_Type) -> Field:
-    pyd_data_type = mapping_utils.convert_to_pyd_type(jadn_type.base_type)
+    pyd_type = mapping_utils.convert_to_pyd_type(jadn_type.base_type)
 
     pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)
     
