@@ -292,4 +292,42 @@ def test_binary_min_max():
         error_count = error_count + 1
         print(e)                
         
-    assert error_count == 3        
+    assert error_count == 3
+    
+def test_binary_eui(): 
+  
+    jadn_schema = {
+      "types": [
+        ["Binary-Test", "Binary", ["/eui"], ""]
+      ]
+    }  
+    
+    valid_data_1 = {'Binary-Test': "00:00:5e:00:53:01"}
+    invalid_data_1 = {'Binary-Test': "zzzz"}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                                        
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)               
+        
+    assert error_count == 1         

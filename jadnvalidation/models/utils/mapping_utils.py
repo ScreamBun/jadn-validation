@@ -46,7 +46,8 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
             case ">":           # pointer - Extension: Enumerated type pointers derived from a specified type (Section 3.3.5)
                 py_field = ""
             case "/":           # format - Semantic validation keyword (Section 3.2.1.5)   
-                                             
+                      
+                # String                       
                 if opt_val == "date":
                     pyd_field_mapper.is_date = True
                 elif opt_val == "date-time":
@@ -80,8 +81,13 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "uri-reference":
                     pyd_field_mapper.is_uri_ref = True
                 elif opt_val == "uri-template":
-                    pyd_field_mapper.is_uri_template = True                                                                                                                                                  
+                    pyd_field_mapper.is_uri_template = True
+
+                # Binary
+                elif opt_val == "eui":
+                    pyd_field_mapper.is_eui = True                                                                                                                                                               
                   
+                # Integer  
                 elif opt_val == "duration":
                     pyd_field_mapper.is_duration = True
                     pyd_field_mapper.ge = 0

@@ -7,6 +7,7 @@ class Pyd_Field_Mapper():
     is_datetime: bool = False
     is_email: bool = False
     is_idn_email: bool = False
+    is_eui: bool = False
     is_time: bool = False
     is_hostname: bool = False
     is_idn_hostname: bool = False

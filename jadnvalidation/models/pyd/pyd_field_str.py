@@ -7,10 +7,7 @@ from jadnvalidation.models.utils import custom_annotation, mapping_utils
 
 def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
     pyd_type = mapping_utils.convert_to_pyd_type(jadn_type.base_type)
-    pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)      
-
-    # if jadn_type.base_type == "Binary":
-    #     pyd_type = custom_annotation.BinaryHex
+    pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)
 
     if pyd_field_mapping.is_date:
         pyd_type = datetime.date
