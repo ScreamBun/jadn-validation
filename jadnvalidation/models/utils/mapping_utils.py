@@ -112,7 +112,7 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                if jdn_type == "String":
+                if jdn_type == "String" or jdn_type == "Binary":
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.min_length = minv
@@ -126,7 +126,7 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                         print("Invalid option: requires integer value: " + e)
                         
             case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                if jdn_type == 'String':
+                if jdn_type == 'String' or jdn_type == "Binary":
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.max_length = maxv
