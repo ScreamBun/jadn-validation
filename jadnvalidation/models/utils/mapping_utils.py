@@ -85,7 +85,11 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
 
                 # Binary
                 elif opt_val == "eui":
-                    pyd_field_mapper.is_eui = True                                                                                                                                                               
+                    pyd_field_mapper.is_eui = True
+                elif opt_val == "ipv4-addr":
+                    pyd_field_mapper.is_ipv4_addr = True
+                elif opt_val == "ipv6-addr":
+                    pyd_field_mapper.is_ipv6_addr = True                                                                                                                                                                                                   
                   
                 # Integer  
                 elif opt_val == "duration":

@@ -330,4 +330,80 @@ def test_binary_eui():
         error_count = error_count + 1
         print(e)               
         
-    assert error_count == 1         
+    assert error_count == 1
+    
+def test_binary_ipv4_addr(): 
+  
+    jadn_schema = {
+      "types": [
+        ["Binary-Test", "Binary", ["/ipv4-addr"], ""]
+      ]
+    }  
+    
+    valid_data_1 = {'Binary-Test': "127.0.0.1"}
+    invalid_data_1 = {'Binary-Test': "zz127.0.0.1zz"}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                                        
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)               
+        
+    assert error_count == 1
+    
+def test_binary_ipv6_addr(): 
+  
+    jadn_schema = {
+      "types": [
+        ["Binary-Test", "Binary", ["/ipv6-addr"], ""]
+      ]
+    }  
+    
+    valid_data_1 = {'Binary-Test': "2001:db8:3333:4444:5555:6666:1.2.3.4"}
+    invalid_data_1 = {'Binary-Test': "http://www.example.com"}
+    
+    error_count = 0
+    try:
+        user_custom_fields = build_pyd_fields(jadn_schema)
+        pyd_model = create_model(
+            "jadn_schema", 
+            **user_custom_fields
+        )
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(valid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                                        
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(invalid_data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)               
+        
+    assert error_count == 1     
