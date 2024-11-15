@@ -1,5 +1,5 @@
-from pydantic import ValidationError, create_model
-from jadnvalidation.pydantic_schema import build_pyd_fields
+from pydantic import ValidationError
+from jadnvalidation.pydantic_schema import create_pyd_model
 
 
 def test_boolean():
@@ -16,15 +16,8 @@ def test_boolean():
     invalid_data_2 = {'Boolean-Test': '__false__'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)

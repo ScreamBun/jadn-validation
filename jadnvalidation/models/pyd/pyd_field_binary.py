@@ -2,7 +2,7 @@ from ipaddress import IPv4Address, IPv6Address
 from pydantic import Field
 from pydantic_extra_types.mac_address import MacAddress
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.models.utils import mapping_utils
+from jadnvalidation.utils import mapping_utils
 
 
 def build_pyd_binary_field(jadn_type: Jadn_Type) -> Field: 

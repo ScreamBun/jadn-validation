@@ -1,12 +1,11 @@
 from typing import Annotated, List
-
+from math import pow
 from pydantic import BeforeValidator, Field
 
+from jadnvalidation.models.jadn.jadn_type import Base_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
-from jadnvalidation.models.utils import general_utils
-from math import pow
-
-from jadnvalidation.models.utils.custom_annotation import validate_bytes
+from jadnvalidation.utils import general_utils
+from jadnvalidation.utils.custom_annotation import validate_bytes
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -14,15 +13,12 @@ def convert_to_pyd_type(type_str: str) -> type:
     Converts a jadn type to its corresponding Python type.
     """
     type_mapping = {
-        "Binary": Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
-        "Boolean": bool,
-        "Integer": Annotated [int, Field(strict=True, ge=None, le=None)],
-        # "Integer": int,
-        "Number": Annotated [float, Field(strict= True, ge=None, le=None)],
-        # "Number": float
-        "Boolean": bool,
-        "Array": list,
-        "Record": dict
+        Base_Type.BINARY.value: Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
+        Base_Type.BOOLEAN.value: bool,
+        Base_Type.INTEGER.value: Annotated [int, Field(strict=True, ge=None, le=None)],
+        Base_Type.NUMBER.value: Annotated [float, Field(strict= True, ge=None, le=None)],
+        Base_Type.ARRAY.value: list,
+        Base_Type.RECORD.value: dict
         # Add more mappings as needed
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
@@ -122,13 +118,13 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                if jdn_type == "String" or jdn_type == "Binary":
+                if jdn_type == Base_Type.STRING.value or jdn_type == Base_Type.BINARY.value:
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.min_length = minv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
-                elif jdn_type == "Integer" or jdn_type == "Number":
+                elif jdn_type == Base_Type.INTEGER.value or jdn_type == Base_Type.NUMBER.value:
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.ge = minv
@@ -136,13 +132,13 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                         print("Invalid option: requires integer value: " + e)
                         
             case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                if jdn_type == 'String' or jdn_type == "Binary":
+                if jdn_type == Base_Type.STRING.value or jdn_type == Base_Type.BINARY.value:
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.max_length = maxv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
-                elif jdn_type == "Integer" or jdn_type == "Number":
+                elif jdn_type == Base_Type.INTEGER.value or jdn_type == Base_Type.NUMBER.value:
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.le = maxv

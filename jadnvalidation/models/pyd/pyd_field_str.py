@@ -2,7 +2,7 @@ import datetime
 from ipaddress import IPv4Address, IPv6Address
 from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
-from jadnvalidation.models.utils import custom_annotation, mapping_utils
+from jadnvalidation.utils import custom_annotation, mapping_utils
 
 
 def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:

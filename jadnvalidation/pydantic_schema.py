@@ -1,12 +1,13 @@
 
-from pydantic import Field
+from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
+from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
 
 
 '''
@@ -28,21 +29,62 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
             py_field = build_pyd_bool_field(jadn_type) 
         case "Binary":
             py_field = build_pyd_binary_field(jadn_type)             
-        #TODO: Add other types      
+        #TODO: Add other types, record recursion needed... 
         case default:
             py_field = build_pyd_binary_field(jadn_type)
         
     return py_field
 
+def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
+    """Creates a Pydantic model dynamically from a nested dictionary schema."""
 
-def build_pyd_fields(jadn_schema: dict) -> dict: 
-    pyd_fields = {}  # aka jadn types
-    if jadn_schema['types']:
-        for type_array in jadn_schema['types']:
+    fields = {}
+
+    for j_type in j_types:
+        jadn_type_obj = None
+        if is_type(j_type):
+            # type
+            jadn_type_obj = Jadn_Type(
+                    type_name=j_type[0], 
+                    base_type=j_type[1], 
+                    type_options=j_type[2], 
+                    type_description=j_type[3],
+                    fields=safe_get(j_type, 4, []))
+        elif is_field(j_type):
+            # field
+            jadn_type_obj = Jadn_Type(
+                    type_name=j_type[1], 
+                    base_type=j_type[2], 
+                    type_options=j_type[3], 
+                    type_description=j_type[4])     
+        else:
+            print("unknown jadn item")
             
-            jadn_type = Jadn_Type(type_array[0], type_array[1], type_array[2], type_array[3])
-            pyd_field = build_pyd_field(jadn_type)
-            pyd_fields[jadn_type.type_name] = pyd_field
+        if jadn_type_obj:
+            
+            if jadn_type_obj.base_type == Base_Type.RECORD.value:
+                # If the field is a nested dictionary, recursively create a nested model
+                fields[jadn_type_obj.type_name] = (build_pyd_model(jadn_type_obj.fields, j_config), ...)
+            
+            # TODO: Add other structures here...
+            
+            else:
+                # Otherwise, use the field type directly
+                pyd_field = build_pyd_field(jadn_type_obj)
+                fields[jadn_type_obj.type_name] = pyd_field
+                
+    return create_model('DynamicModel', **fields)
 
-        return pyd_fields
-      
+# ** MAIN ENTRY POINT **
+def create_pyd_model(j_schema: dict) -> type[BaseModel]:
+    j_config = j_schema.get('info', {}).get('config')
+    j_types = j_schema.get('types')
+    custom_model = None
+    
+    if j_types:
+        custom_model = build_pyd_model(j_types, j_config)
+    else:
+        raise ValueError("Types missing from JADN Schema")
+    
+    return custom_model
+

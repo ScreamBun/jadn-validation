@@ -1,14 +1,14 @@
 import datetime
 import pprint
-from pydantic import ValidationError, create_model
+from pydantic import ValidationError
 from jadnvalidation.models.jadn.jadn import Config, Info, Jadn
-from jadnvalidation.models.utils.general_utils import split_on_first_char
-from pydantic_schema import build_pyd_fields
+from jadnvalidation.utils.general_utils import split_on_first_char
+from pydantic_schema import create_pyd_model
 
 
 def test_theory():
   
-    simple_jadn = {
+    jadn_schema = {
       "info": {
         "package": "http://test/v1.0",
         "exports": []
@@ -36,18 +36,10 @@ def test_theory():
                             }    
   
     try:
-        user_custom_fields = build_pyd_fields(simple_jadn)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(test_jadn_data)   
-        custom_jadn_schema.model_validate(test_jadn_data_invalid)  
-        
-    except ValidationError as e:
+        pyd_model = create_pyd_model(jadn_schema)
+        pyd_model.model_validate(test_jadn_data)   
+        pyd_model.model_validate(test_jadn_data_invalid)  
+    except ValidationError as e: 
         print(e)
         
 def test_jadn():

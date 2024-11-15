@@ -1,5 +1,5 @@
-from pydantic import ValidationError, create_model
-from jadnvalidation.pydantic_schema import build_pyd_fields
+from pydantic import ValidationError
+from jadnvalidation.pydantic_schema import create_pyd_model
 
 
 def test_binary():
@@ -25,15 +25,8 @@ def test_binary():
     invalid_data_3 = {'Binary-Test': bytes_invalid_3}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -98,15 +91,8 @@ def test_binary_min():
     invalid_data_3 = {'Binary-Test': bytes_invalid_3}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -171,15 +157,8 @@ def test_binary_max():
     invalid_data_3 = {'Binary-Test': bytes_invalid_3}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -244,15 +223,8 @@ def test_binary_min_max():
     invalid_data_3 = {'Binary-Test': bytes_invalid_3}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -306,15 +278,8 @@ def test_binary_eui():
     invalid_data_1 = {'Binary-Test': "zzzz"}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -344,15 +309,8 @@ def test_binary_ipv4_addr():
     invalid_data_1 = {'Binary-Test': "zz127.0.0.1zz"}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -382,15 +340,8 @@ def test_binary_ipv6_addr():
     invalid_data_1 = {'Binary-Test': "http://www.example.com"}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)

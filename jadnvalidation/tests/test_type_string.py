@@ -1,7 +1,7 @@
 import datetime
-from pydantic import ValidationError, create_model
+from pydantic import ValidationError
 
-from jadnvalidation.pydantic_schema import build_pyd_fields
+from jadnvalidation.pydantic_schema import create_pyd_model
 
 
 def test_string_regex():
@@ -18,15 +18,8 @@ def test_string_regex():
     invalid_data_2 = {'String-Regex': '\\'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -70,15 +63,8 @@ def test_string_relative_json_pointer():
     invalid_data_2 = {'String-Relative-Json-Pointer': '-1/sin-city'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -122,15 +108,8 @@ def test_string_json_pointer():
     invalid_data_2 = {'String-Json-Pointer': ':///items.starfox'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -175,15 +154,8 @@ def test_string_iri_ref():
     invalid_data_2 = {'String-Iri-Reference': ':///items.starfox'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -234,15 +206,8 @@ def test_string_iri():
     invalid_data_2 = {'String-Iri': ':///items.starfox'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -291,15 +256,8 @@ def test_string_uri_template():
     invalid_data_2 = {'String-Uri-Template': '/items/{}}}{{{}}}'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -338,17 +296,8 @@ def test_string_uri_ref():
     invalid_data_2 = {'String-Uri-Ref': '//./file_at_current_dir'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_schema)
-        
-        pyd_model = create_model(
-            "jadn_schema", 
-            **user_custom_fields
-        )
-        
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
     try:
         pyd_model.model_validate(valid_data_1)
@@ -386,7 +335,7 @@ def test_string_uri_ref():
 
 def test_string_uri():
   
-    jadn_string_uri = {
+    jadn_schema = {
       "types": [
         ["String-Uri", "String", ["/uri"], ""]
       ]
@@ -398,29 +347,23 @@ def test_string_uri():
     string_uri_invalid_1 = {'String-Uri': 'zzzz'}
     
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_string_uri)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_uri_1)   
-        
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
+    try:    
+        pyd_model.model_validate(string_uri_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_uri_2)
+        pyd_model.model_validate(string_uri_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_uri_3)
+        pyd_model.model_validate(string_uri_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                 
@@ -428,7 +371,7 @@ def test_string_uri():
     assert error_count == 0        
         
     try:
-        custom_jadn_schema.model_validate(string_uri_invalid_1)
+        pyd_model.model_validate(string_uri_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -437,7 +380,7 @@ def test_string_uri():
 
 def test_string_ipv6():
   
-    jadn_string_ipv6 = {
+    jadn_schema = {
       "types": [
         ["String-Ipv6", "String", ["/ipv6"], ""]
       ]
@@ -449,29 +392,23 @@ def test_string_ipv6():
     string_ipv6_invalid_1 = {'String-Ipv6': 'zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz'}
     
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_ipv6)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_ipv6_1)   
-        
+        pyd_model.model_validate(string_ipv6_1)       
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_ipv6_2)
+        pyd_model.model_validate(string_ipv6_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_ipv6_3)
+        pyd_model.model_validate(string_ipv6_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)               
@@ -479,7 +416,7 @@ def test_string_ipv6():
     assert error_count == 0        
         
     try:
-        custom_jadn_schema.model_validate(string_ipv6_invalid_1)
+        pyd_model.model_validate(string_ipv6_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -488,7 +425,7 @@ def test_string_ipv6():
 
 def test_string_ipv4():
   
-    jadn_string_ipv4 = {
+    jadn_schema = {
       "types": [
         ["String-Ipv4", "String", ["/ipv4"], ""]
       ]
@@ -499,23 +436,17 @@ def test_string_ipv4():
     string_ipv4_invalid_1 = {'String-Ipv4': 'zzzz127.0.0.1zzzz'}
     
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_ipv4)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_ipv4_1)   
-        
+        pyd_model.model_validate(string_ipv4_1)       
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_ipv4_2)
+        pyd_model.model_validate(string_ipv4_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)        
@@ -523,7 +454,7 @@ def test_string_ipv4():
     assert error_count == 0        
         
     try:
-        custom_jadn_schema.model_validate(string_ipv4_invalid_1)
+        pyd_model.model_validate(string_ipv4_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -532,7 +463,7 @@ def test_string_ipv4():
 
 def test_string_idn_hostname():
   
-    jadn_string_idn_hostname = {
+    jadn_schema = {
       "types": [
         ["String-Idn-Hostname", "String", ["/idn-hostname"], ""]
       ]
@@ -543,23 +474,17 @@ def test_string_idn_hostname():
     string_idn_hostname_invalid_1 = {'String-Idn-Hostname': 'qwerasdf'}
     
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_idn_hostname)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_idn_hostname_1)   
-        
+        pyd_model.model_validate(string_idn_hostname_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_idn_hostname_2)
+        pyd_model.model_validate(string_idn_hostname_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)        
@@ -567,7 +492,7 @@ def test_string_idn_hostname():
     assert error_count == 0        
         
     try:
-        custom_jadn_schema.model_validate(string_idn_hostname_invalid_1)
+        pyd_model.model_validate(string_idn_hostname_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -576,7 +501,7 @@ def test_string_idn_hostname():
     
 def test_string_hostname():
   
-    jadn_string_hostname = {
+    jadn_schema = {
       "types": [
         ["String-Hostname", "String", ["/hostname"], ""]
       ]
@@ -589,23 +514,17 @@ def test_string_hostname():
     string_hostname_invalid_3 = {'String-Hostname': 'qwerasdf'}
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_hostname)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_hostname_1)   
-        
+        pyd_model.model_validate(string_hostname_1)       
     except ValidationError as e:
         error_count = error_count + 1
         print(e)   
     
     try:
-        custom_jadn_schema.model_validate(string_hostname_2)
+        pyd_model.model_validate(string_hostname_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)   
@@ -613,19 +532,19 @@ def test_string_hostname():
     assert error_count == 0         
     
     try:
-        custom_jadn_schema.model_validate(string_hostname_invalid_1)
+        pyd_model.model_validate(string_hostname_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_hostname_invalid_2)
+        pyd_model.model_validate(string_hostname_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                                   
         
     try:
-        custom_jadn_schema.model_validate(string_hostname_invalid_3)
+        pyd_model.model_validate(string_hostname_invalid_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                    
@@ -634,7 +553,7 @@ def test_string_hostname():
 
 def test_string_idn_email():
   
-    jadn_string_idn_email = {
+    jadn_schema = {
       "types": [
         ["String-Idn-Email", "String", ["/idn-email"], ""]
       ]
@@ -644,17 +563,11 @@ def test_string_idn_email():
     string_idn_email_invalid_1 = {'String-Idn-Email': '@jarvis@stark.com'}
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_idn_email)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_idn_email_1)   
-        
+        pyd_model.model_validate(string_idn_email_1)        
     except ValidationError as e:
         error_count = error_count + 1
         print(e)   
@@ -662,7 +575,7 @@ def test_string_idn_email():
     assert error_count == 0                           
         
     try:
-        custom_jadn_schema.model_validate(string_idn_email_invalid_1)
+        pyd_model.model_validate(string_idn_email_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                    
@@ -671,7 +584,7 @@ def test_string_idn_email():
 
 def test_string_email():
   
-    jadn_string_email = {
+    jadn_schema = {
       "types": [
         ["String-Email", "String", ["/email"], ""]
       ]
@@ -686,35 +599,29 @@ def test_string_email():
     string_pattern_email_invalid_3 = {'String-Email': 'jarvis@stark-eng.com1'}  
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+        
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_email)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_pattern_email_1)   
-        
+        pyd_model.model_validate(string_pattern_email_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)   
     
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_2)
+        pyd_model.model_validate(string_pattern_email_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_3)
+        pyd_model.model_validate(string_pattern_email_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_4)
+        pyd_model.model_validate(string_pattern_email_4)
     except ValidationError as e:
         error_count = error_count + 1
         print(e) 
@@ -722,19 +629,19 @@ def test_string_email():
     assert error_count == 0                           
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_invalid_1)
+        pyd_model.model_validate(string_pattern_email_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_invalid_2)
+        pyd_model.model_validate(string_pattern_email_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_email_invalid_3)
+        pyd_model.model_validate(string_pattern_email_invalid_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                      
@@ -743,7 +650,7 @@ def test_string_email():
 
 def test_string_pattern():
   
-    jadn_string_pattern = {
+    jadn_schema = {
       "types": [
         ["String-Pattern", "String", ["%^jarvis$"], ""]
       ]
@@ -754,17 +661,11 @@ def test_string_pattern():
     string_pattern_data_invalid_2 = {'String-Pattern': 'zzjarviszz'}  
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+    
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_pattern)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_pattern_data_1)   
-        
+        pyd_model.model_validate(string_pattern_data_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)  
@@ -772,13 +673,13 @@ def test_string_pattern():
     assert error_count == 0  
     
     try:
-        custom_jadn_schema.model_validate(string_pattern_data_invalid_1)
+        pyd_model.model_validate(string_pattern_data_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_pattern_data_invalid_2)
+        pyd_model.model_validate(string_pattern_data_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)        
@@ -787,7 +688,7 @@ def test_string_pattern():
     
 def test_string_time():
   
-    jadn_string_time = {
+    jadn_schema = {
       "types": [
         ["String-Time", "String", ["/time"], ""]
       ]
@@ -801,17 +702,11 @@ def test_string_time():
     string_date_time_invalid_2 = {'String-Time': 1596542285000}
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+        
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_time)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_date_time_1)
-        
+        pyd_model.model_validate(string_date_time_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)  
@@ -819,13 +714,13 @@ def test_string_time():
     assert error_count == 0
     
     try:
-        custom_jadn_schema.model_validate(string_date_time_invalid_1)
+        pyd_model.model_validate(string_date_time_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_date_time_invalid_2)
+        pyd_model.model_validate(string_date_time_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)             
@@ -834,7 +729,7 @@ def test_string_time():
     
 def test_string_date():
   
-    jadn_string_date = {
+    jadn_schema = {
       "types": [
         ["String-Date", "String", ["/date"], ""]
       ]
@@ -847,17 +742,11 @@ def test_string_date():
     string_date_data_invalid_4 = {'String-Date': 1596542285000}
   
     error_count = 0
-    try:
-        user_custom_fields = build_pyd_fields(jadn_string_date)
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
         
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_date_data_1)
-        
+    try:       
+        pyd_model.model_validate(string_date_data_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)  
@@ -865,25 +754,25 @@ def test_string_date():
     assert error_count == 0
     
     try:
-        custom_jadn_schema.model_validate(string_date_data_invalid_1)
+        pyd_model.model_validate(string_date_data_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_date_data_invalid_2)
+        pyd_model.model_validate(string_date_data_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_date_data_invalid_3)
+        pyd_model.model_validate(string_date_data_invalid_3)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_date_data_invalid_4)
+        pyd_model.model_validate(string_date_data_invalid_4)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)                
@@ -892,7 +781,7 @@ def test_string_date():
     
 def test_string_datetime():
   
-    jadn_string_datetime = {
+    jadn_schema = {
       "types": [
         ["String-Datetime", "String", ["/date-time"], ""]
       ]
@@ -905,18 +794,16 @@ def test_string_datetime():
     string_datatime_data_invalid_2 = {'String-Datetime': 'yy2024-01-01zz'}  
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+        
     try:
-        user_custom_fields = build_pyd_fields(jadn_string_datetime)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_datatime_data_1)   
-        custom_jadn_schema.model_validate(string_datatime_data_2)
-        custom_jadn_schema.model_validate(string_datatime_data_3)
+        pyd_model.model_validate(string_datatime_data_1)   
+        pyd_model.model_validate(string_datatime_data_2)
+        pyd_model.model_validate(string_datatime_data_3)        
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)       
         
     except ValidationError as e:
         error_count = error_count + 1
@@ -925,13 +812,13 @@ def test_string_datetime():
     assert error_count == 0
     
     try:
-        custom_jadn_schema.model_validate(string_datatime_data_invalid_1)
+        pyd_model.model_validate(string_datatime_data_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_datatime_data_invalid_2)
+        pyd_model.model_validate(string_datatime_data_invalid_2)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
@@ -940,7 +827,7 @@ def test_string_datetime():
   
 def test_jadn_str():
   
-    jadn_string = {
+    jadn_schema = {
       "types": [
         ["String-Type", "String", ["{4", "}12"], ""]
       ]
@@ -952,37 +839,31 @@ def test_jadn_str():
     string_data_invalid_3 = {'String-Type': 'testing string' }  
   
     error_count = 0
+    pyd_model = create_pyd_model(jadn_schema)    
+    print(pyd_model)
+        
     try:
-        user_custom_fields = build_pyd_fields(jadn_string)
-        
-        custom_jadn_schema = create_model(
-            "custom_jadn_schema", 
-            # __base__= BaseLearnerNode, 
-            **user_custom_fields
-        )
-        
-        custom_jadn_schema.model_validate(string_data)   
-        
+        pyd_model.model_validate(string_data)
     except ValidationError as e:
         error_count = error_count + 1
-        print(e)
+        print(e)        
         
     assert error_count == 0        
         
     try:
-        custom_jadn_schema.model_validate(string_data_invalid_1)
+        pyd_model.model_validate(string_data_invalid_1)
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_data_invalid_2)      
+        pyd_model.model_validate(string_data_invalid_2)      
     except ValidationError as e:
         error_count = error_count + 1
         print(e)
         
     try:
-        custom_jadn_schema.model_validate(string_data_invalid_3)      
+        pyd_model.model_validate(string_data_invalid_3)      
     except ValidationError as e:
         error_count = error_count + 1
         print(e)        
