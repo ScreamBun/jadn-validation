@@ -197,12 +197,30 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                         except ValueError as e:
                             print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
 
+                # Number Formats
+                elif opt_val == "f16":
+                    pyd_field_mapper.min_length = None
+                    pyd_field_mapper.max_length = None
+                elif opt_val == "f32":
+                    pyd_field_mapper.min_length = None
+                    pyd_field_mapper.max_length = None
+                elif opt_val == "f64":
+                    pyd_field_mapper.min_length = None
+                    pyd_field_mapper.max_length = None
+
+
             case "%":           # pattern - Regular expression used to validate a String type (Section 3.2.1.6)
                 pyd_field_mapper.pattern = opt_val
             case "y":           # minf - Minimum real number value (Section 3.2.1.7). Being deprecated for new JADN
-                py_field = ""
+                try:
+                    pyd_field_mapper.minf = int(opt_val)
+                except TypeError as e:
+                    print("Invalid option: requires integer value: " + e)
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
-                py_field = ""
+                try:
+                    pyd_field_mapper.maxf = int(opt_val)
+                except TypeError as e:
+                    print("Invalid option: requires integer value: " + e)
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
                 if jdn_type == "String":
                     try:
