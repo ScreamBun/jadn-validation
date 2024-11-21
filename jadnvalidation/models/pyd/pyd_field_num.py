@@ -15,11 +15,11 @@ def build_pyd_num_field(jadn_type: Jadn_Type) -> Field:
                             ge=pyd_field_mapping.ge,
                             le=pyd_field_mapping.le,
                             # JADN 1
-                            maxf=pyd_field_mapping.maxf,
-                            minf=pyd_field_mapping.minf,
+                            # maxf=pyd_field_mapping.maxf,
+                            # minf=pyd_field_mapping.minf,
                             # JADN 2
-                            # max_length=pyd_field_mapping.max_length,
-                            # min_length=pyd_field_mapping.min_length,
+                            max_length=pyd_field_mapping.max_length,
+                            min_length=pyd_field_mapping.min_length,
 
                             pattern=pyd_field_mapping.format
                         )
