@@ -23,5 +23,3 @@ class Pyd_Field_Mapper():
     is_duration: bool = False
     pattern: str = None
     format: str = None
-    maxf: int = None            # deprecated in new JADN version
-    minf: int = None            # deprecated in new JADN version
