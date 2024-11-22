@@ -2,6 +2,7 @@
 from pydantic import Field
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
+from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
@@ -25,9 +26,11 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
             py_field = build_pyd_num_field(jadn_type)
         case "Boolean":
             py_field = build_pyd_bool_field(jadn_type) 
+        case "Binary":
+            py_field = build_pyd_binary_field(jadn_type)             
         #TODO: Add other types      
         case default:
-            py_field = build_pyd_str_field(jadn_type)
+            py_field = build_pyd_binary_field(jadn_type)
         
     return py_field
 
@@ -42,5 +45,4 @@ def build_pyd_fields(jadn_schema: dict) -> dict:
             pyd_fields[jadn_type.type_name] = pyd_field
 
         return pyd_fields
-
-
+      

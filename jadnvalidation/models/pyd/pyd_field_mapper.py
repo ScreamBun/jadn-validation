@@ -1,5 +1,5 @@
 class Pyd_Field_Mapper():
-    min_length: int = None
+    min_length: int = None 
     max_length: int = None
     ge: int = None
     le: int = None
@@ -7,11 +7,14 @@ class Pyd_Field_Mapper():
     is_datetime: bool = False
     is_email: bool = False
     is_idn_email: bool = False
+    is_eui: bool = False
     is_time: bool = False
     is_hostname: bool = False
     is_idn_hostname: bool = False
     is_ipv4: bool = False
+    is_ipv4_addr: bool = False
     is_ipv6: bool = False
+    is_ipv6_addr: bool = False
     is_iri: bool = False
     is_iri_ref: bool = False
     is_json_pointer: bool = False

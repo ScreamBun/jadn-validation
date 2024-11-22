@@ -1,6 +1,7 @@
 email-validator==2.2.0
 jsonpointer==3.0.0
 pydantic==2.9.2
+pydantic-extra-types==2.10.0
 pytest==8.3.3
 uritemplate==4.1.1
 validators==0.34.0
