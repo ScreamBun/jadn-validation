@@ -1,4 +1,5 @@
 from pydantic import ValidationError
+from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.pydantic_schema import create_pyd_model
 
 # def create_dynamic_model(schema: dict):
@@ -46,13 +47,13 @@ def test_record():
     
     custom_model = create_pyd_model(j_schema)    
     print(custom_model)
+    error_count = 0
     
     try:
         custom_model.model_validate(data_1)
     except ValidationError as e:
+        error_count = error_count + 1
         print(e)
-    
-    error_count = 0
     
     try:
         custom_model.model_validate(data_invalid_1)
@@ -61,3 +62,64 @@ def test_record():
         print(e)          
         
     assert error_count == 1
+    
+def test_record_min_max():
+    
+    j_schema = { 
+        "types": [
+            ["Record-Name", "Record", ["X", "{1", "}1", "otrue"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [1, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    data_1 = {
+        'Record-Name': {
+            'field_value_1': "test field",
+            'field_value_2': "test field"
+        }
+    }
+    
+    data_invalid_1 = {
+        'Record-Name': {
+            'field_value_1': 123,
+            'field_value_2': 'Anytown'
+        }
+    }    
+    
+    custom_model = create_pyd_model(j_schema)    
+    print(custom_model)
+    error_count = 0
+    
+    try: 
+        custom_model.model_validate(data_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+    
+    try:
+        custom_model.model_validate(data_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)          
+        
+    
+    assert error_count == 1
+    
+def test_init():
+    
+    error_count = 0
+    
+    j_schema = { 
+        "types": [
+            ["Record-Name", "Record", ["X", "{1", "}1", "otrue"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [1, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    }    
+    
+    Schema.model_validate(j_schema)
+    
+    assert error_count == 0

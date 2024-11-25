@@ -5,7 +5,7 @@ from pydantic import BeforeValidator, Field
 from jadnvalidation.models.jadn.jadn_type import Base_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 from jadnvalidation.utils import general_utils
-from jadnvalidation.utils.custom_annotation import validate_bytes
+from jadnvalidation.utils.custom_annotation import validate_bytes, validate_record
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -18,7 +18,7 @@ def convert_to_pyd_type(type_str: str) -> type:
         Base_Type.INTEGER.value: Annotated [int, Field(strict=True, ge=None, le=None)],
         Base_Type.NUMBER.value: Annotated [float, Field(strict= True, ge=None, le=None)],
         Base_Type.ARRAY.value: list,
-        Base_Type.RECORD.value: dict
+        Base_Type.RECORD.value: Annotated [dict, BeforeValidator(validate_record)]
         # Add more mappings as needed
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
@@ -117,28 +117,28 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
-            case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                if jdn_type == Base_Type.STRING.value or jdn_type == Base_Type.BINARY.value:
+            case "{": # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
+                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.min_length = minv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
-                elif jdn_type == Base_Type.INTEGER.value or jdn_type == Base_Type.NUMBER.value:
+                elif jdn_type in [Base_Type.INTEGER.value, Base_Type.NUMBER.value]:
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.ge = minv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
                         
-            case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                if jdn_type == Base_Type.STRING.value or jdn_type == Base_Type.BINARY.value:
+            case "}": # maxv - Maximum integer value, octet or character count, or element count
+                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.max_length = maxv
                     except TypeError as e:
                         print("Invalid option: requires integer value: " + e)
-                elif jdn_type == Base_Type.INTEGER.value or jdn_type == Base_Type.NUMBER.value:
+                elif jdn_type in [Base_Type.INTEGER.value, Base_Type.NUMBER.value]:
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.le = maxv

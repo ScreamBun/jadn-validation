@@ -86,5 +86,5 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     else:
         raise ValueError("Types missing from JADN Schema")
     
-    return custom_model
+    return custom_model 
 

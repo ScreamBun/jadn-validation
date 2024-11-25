@@ -1,6 +1,6 @@
 import re
 from typing import Annotated, Union
-from pydantic import BeforeValidator, StringConstraints
+from pydantic import BeforeValidator, StringConstraints, ValidationInfo
 from jsonpointer import JsonPointer, JsonPointerException
 from validators import domain
 
@@ -93,6 +93,20 @@ def validate_rel_json_pointer(val: str):
     
     return val
 
+def validate_record(cls, val: dict, info: ValidationInfo):
+    """
+    Validate Record
+    """
+    try:
+        
+        if not isinstance(val, dict):
+            raise ValueError("Not a valid record object")          
+        
+    except Exception as ex:
+        raise ValueError(ex)
+    
+    return val
+
 def validate_regex(val: str):
     """
     Validate Regular Expression - ECMA 262
@@ -108,6 +122,7 @@ def validate_regex(val: str):
     
     return val
 
+
 Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
@@ -115,3 +130,4 @@ PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
 PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
 PydRegex = Annotated[str, BeforeValidator(validate_regex)]
 BinaryHex = Annotated[str, BeforeValidator(validate_hex)]
+Record = Annotated[dict, BeforeValidator(validate_record)]
