@@ -1,10 +1,11 @@
-from typing import Any
-from pydantic import BaseModel, ValidationInfo, model_validator
+from typing import Any, Optional
+from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
 
 
 class SBBaseModel(BaseModel):
-    minv: int = None
-    maxv: int = None
+    model_config = ConfigDict(from_attributes=True)
+    minv: Optional[int] = None
+    maxv: Optional[int] = None
     
     @model_validator(mode='after')
     @classmethod
