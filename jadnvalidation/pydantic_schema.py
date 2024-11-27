@@ -1,6 +1,7 @@
 
 from pydantic import BaseModel, Field, create_model, field_validator, validator
 
+from jadnvalidation.consts import DYNAMIC_MODEL
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
@@ -61,13 +62,49 @@ def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
     
     return jadn_type_obj
 
+def add_record_validations(model, jadn_type_obj):
 
-def v_function(v, values):
-    if v < 0:
-        raise ValueError
-    return v
+    pyd_field_mapping = mapping_utils.map_type_opts(jadn_type_obj.base_type, jadn_type_obj.type_options)
+    if pyd_field_mapping and pyd_field_mapping.min_length:
+        model.minv = pyd_field_mapping.min_length
+
+    if pyd_field_mapping and pyd_field_mapping.max_length:
+        model.maxv = pyd_field_mapping.max_length
+        
+    model.jadn_type = jadn_type_obj.base_type
 
 def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
+    """Creates a Pydantic model dynamically from a nested dictionary schema."""
+
+    fields = {}
+    sb_base_model = SBBaseModel()
+
+    for j_type in j_types:
+        jadn_type_obj = build_jadn_type_obj(j_type)
+            
+        if jadn_type_obj:
+            
+            if jadn_type_obj.base_type == Base_Type.RECORD.value:
+                # If the field is a nested dictionary, recursively create a nested model
+                add_record_validations(sb_base_model, jadn_type_obj)
+                fields[jadn_type_obj.type_name] = (build_pyd_model(jadn_type_obj.fields, j_config), ...)
+            
+            # TODO: Add other structures here...
+            
+            else:
+                # Otherwise, use the field type directly
+                pyd_field = build_pyd_field(jadn_type_obj)
+                fields[jadn_type_obj.type_name] = pyd_field
+                
+    # Leftoff here.... need to update default values for SBBaseModel or look into config...                
+    # can't update initiated sb_base_model for some reason.........????
+                
+    return create_model(DYNAMIC_MODEL, __base__=SBBaseModel, **fields)
+
+
+
+
+def build_pyd_model_old(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic model dynamically from a nested dictionary schema."""
 
     fields = {}

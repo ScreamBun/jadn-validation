@@ -14,3 +14,5 @@ ALLOWED_TYPE_OPTIONS = {
     "MapOf": ["+", "*", "{", "}"],
     "Record": ["X", "{", "}"]
 }
+
+DYNAMIC_MODEL = "DynamicModel"
