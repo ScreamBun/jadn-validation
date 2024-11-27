@@ -23,12 +23,12 @@ def test_record():
     
     j_schema = {
         "types": [
-            ["Record-Name", "Record", [], "", [
+            ["Record-Name", "Record", ["{1", "}2"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
         ]
-    }    
+    }   
     
     data_1 = {
         'Record-Name': {
