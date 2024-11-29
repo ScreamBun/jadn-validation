@@ -66,12 +66,14 @@ def add_record_validations(model, jadn_type_obj):
 
     pyd_field_mapping = mapping_utils.map_type_opts(jadn_type_obj.base_type, jadn_type_obj.type_options)
     if pyd_field_mapping and pyd_field_mapping.min_length:
-        model.minv = pyd_field_mapping.min_length
+        model.minv = Field(default=pyd_field_mapping.min_length)
 
     if pyd_field_mapping and pyd_field_mapping.max_length:
-        model.maxv = pyd_field_mapping.max_length
+        model.maxv = Field(default=pyd_field_mapping.max_length)
         
     model.jadn_type = jadn_type_obj.base_type
+    
+    return model
 
 def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic model dynamically from a nested dictionary schema."""
@@ -86,7 +88,7 @@ def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
             
             if jadn_type_obj.base_type == Base_Type.RECORD.value:
                 # If the field is a nested dictionary, recursively create a nested model
-                add_record_validations(sb_base_model, jadn_type_obj)
+                sb_base_model = add_record_validations(sb_base_model, jadn_type_obj)
                 fields[jadn_type_obj.type_name] = (build_pyd_model(jadn_type_obj.fields, j_config), ...)
             
             # TODO: Add other structures here...

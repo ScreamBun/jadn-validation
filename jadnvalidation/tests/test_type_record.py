@@ -18,6 +18,20 @@ from jadnvalidation.pydantic_schema import create_pyd_model
 
 # Left off here, convert to use JADN, model above pattern
 
+
+def test_idea():
+    
+    j_schema = {
+        "types": [
+            ["Record-Name", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    } 
+    
+        
+
             
 def test_record():
     
