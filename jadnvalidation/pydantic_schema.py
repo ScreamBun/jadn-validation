@@ -75,12 +75,10 @@ def add_record_validations(model, jadn_type_obj):
     
     return model
 
-def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
+def process_fields(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic model dynamically from a nested dictionary schema."""
 
     fields = {}
-    sb_base_model = SBBaseModel()
-
     for j_type in j_types:
         jadn_type_obj = build_jadn_type_obj(j_type)
             
@@ -88,8 +86,8 @@ def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
             
             if jadn_type_obj.base_type == Base_Type.RECORD.value:
                 # If the field is a nested dictionary, recursively create a nested model
-                sb_base_model = add_record_validations(sb_base_model, jadn_type_obj)
-                fields[jadn_type_obj.type_name] = (build_pyd_model(jadn_type_obj.fields, j_config), ...)
+                submodel = process_fields(jadn_type_obj.fields, j_config)
+                fields[jadn_type_obj.type_name] = (submodel, ...)
             
             # TODO: Add other structures here...
             
@@ -98,13 +96,8 @@ def build_pyd_model(j_types: list, j_config = None) -> type[BaseModel]:
                 pyd_field = build_pyd_field(jadn_type_obj)
                 fields[jadn_type_obj.type_name] = pyd_field
                 
-    # Leftoff here.... need to update default values for SBBaseModel or look into config...                
-    # can't update initiated sb_base_model for some reason.........????
-                
-    return create_model(DYNAMIC_MODEL, __base__=SBBaseModel, **fields)
-
-
-
+    # return create_model(DYNAMIC_MODEL, __base__=SBBaseModel, **fields)
+    return fields
 
 def build_pyd_model_old(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic model dynamically from a nested dictionary schema."""
@@ -128,7 +121,7 @@ def build_pyd_model_old(j_types: list, j_config = None) -> type[BaseModel]:
                 if pyd_field_mapping and pyd_field_mapping.max_length:
                     sb_base_model.maxv = pyd_field_mapping.max_length
                 
-                inner_model = build_pyd_model(jadn_type_obj.fields, j_config)
+                inner_model = process_fields(jadn_type_obj.fields, j_config)
                 fields[jadn_type_obj.type_name] = (inner_model, ...)
             
             # TODO: Add other structures here...
@@ -147,7 +140,8 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     custom_model = None
     
     if j_types:
-        custom_model = build_pyd_model(j_types, j_config)
+        fields = process_fields(j_types, j_config)
+        create_model('root', **fields)        
     else:
         raise ValueError("Types missing from JADN Schema")
     

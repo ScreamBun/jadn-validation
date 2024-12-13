@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any
 
 
 class Primitive(Enum):
@@ -26,7 +27,9 @@ class Jadn_Type():
     base_type: Base_Type = None
     type_options: list[str] = None
     type_description: str = None
-    fields: list[any] = None
+    fields: list[Any] = None
+    options: Any = None
+    required: bool = False
     
     def __init__(self, type_name, base_type, type_options = [], type_description = "", fields = []):
         self.type_name = type_name

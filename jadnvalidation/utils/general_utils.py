@@ -1,6 +1,19 @@
+from typing import Callable
 from pydantic import BaseModel, create_model
 from consts import ALLOWED_TYPE_OPTIONS
 
+
+def addKey(d: dict, k: str = None) -> Callable:
+    """
+    Decorator to append a function to a dict, referencing the function name or given key as the key in the dict
+    :param d: dict to append the key/func onto
+    :param k: key to use on the dict
+    :return: original function
+    """
+    def wrapped(fun: Callable, key: str = k) -> Callable:
+        d[key if key else fun.__name__] = fun
+        return fun
+    return wrapped
 
 def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
     return create_model(
@@ -65,3 +78,13 @@ def split_on_second_char(string):
         return []
 
     return [string[:2], string[2:]]
+
+class classproperty(property):
+    def __get__(self, obj, objtype=None):
+        return super().__get__(objtype)
+
+    def __set__(self, obj, value):
+        super().__set__(type(obj), value)
+
+    def __delete__(self, obj):
+        super().__delete__(type(obj))

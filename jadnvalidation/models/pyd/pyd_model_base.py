@@ -7,10 +7,10 @@ from jadnvalidation.models.jadn.jadn_type import Base_Type
 
 class SBBaseModel(BaseModel):
     
-    model_config = ConfigDict(
-        from_attributes=True, 
-        allow_mutation=True
-        )
+    # model_config = ConfigDict(
+    #     from_attributes=True, 
+    #     allow_mutation=True
+    #     ) 
     
     minv: Optional[int] = None
     maxv: Optional[int] = None
