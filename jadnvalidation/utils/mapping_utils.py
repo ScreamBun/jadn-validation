@@ -23,6 +23,15 @@ def convert_to_pyd_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
 
+def get_field_types(fields: list[any]):  # TODO: Make a fields
+    field_types = {}
+    for field in fields:
+        field_name = field[1]
+        field_type = field[2]
+        pyd_type = convert_to_pyd_type(field_type)
+        field_types[field_name] = pyd_type
+    return field_types
+
 def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
     
@@ -118,7 +127,7 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
             case "z":           # maxf - Maximum real number value. Being deprecated for new JADN,
                 py_field = ""
             case "{":           # minv - Minimum integer value, octet or character count, or element count (Section 3.2.1.7)
-                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
+                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value, Base_Type.ARRAY.value]:
                     try:
                         minv = int(opt_val)
                         pyd_field_mapper.min_length = minv
@@ -132,7 +141,7 @@ def map_type_opts(jdn_type: str, type_opts: List[str]) -> Pyd_Field_Mapper:
                         print("Invalid option: requires integer value: " + e)
                         
             case "}":           # maxv - Maximum integer value, octet or character count, or element count
-                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
+                if jdn_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value, Base_Type.ARRAY.value]:
                     try:
                         maxv = int(opt_val)
                         pyd_field_mapper.max_length = maxv

@@ -8,6 +8,7 @@ from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
+from jadnvalidation.models.pyd.pyd_field_list import build_pyd_list_field
 from jadnvalidation.models.pyd.pyd_model_base import SBBaseModel
 from jadnvalidation.utils import mapping_utils
 from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
@@ -31,7 +32,9 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         case "Boolean":
             py_field = build_pyd_bool_field(jadn_type) 
         case "Binary":
-            py_field = build_pyd_binary_field(jadn_type)             
+            py_field = build_pyd_binary_field(jadn_type)
+        case "Array":
+            py_field = build_pyd_list_field(jadn_type)                       
         #TODO: Add other types, record recursion needed... 
         case default:
             py_field = build_pyd_str_field(jadn_type)
