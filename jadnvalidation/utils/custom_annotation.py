@@ -108,6 +108,21 @@ def validate_regex(val: str):
     
     return val
 
+def validate_str(val: str):
+    """
+    Validate Regular Expression - ECMA 262
+    """
+    try:
+        res = re.compile(val)
+        
+        if not isinstance(res, re.Pattern):
+            raise ValueError("Not a valid regex")          
+        
+    except Exception as ex:
+        raise ValueError(ex)
+    
+    return val
+
 Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
@@ -115,3 +130,5 @@ PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
 PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
 PydRegex = Annotated[str, BeforeValidator(validate_regex)]
 BinaryHex = Annotated[str, BeforeValidator(validate_hex)]
+
+CustStr = Annotated[str, BeforeValidator(validate_str)]

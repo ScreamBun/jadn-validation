@@ -80,7 +80,10 @@ def make_def(data: list, formats: Dict[str, Callable] = None) -> Type[Definition
             # p_field_info = Field(**field_obj)
             # p_field_info = (String, None)
             # p_fields[field_name] = (annotation, p_field_info)
-            p_fields[field_name] = (String, ...)
+            
+            # field_info = Field(**field_obj)
+            p_fields[field_name] = (field_type, Field(description='foo description', alias=field_name))
+            # p_fields[field_name] = (String, ...)
         
         alias = clsName(j_type_def.name)
         # alias = ClassVar(j_type_def.type)
@@ -95,7 +98,8 @@ def make_def(data: list, formats: Dict[str, Callable] = None) -> Type[Definition
         )
         
         # def_model = create_model(j_type_def.name, __base__=cls, __cls_kwargs__=cls_kwargs, **p_fields)
-        def_model = create_model(j_type_def.name, __base__=cls, **p_fields)
+        # def_model = create_model(j_type_def.name, __base__=cls, **p_fields)
+        def_model = create_model(j_type_def.name, **p_fields)
         
         return def_model
     
@@ -120,10 +124,16 @@ def update_types(types: Union[dict, list], formats: Dict[str, Callable] = None, 
     return types
 
 
+class DynamicModel(BaseModel):
+    name: str
+    value: int
+
 class Schema(BaseModel):
     # info: Optional[Information] = Field(default_factory=Information)
     # types: dict = Field(default_factory=dict)
-    types: Dict[str, Any]
+    # types: Dict[str, Any]
+    # types: dict = Field(default_factory=dict) 
+    types: dict = Dict[str, DynamicModel]
     __formats__: Dict[str, Callable] = ValidationFormats
     
     def __init__(self, **kwargs):

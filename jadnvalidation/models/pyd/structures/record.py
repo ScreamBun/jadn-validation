@@ -25,9 +25,7 @@ class Record(BaseModel):
     Each key has a position and name, and is mapped to a value type. Represents a row in a spreadsheet or database table.
     """ 
     
-    # model_config = ConfigDict(
-    #     extra = 'forbid'
-    # )      
+    model_config = ConfigDict(from_attributes=True)     
     
     # __root__: dict
     __options__ = Options(data_type="Record") 
