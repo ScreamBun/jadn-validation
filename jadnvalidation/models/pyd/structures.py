@@ -32,7 +32,10 @@ class Record(dict):
     @classmethod
     def validate(cls, value: any, values):
         if not isinstance(value, dict):
-            raise ValueError("Invalid record")    
+            raise ValueError("Invalid record")
+        
+        # TODO: Check that all keys are str, check legacy code for more detailed validations for records
+
         return value    
 
 class RecordOld(BaseModel):

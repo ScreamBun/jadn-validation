@@ -23,29 +23,34 @@ def test_model_validate():
     
     MyModel = create_model(
         "MyModel",
-        email=(String_cls, Field(description='custom string description')), 
+        name=(String_cls, Field(description='custom string description', min_length=6, max_length=50)), 
         age=(Integer_cls, Field(description='custom integer description', ge=1, le=10)),
-        record=(Record_cls, Field(description='custom record description')),
-        array=(Array_cls, Field(description='custom list description'))
+        record=(Record_cls, Field(description='custom record description', min_length=3, max_length=3)),
+        array=(Array_cls, Field(description='custom list description', min_length=2, max_length=4))
     )  
     
     valid_data = {
-        "email" : "hello@email.com",
-        "age" : 99,
-        "record" : { "test" : "dict"},
+        "name" : "Napoleon",
+        "age" : 5,
+        "record" : { 
+            "key1" : "val1",
+            "key2" : "val2",
+            "key3" : "val3"
+            },
         "array" : ["item 1", "item 2"]
     }
     
     invalid_data = {
-        "email" : "hello",
-        "age" : False,
-        "record" : None,
-        "array" : True
+        "name" : "Pedro",
+        "age" : 99,
+        "record" : { 
+            "key1" : "val1"
+            },
+        "array" : ["item 1"]
     }    
     
+    err_count = 0
     try :
-        # validate_selected_fields_from_model(MyModel, data)
-        # DynamicModel.model_rebuild()
         MyModel.model_validate(valid_data)    
     except Exception as err:
         print(err)   
@@ -53,7 +58,10 @@ def test_model_validate():
     try :
         MyModel.model_validate(invalid_data)    
     except Exception as err:
+        err_count = err_count + 1
         print(err)           
+        
+    assert err_count == 1
 
 class MyString(BaseModel):
     
