@@ -141,7 +141,7 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     
     if j_types:
         fields = process_fields(j_types, j_config)
-        create_model('root', **fields)        
+        custom_model = create_model('root', **fields)        
     else:
         raise ValueError("Types missing from JADN Schema")
     

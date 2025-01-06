@@ -1,6 +1,7 @@
 import datetime
 from pydantic import ValidationError
 
+from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.pydantic_schema import create_pyd_model
 
 
@@ -869,4 +870,56 @@ def test_jadn_str():
         print(e)        
         
     assert error_count == 3
+ 
+ 
+def test_jadn_str_schema():
   
+    jadn_schema = {
+      "types": [
+        ["String-Type", "String", ["{4", "}12"], ""]
+      ]
+    }
+
+    string_data = {'String-Type': 'test string'}
+    string_data_invalid_1 = {'String-Type': 4323 }
+    string_data_invalid_2 = {'String-Type': 'zz' }
+    string_data_invalid_3 = {'String-Type': 'testing string' }  
+  
+    error_count = 0
+    
+    try:
+        pyd_model = Schema(**jadn_schema) 
+        pyd_model.model_rebuild()
+        print(pyd_model)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(string_data)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)        
+        
+    assert error_count == 0        
+        
+    try:
+        pyd_model.model_validate(string_data_invalid_1)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(string_data_invalid_2)      
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)
+        
+    try:
+        pyd_model.model_validate(string_data_invalid_3)      
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)        
+        
+    assert error_count == 3
+   
