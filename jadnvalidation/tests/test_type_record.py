@@ -13,7 +13,7 @@ def create_dynamic_model(name: str, fields: dict) -> BaseModel:
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
 
-def test_cdm():
+def test_model_validate():
     
     String_cls = str_to_class('String')
     Integer_cls = str_to_class('Integer')
