@@ -1,17 +1,60 @@
 import sys
-from typing import Any, Dict
-from pydantic import BaseModel, Field, ValidationError, ValidationInfo, create_model, field_validator, model_validator
-from jadnvalidation.models.pyd.primitives import Integer, String, String, TitleCaseStr
-from jadnvalidation.models.pyd.schema import Schema
+from typing import Any, Dict, List
+from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, create_model, field_validator, model_validator
+from jadnvalidation.models.pyd.primitives import Integer, String, TitleCaseStr
+from jadnvalidation.models.pyd.schema import Schema, TestBaseModel, TestSchema
 from jadnvalidation.models.pyd.structures import Array, Record
      
 
 def create_dynamic_model(name: str, fields: dict) -> BaseModel:
     return create_model(name, **fields)
 
-
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
+
+
+def test_adding_fields_to_existing_model():
+    my_dict={"key1": 1, "key2": 2}
+    
+    NewModel = TestBaseModel.with_fields(baz=(int, ...))
+    
+    
+    valid_data = { 
+        "test1" : {
+            "name" : "Napoleon",
+            "age" : 55    
+        }
+    }    
+    
+    try :
+        NewModel(foo='awe')
+    except Exception as err:
+        print(err)       
+
+def test_multiple_models():
+    
+    j_schema = {
+        "types": [
+            ["Record-Name", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    } 
+    
+    try:
+        # custom_model = Schema.model_validate(j_schema)
+        custom_model = TestSchema(**j_schema) 
+        # custom_model.model_rebuild()
+        
+        # ta = TypeAdapter(List[Any])
+        # m = ta.validate_python(users)    
+        
+        # print(custom_model)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)    
+    
 
 def test_model_validate():
     

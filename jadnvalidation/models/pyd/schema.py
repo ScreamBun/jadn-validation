@@ -5,8 +5,8 @@ import sys
 from typing import Any, Callable, Dict, Set, Type, Union, get_args
 from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.models.pyd.primitives import String
-from jadnvalidation.models.pyd.structures import Record
+from jadnvalidation.models.pyd.primitives import String, Integer
+from jadnvalidation.models.pyd.structures import Record, Array
 from jadnvalidation.pydantic_schema import build_jadn_type_obj
 
 
@@ -154,6 +154,32 @@ def update_types_old(types: Union[dict, list], formats: Dict[str, Callable] = No
         return def_types
     return types
 
+def update_static_types():
+    
+    String_cls = str_to_class('String')
+    Integer_cls = str_to_class('Integer')
+    
+    Record_cls = str_to_class('Record')
+    Array_cls = str_to_class('Array')
+    
+    model_1 = create_model(
+        "model_1",
+        name=(String_cls, Field(description='custom string description', min_length=6, max_length=50)), 
+        age=(Integer_cls, Field(description='custom integer description', ge=1, le=10))
+    )   
+    
+    model_2 = create_model(
+        "model_2",
+        record=(Record_cls, Field(description='custom record description', min_length=3, max_length=3)),
+        array=(Array_cls, Field(description='custom list description', min_length=2, max_length=4))
+    ) 
+    
+    return_dict = {}
+    return_dict["model_1"] = model_1    
+    return_dict["model_2"] = model_2
+    
+    return return_dict
+
 
 class DynamicModel(BaseModel):
     name: str
@@ -177,3 +203,42 @@ class Schema(BaseModel):
     # def model_post_init(self, __context):
     #     # types = update_types(types)
     #     hit = ""
+    
+class TestBaseModel(BaseModel):
+    @classmethod
+    def with_fields(cls, **field_definitions):
+        return create_model('ModelWithFields', __base__=cls, **field_definitions)    
+    
+class TestSchema(BaseModel):
+    types: dict[str, Union[String, Integer]] = Field(default_factory=dict)
+    
+    def model_post_init(self, __context):
+        # self.foo = [s.replace("-", "_") for s in self.foo]
+        # updated_types = update_static_types()
+        # self.types = update_types
+        # my_new_dict={"key3": 3, "key4": 4}
+        
+        MyModel = create_model(
+            "MyModel",
+            name=(String, Field(description='custom string description', min_length=6, max_length=50)), 
+            age=(Integer, Field(description='custom integer description', ge=1, le=10))
+        )       
+        
+        my_new_dict = {}
+        my_new_dict["test1"] = MyModel      
+        self.types.update(my_new_dict)
+        test = "" 
+    
+    # def __init__(self, **kwargs):
+    #     if "types" in kwargs:
+    #         updated_types = update_static_types()
+    #         kwargs["types"] = updated_types
+    #         super().__init__(**kwargs)
+    #         test = ""        
+            
+            # super().__init__(**kwargs)
+            # self.__pydantic_fields__.types = updated_types
+            # test = "hit"            
+            # kwargs["types"] = update_static_types()
+        # super().__init__(**kwargs)
+        # self.types = udpated_types
