@@ -2,7 +2,7 @@ from __future__ import annotations
 from collections import namedtuple
 import re
 import sys
-from typing import Any, Callable, Dict, Set, Type, Union, get_args
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, Type, Union, get_args
 from pydantic import BaseModel, Field, create_model
 
 from jadnvalidation.models.pyd.primitives import String, Integer
@@ -204,30 +204,30 @@ class Schema(BaseModel):
     #     # types = update_types(types)
     #     hit = ""
     
-class TestBaseModel(BaseModel):
-    @classmethod
-    def with_fields(cls, **field_definitions):
-        return create_model('ModelWithFields', __base__=cls, **field_definitions)    
+# class TestBaseModel(BaseModel):
+#     @classmethod
+#     def with_fields(cls, **field_definitions):
+#         return create_model('ModelWithFields', __base__=cls, **field_definitions)    
     
-class TestSchema(BaseModel):
-    types: dict[str, Union[String, Integer]] = Field(default_factory=dict)
+# class TestSchema(BaseModel):
+#     types: dict[str, Union[String, Integer]] = Field(default_factory=dict)
     
-    def model_post_init(self, __context):
-        # self.foo = [s.replace("-", "_") for s in self.foo]
-        # updated_types = update_static_types()
-        # self.types = update_types
-        # my_new_dict={"key3": 3, "key4": 4}
+#     def model_post_init(self, __context):
+#         # self.foo = [s.replace("-", "_") for s in self.foo]
+#         # updated_types = update_static_types()
+#         # self.types = update_types 
+#         # my_new_dict={"key3": 3, "key4": 4}
         
-        MyModel = create_model(
-            "MyModel",
-            name=(String, Field(description='custom string description', min_length=6, max_length=50)), 
-            age=(Integer, Field(description='custom integer description', ge=1, le=10))
-        )       
+#         MyModel = create_model(
+#             "MyModel",
+#             name=(String, Field(description='custom string description', min_length=6, max_length=50)), 
+#             age=(Integer, Field(description='custom integer description', ge=1, le=10))
+#         )       
         
-        my_new_dict = {}
-        my_new_dict["test1"] = MyModel      
-        self.types.update(my_new_dict)
-        test = "" 
+#         my_new_dict = {}
+#         my_new_dict["test1"] = MyModel      
+#         self.types.update(my_new_dict)
+#         test = "" 
     
     # def __init__(self, **kwargs):
     #     if "types" in kwargs:
@@ -242,3 +242,42 @@ class TestSchema(BaseModel):
             # kwargs["types"] = update_static_types()
         # super().__init__(**kwargs)
         # self.types = udpated_types
+        
+class Pet(BaseModel):
+    """All my pets"""
+    # _types: Dict[str, type] = {}
+    _types: ClassVar[Dict[str, type]] = {}
+    
+    name: str = None
+    
+    # used to auto-register submodels in _types
+    # def __init_subclass__(cls, **kwargs):
+    #     return super().__init_subclass__(**kwargs)
+    def __init_subclass__(cls, type: Optional[str] = None):
+        cls._types[type or cls.__name__.lower()] = cls
+        
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+        
+    @classmethod
+    def validate(cls, value: Dict[str, Any]) -> 'Pet':
+        try:
+            pet_type = value.pop('type')
+            # init with right Prt submodel
+            return cls._types[pet_type](**value)
+        except:
+            raise ValueError('...')
+        
+# Cat class will be registered as 'cat'
+class Cat(Pet):
+    age: int = 2
+    
+# Dog class will be registered as 'doggy'
+# class Dog(Pet, type='dog'):
+class Dog(Pet):
+    name: str = "Ace"
+    food: str = "Blue Buffalo Wilderness"
+    
+class Person(BaseModel):
+    pets: List[Pet] = []    

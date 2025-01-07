@@ -1,9 +1,9 @@
 import sys
-from typing import Any, Dict, List
-from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, create_model, field_validator, model_validator
-from jadnvalidation.models.pyd.primitives import Integer, String, TitleCaseStr
-from jadnvalidation.models.pyd.schema import Schema, TestBaseModel, TestSchema
-from jadnvalidation.models.pyd.structures import Array, Record
+from typing import Any, Dict
+from pydantic import BaseModel, Field, ValidationError, ValidationInfo, create_model, model_validator
+from jadnvalidation.models.pyd.schema import Person, Pet, Schema
+from jadnvalidation.models.pyd.structures import Array, Record, RecordOld
+from jadnvalidation.models.pyd.primitives import Integer
      
 
 def create_dynamic_model(name: str, fields: dict) -> BaseModel:
@@ -13,47 +13,108 @@ def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
 
 
-def test_adding_fields_to_existing_model():
-    my_dict={"key1": 1, "key2": 2}
+# def test_adding_fields_to_existing_model():
+#     my_dict={"key1": 1, "key2": 2}
     
-    NewModel = TestBaseModel.with_fields(baz=(int, ...))
+#     NewModel = TestBaseModel.with_fields(baz=(int, ...))
     
     
-    valid_data = { 
-        "test1" : {
-            "name" : "Napoleon",
-            "age" : 55    
+#     valid_data = { 
+#         "test1" : {
+#             "name" : "Napoleon",
+#             "age" : 55    
+#         }
+#     }    
+    
+#     try :
+#         NewModel(foo='awe')
+#     except Exception as err:
+#         print(err)  
+        
+        
+def test_list_of_models():
+    
+    Address = create_model(
+        "Address",
+        house_number=(str, ...),
+        street_name=(str, ...),
+        city=(str, ...),
+        zip_code=(str, ...),
+        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
+        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
+        __base__=RecordOld
+    )
+    
+    Person = create_model(
+        "Person",
+        name=(str, ...),  # Required field
+        age=(int, ...),
+        address=(Address, ...),  # Nested model field
+        _model_opts=(str, "model opts could live here..."),
+        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
+        __base__=RecordOld
+    ) 
+    
+    valid_data = {
+        "name" : "roberts",
+        "age" : 100,
+        "address" : {
+            "house_number" : "8888",
+            "street_name" : "bats lane",
+            "city" : "gotham",
+            "zip_code" : "22222",
         }
-    }    
+    }
     
+    invalid_data = {
+        "name" : "roberts",
+        "age" : 100,
+        "address" : {
+            "house_number" : True,
+            "street_name" : "bats lane",
+            "city" : "gotham",
+            "zip_code" : "22222",
+        }
+    }     
+    
+    err_count = 0
     try :
-        NewModel(foo='awe')
+        Person.model_validate(valid_data)    
     except Exception as err:
-        print(err)       
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        Person.model_validate(invalid_data)    
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)        
+               
+    assert err_count == 1
 
-def test_multiple_models():
+# def test_dict_of_models():
     
-    j_schema = {
-        "types": [
-            ["Record-Name", "Record", ["{1", "}2"], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", [], ""]
-            ]]
-        ]
-    } 
+#     j_schema = {
+#         "types": [
+#             ["Record-Name", "Record", ["{1", "}2"], "", [
+#                 [1, "field_value_1", "String", [], ""],
+#                 [2, "field_value_2", "String", [], ""]
+#             ]]
+#         ]
+#     } 
     
-    try:
-        # custom_model = Schema.model_validate(j_schema)
-        custom_model = TestSchema(**j_schema) 
-        # custom_model.model_rebuild()
+#     try:
+#         # custom_model = Schema.model_validate(j_schema)
+#         # custom_model = TestSchema(**j_schema) 
+#         # custom_model.model_rebuild()
         
-        # ta = TypeAdapter(List[Any])
-        # m = ta.validate_python(users)    
+#         # ta = TypeAdapter(List[Any])
+#         # m = ta.validate_python(users)    
         
-        # print(custom_model)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)    
+#         # print(custom_model)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)    
     
 
 def test_model_validate():
