@@ -50,7 +50,7 @@ def test_list_of_models():
         name=(str, ...),  # Required field
         age=(int, ...),
         address=(Address, ...),  # Nested model field
-        _model_opts=(str, "model opts could live here..."),
+        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
         global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
         __base__=RecordOld
     ) 
