@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, Field, create_model, field_validator, validator
+from pydantic import BaseModel, Field, create_model, validator
 
 from jadnvalidation.consts import DYNAMIC_MODEL
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
