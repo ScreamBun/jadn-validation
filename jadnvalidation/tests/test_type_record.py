@@ -32,7 +32,7 @@ def str_to_class(classname):
 #         print(err)  
         
         
-def test_list_of_models():
+def test_nested_models():
     
     Address = create_model(
         "Address",
