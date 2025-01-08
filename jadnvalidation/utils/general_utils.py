@@ -1,3 +1,4 @@
+import sys
 from typing import Callable
 from pydantic import BaseModel, create_model
 from consts import ALLOWED_TYPE_OPTIONS
@@ -78,6 +79,9 @@ def split_on_second_char(string):
         return []
 
     return [string[:2], string[2:]]
+
+def str_to_class(classname):
+    return getattr(sys.modules[__name__], classname)
 
 class classproperty(property):
     def __get__(self, obj, objtype=None):
