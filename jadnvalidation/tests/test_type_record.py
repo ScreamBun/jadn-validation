@@ -76,11 +76,15 @@ def test_record():
         ]
     }  
     
+    # valid_data_1 = {
+    #     'Record-Name': {
+    #         'field_value_1': "test field",
+    #         'field_value_2': 'Anytown'
+    #     }
+    # }    
     valid_data_1 = {
-        'Record-Name': {
-            'field_value_1': "test field",
-            'field_value_2': 'Anytown'
-        }
+        'field_value_1': "test field",
+        'field_value_2': 'Anytown'
     }
     
     invalid_data_1 = {
