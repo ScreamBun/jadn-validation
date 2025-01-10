@@ -65,13 +65,15 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         # https://pypi.org/project/uritemplate/
         pyd_type = AnyUrl
     
+    #TODO: Need optional vs required logic, at the moment everything is required ...
     pyd_field = (pyd_type,
                    Field(..., 
                             description=jadn_type.type_description,
                             min_length=pyd_field_mapping.min_length,
                             max_length=pyd_field_mapping.max_length,
                             pattern=pyd_field_mapping.pattern, 
-                            
+                            strict=True,
+                            validate_assignment=True
                         )
                 )    
     

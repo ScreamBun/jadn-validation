@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, Field, create_model, validator
+from pydantic import BaseModel, ConfigDict, Field, create_model, validator
 
 from jadnvalidation.consts import DYNAMIC_MODEL
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
@@ -98,8 +98,11 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["model_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-        p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-        p_models[j_type_obj.type_name] = p_model
+            p_model = create_model(j_type_obj.type_name,                                  
+                                   __base__=Record,
+                                   **p_fields)
+            # p_models[j_type_obj.type_name] = p_model
+            p_models = p_model
     
     return p_models
 
@@ -112,7 +115,10 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     
     if j_types:
         p_models = build_models(j_types, j_config)
-        custom_model = create_model('schema', **p_models)        
+        custom_model = p_models
+        # custom_model = create_model('schema', 
+        #                             __base__=Record,                                  
+        #                             root=(dict, p_models))        
     else:
         raise ValueError("Types missing from JADN Schema")
     

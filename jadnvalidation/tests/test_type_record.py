@@ -85,7 +85,7 @@ def test_record():
     
     invalid_data_1 = {
         'Record-Name': {
-            'field_value_1': 123,
+            'field_value_1': True,
             'field_value_2': 'Anytown'
         }
     }
@@ -94,6 +94,7 @@ def test_record():
     custom_schema = {}
     try :
         custom_schema = create_pyd_model(j_schema)
+        custom_schema.model_rebuild()
     except Exception as err:
         err_count = err_count + 1
         print(err)    
@@ -110,7 +111,7 @@ def test_record():
         err_count = err_count + 1
         print(err)        
                
-    assert err_count == 1     
+    assert err_count == 1
     
         
 
