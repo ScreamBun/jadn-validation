@@ -1,8 +1,9 @@
 from pydantic import Field, ValidationError, create_model
 from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.models.pyd.structures import Record
+from jadnvalidation.pydantic_schema import create_pyd_model
 
-        
+
 def test_nested_models():
     
     Address = create_model(
@@ -64,8 +65,57 @@ def test_nested_models():
     assert err_count == 1  
       
 
+def test_record():
+    
+    j_schema = {
+        "types": [
+            ["Record-Name", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    }  
+    
+    valid_data_1 = {
+        'Record-Name': {
+            'field_value_1': "test field",
+            'field_value_2': 'Anytown'
+        }
+    }
+    
+    invalid_data_1 = {
+        'Record-Name': {
+            'field_value_1': 123,
+            'field_value_2': 'Anytown'
+        }
+    }
+    
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)    
+    
+    try :
+        custom_schema.model_validate(valid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        custom_schema.model_validate(invalid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)        
+               
+    assert err_count == 1     
+    
+        
+
 # TODO: Schema initialization is broken            
-def test_record(): 
+def test_record_legacy_initialization(): 
     
     j_schema = {
         "types": [
