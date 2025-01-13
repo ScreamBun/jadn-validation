@@ -69,26 +69,27 @@ def test_record():
     
     j_schema = {
         "types": [
-            ["Record-Name", "Record", ["{1", "}2"], "", [
+            ["RecordName", "Record", ["{1", "}2"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
         ]
     }  
     
-    # valid_data_1 = {
-    #     'Record-Name': {
-    #         'field_value_1': "test field",
-    #         'field_value_2': 'Anytown'
-    #     }
-    # }    
     valid_data_1 = {
-        'field_value_1': "test field",
-        'field_value_2': 'Anytown'
+        'RecordName': {
+            'field_value_1': "test field",
+            'field_value_2': 'Anytown'
+        }
     }
+      
+    # valid_data_2 = {
+    #     'field_value_1': "test field",
+    #     'field_value_2': 'Anytown'
+    # }
     
     invalid_data_1 = {
-        'Record-Name': {
+        'RecordName': {
             'field_value_1': True,
             'field_value_2': 'Anytown'
         }
@@ -109,6 +110,12 @@ def test_record():
         err_count = err_count + 1
         print(err)
         
+    # try :
+    #     custom_schema.model_validate(valid_data_2)
+    # except Exception as err:
+    #     err_count = err_count + 1
+    #     print(err)        
+        
     try :
         custom_schema.model_validate(invalid_data_1)
     except Exception as err:
@@ -124,7 +131,7 @@ def test_record_legacy_initialization():
     
     j_schema = {
         "types": [
-            ["Record-Name", "Record", ["{1", "}2"], "", [
+            ["RecordName", "Record", ["{1", "}2"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
@@ -132,7 +139,7 @@ def test_record_legacy_initialization():
     }   
     
     data_1 = {
-        'Record-Name': {
+        'RecordName': {
             'field_value_1': "test field",
             'field_value_2': 'Anytown'
         }
@@ -144,7 +151,7 @@ def test_record_legacy_initialization():
     }    
     
     data_invalid_1 = {
-        'Record-Name': {
+        'RecordName': {
             'field_value_1': 123,
             'field_value_2': 'Anytown'
         }

@@ -98,13 +98,23 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["model_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-            p_model = create_model(j_type_obj.type_name,                                  
+            p_model = create_model(j_type_obj.type_name,
                                    __base__=Record,
                                    **p_fields)
+            
             # p_models[j_type_obj.type_name] = p_model
             p_models = p_model
+            
     
-    return p_models
+    # root_fields = {}     
+    # root_fields["root"] = (dict, p_models, ...)          
+            
+    DynamicFoobarModel = create_model(
+        'DynamicFoobarModel', RecordName=(p_models, ...), 
+    )
+
+    
+    return DynamicFoobarModel
 
 
 # ** MAIN ENTRY POINT **
@@ -118,7 +128,13 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
         custom_model = p_models
         # custom_model = create_model('schema', 
         #                             __base__=Record,                                  
-        #                             root=(dict, p_models))        
+        #                             root=(dict, p_models))      
+        
+        # Try this on Monday
+        # https://stackoverflow.com/questions/62267544/generate-pydantic-model-from-a-dict
+        # Interesting.. https://jsontopydantic.com/
+        # custom_model = create_model(custom_model., Field(..., alias='Record-Name'))
+          
     else:
         raise ValueError("Types missing from JADN Schema")
     
