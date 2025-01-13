@@ -84,7 +84,7 @@ def create_parent_model(child_models: list[BaseModel]):
         # fields[model.__name__.lower()] = (model, ...)
         fields[model.__name__] = (model, ...)
 
-    return create_model("ParentModel", **fields)
+    return create_model("RootSchema", **fields)
 
 def build_models(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic models dynamically based on a list of JADN Types."""
