@@ -110,17 +110,9 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
                                    __base__=Record,
                                    **p_fields)
             
-            # p_models[j_type_obj.type_name] = p_model
             p_models.append(p_model)
-            # p_models = p_model
             
     ParentModel = create_parent_model(p_models)
-        
-            
-    # DynamicFoobarModel = create_model(
-    #     'DynamicFoobarModel', RecordName=(p_models, ...), 
-    # )
-
     
     return ParentModel
 

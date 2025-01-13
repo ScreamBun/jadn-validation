@@ -69,7 +69,7 @@ def test_record():
     
     j_schema = {
         "types": [
-            ["RecordName", "Record", ["{1", "}2"], "", [
+            ["Record-Name", "Record", ["{1", "}2"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
@@ -77,7 +77,7 @@ def test_record():
     }  
     
     valid_data_1 = {
-        'RecordName': {
+        'Record-Name': {
             'field_value_1': "test field",
             'field_value_2': 'Anytown'
         }
@@ -89,7 +89,7 @@ def test_record():
     # }
     
     invalid_data_1 = {
-        'RecordName': {
+        'Record-Name': {
             'field_value_1': True,
             'field_value_2': 'Anytown'
         }
