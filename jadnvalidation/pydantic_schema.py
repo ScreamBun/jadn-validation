@@ -106,9 +106,7 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["model_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-            p_model = create_model(j_type_obj.type_name,
-                                   __base__=Record,
-                                   **p_fields)
+            p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
             
             p_models.append(p_model)
             

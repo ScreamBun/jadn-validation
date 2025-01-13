@@ -65,22 +65,30 @@ def test_nested_models():
     assert err_count == 1  
       
 
-def test_record():
+def test_records():
     
     j_schema = {
         "types": [
-            ["Record-Name", "Record", ["{1", "}2"], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", [], ""]
-            ]]
+            ["Record-Name1", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1a", "String", [], ""],
+                [2, "field_value_2a", "String", [], ""]
+            ]],
+            ["Record-Name2", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1b", "String", [], ""],
+                [2, "field_value_2b", "String", [], ""]
+            ]]            
         ]
     }  
     
     valid_data_1 = {
-        'Record-Name': {
-            'field_value_1': "test field",
-            'field_value_2': 'Anytown'
-        }
+        'Record-Name1': {
+            'field_value_1a': "test field",
+            'field_value_2a': 'Anytown'
+        },
+        'Record-Name2': {
+            'field_value_1b': "test field",
+            'field_value_2b': 'Anytown'
+        }        
     }
       
     # valid_data_2 = {
@@ -89,10 +97,14 @@ def test_record():
     # }
     
     invalid_data_1 = {
-        'Record-Name': {
-            'field_value_1': True,
-            'field_value_2': 'Anytown'
-        }
+        'Record-Name1': {
+            'field_value_1a': True,
+            'field_value_2a': 'Anytown'
+        },
+        'Record-Name2': {
+            'field_value_1b': "test field",
+            'field_value_2b': False
+        }        
     }
     
     err_count = 0
