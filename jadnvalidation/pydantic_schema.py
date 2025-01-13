@@ -78,10 +78,18 @@ def add_record_validations(model, jadn_type_obj):
     
     return model
 
+def create_parent_model(child_models: list[BaseModel]):
+    fields = {}
+    for model in child_models:
+        # fields[model.__name__.lower()] = (model, ...)
+        fields[model.__name__] = (model, ...)
+
+    return create_model("ParentModel", **fields)
+
 def build_models(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic models dynamically based on a list of JADN Types."""
 
-    p_models = {}
+    p_models = []
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type)
             
@@ -103,18 +111,18 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
                                    **p_fields)
             
             # p_models[j_type_obj.type_name] = p_model
-            p_models = p_model
+            p_models.append(p_model)
+            # p_models = p_model
             
-    
-    # root_fields = {}     
-    # root_fields["root"] = (dict, p_models, ...)          
+    ParentModel = create_parent_model(p_models)
+        
             
-    DynamicFoobarModel = create_model(
-        'DynamicFoobarModel', RecordName=(p_models, ...), 
-    )
+    # DynamicFoobarModel = create_model(
+    #     'DynamicFoobarModel', RecordName=(p_models, ...), 
+    # )
 
     
-    return DynamicFoobarModel
+    return ParentModel
 
 
 # ** MAIN ENTRY POINT **
