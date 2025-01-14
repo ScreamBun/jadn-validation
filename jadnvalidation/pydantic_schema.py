@@ -102,15 +102,28 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
             p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+            p_core_schema = p_model.__pydantic_core_schema__
             p_models.append(p_model)      
             
+    # for inner_model in reversed(p_models):
+    #     res = inner_model.model_rebuild()
+    #     test = ""
+            
     root_model = create_parent_model(p_models)
+    core_schema = root_model.__pydantic_core_schema__
+    try :
+        root_model.model_rebuild(
+            _parent_namespace_depth=3,
+            raise_errors=False
+            )
+    except Exception as err:
+        print(err)        
     
-    for field_name, field in root_model.model_fields.items():
-        test = field_name
-        test2 = field     
+    # for field_name, field in root_model.model_fields.items():
+    #     test = field_name
+    #     test2 = field     
     
-    root_model.model_rebuild(force=True)
+
     # root_model.model_rebuild_cache.clear()
     
     # Foo.update_forward_refs(Bar=Bar)

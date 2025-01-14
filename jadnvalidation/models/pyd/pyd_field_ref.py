@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Annotated, ForwardRef
 
 from pydantic import Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
@@ -15,14 +16,17 @@ def build_pyd_ref_field(jadn_type: Jadn_Type) -> Field:
     #TODO: determine ref field opts
     # pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)          
     
-    pyd_field = (pyd_type,
-                   Field(
-                            default=None,
-                            description=jadn_type.type_description,
-                            title="reference type"
-                            # min_length=pyd_field_mapping.min_length,
-                            # max_length=pyd_field_mapping.max_length
-                        )
-                )
+    # pyd_field_old = (pyd_type,
+    #                Field(
+    #                         default=None,
+    #                         description=jadn_type.type_description,
+    #                         title="reference type"
+    #                         # min_length=pyd_field_mapping.min_length,
+    #                         # max_length=pyd_field_mapping.max_length
+    #                     )
+    #             )
+    
+    pyd_field = Annotated[pyd_type, Field(default=pyd_type)]
+    # pyd_field = ForwardRef(pyd_type)
     
     return pyd_field 

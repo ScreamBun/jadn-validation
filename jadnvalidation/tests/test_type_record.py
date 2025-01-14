@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 from pydantic import Field, ValidationError, create_model
 from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.models.pyd.structures import Record
@@ -66,6 +67,22 @@ def test_nested_static_models():
     assert err_count == 1  
       
 
+def test_forward_refs_experimental():
+    Foo = create_model("Foo", foo=(List["Bar"], Field(...)))
+    Foo_core_schema = Foo.__pydantic_core_schema__
+    
+    Bar = create_model("Bar", bar=(int, Field(...)))
+    
+    Foo.model_rebuild()
+    Bar.model_rebuild()
+    
+    try :
+        foo = Foo(foo=[Bar(bar=1), Bar(bar=2)])
+        print(foo)
+    except Exception as err:
+        print(err)    
+
+
 def test_forward_ref():
     
     j_schema =   {
@@ -99,7 +116,7 @@ def test_forward_ref():
         print(err)    
     
     try :
-        custom_schema.model_rebuild()
+        # custom_schema.model_rebuild()
         custom_schema.model_validate(valid_data_1)
     except Exception as err:
         err_count = err_count + 1
