@@ -110,7 +110,7 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     #     model.model_rebuild()      
     
     root_model.model_rebuild()
-    root_model.model_rebuild_cache.clear()
+    # root_model.model_rebuild_cache.clear()
     
     # Foo.update_forward_refs(Bar=Bar)
     
