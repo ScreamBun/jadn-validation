@@ -1,10 +1,21 @@
+from __future__ import annotations
 from pydantic import Field, ValidationError, create_model
 from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.pydantic_schema import create_pyd_model
 
 
-def test_nested_models():
+def test_nested_static_models():
+
+    Person = create_model(
+        "Person",
+        name=(str, ...),  # Required field
+        age=(int, ...),
+        address=('Address', ...),  # Nested model field
+        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
+        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
+        __base__=Record
+    ) 
     
     Address = create_model(
         "Address",
@@ -16,16 +27,6 @@ def test_nested_models():
         global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
         __base__=Record
     )
-    
-    Person = create_model(
-        "Person",
-        name=(str, ...),  # Required field
-        age=(int, ...),
-        address=(Address, ...),  # Nested model field
-        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
-        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
-        __base__=Record
-    ) 
     
     valid_data = {
         "name" : "roberts",
@@ -64,6 +65,47 @@ def test_nested_models():
                
     assert err_count == 1  
       
+
+def test_forward_ref():
+    
+    j_schema =   {
+        "types": [
+            ["RecordName1", "Record", [], "", [
+                [1, "field_value_1a", "RecordName2", [], ""]
+            ]],
+            ["RecordName2", "Record", [], "", [
+                [1, "field_value_2a", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_1 = {
+        'RecordName1': {
+            'field_value_1a': {
+                'field_value_2a': 'Anytown'
+            }  
+        },
+        'RecordName2': {
+            'field_value_2a': 'Anytown'
+        }             
+    }
+    
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)    
+    
+    try :
+        custom_schema.model_rebuild()
+        custom_schema.model_validate(valid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    assert err_count == 0          
 
 def test_records():
     

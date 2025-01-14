@@ -1,25 +1,19 @@
 
-from pydantic import BaseModel, ConfigDict, Field, create_model, validator
+from __future__ import annotations
+from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.consts import DYNAMIC_MODEL
-from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
+from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
-from jadnvalidation.models.pyd.pyd_model_base import SBBaseModel
 from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.utils import mapping_utils
 from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
 
-
-'''
-Refs: 
-https://docs.pydantic.dev/2.9/concepts/models/#dynamic-model-creation
-https://medium.com/@kevinchwong/dynamic-pydantic-models-for-llamaindex-3b5eb63da980
-'''
 
 def build_pyd_field(jadn_type: Jadn_Type) -> Field:
     py_field = ()
@@ -37,7 +31,8 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         case "Record":
             py_field = build_pyd_record_field(jadn_type)            
         case default:
-            py_field = build_pyd_str_field(jadn_type)
+            # Custom Type (aka ref type)
+            py_field = build_pyd_ref_field(jadn_type)
         
     return py_field
 
@@ -86,7 +81,7 @@ def create_parent_model(child_models: list[BaseModel]):
 
     return create_model("RootSchema", **fields)
 
-def build_models(j_types: list, j_config = None) -> type[BaseModel]:
+def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic models dynamically based on a list of JADN Types."""
 
     p_models = []
@@ -103,16 +98,24 @@ def build_models(j_types: list, j_config = None) -> type[BaseModel]:
                 
             # TODO: Create add these to build_pyd_field or their own functions
             # TODO: See l_config for global_opts
-            p_fields["model_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
+            p_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
             p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+            p_models.append(p_model)      
             
-            p_models.append(p_model)
-            
-    ParentModel = create_parent_model(p_models)
+    root_model = create_parent_model(p_models)
     
-    return ParentModel
+    # for model in p_models:
+    #     model.model_rebuild()      
+    
+    root_model.model_rebuild()
+    root_model.model_rebuild_cache.clear()
+    
+    # Foo.update_forward_refs(Bar=Bar)
+    
+    return root_model
+
 
 
 # ** MAIN ENTRY POINT **
@@ -122,17 +125,7 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     custom_model = None
     
     if j_types:
-        p_models = build_models(j_types, j_config)
-        custom_model = p_models
-        # custom_model = create_model('schema', 
-        #                             __base__=Record,                                  
-        #                             root=(dict, p_models))      
-        
-        # Try this on Monday
-        # https://stackoverflow.com/questions/62267544/generate-pydantic-model-from-a-dict
-        # Interesting.. https://jsontopydantic.com/
-        # custom_model = create_model(custom_model., Field(..., alias='Record-Name'))
-          
+        custom_model = build_custom_model(j_types, j_config)
     else:
         raise ValueError("Types missing from JADN Schema")
     
