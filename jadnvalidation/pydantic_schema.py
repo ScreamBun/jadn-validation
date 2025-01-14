@@ -106,10 +106,11 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
             
     root_model = create_parent_model(p_models)
     
-    # for model in p_models:
-    #     model.model_rebuild()      
+    for field_name, field in root_model.model_fields.items():
+        test = field_name
+        test2 = field     
     
-    root_model.model_rebuild()
+    root_model.model_rebuild(force=True)
     # root_model.model_rebuild_cache.clear()
     
     # Foo.update_forward_refs(Bar=Bar)
