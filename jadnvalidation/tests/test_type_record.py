@@ -68,16 +68,16 @@ def test_nested_static_models():
       
 
 def test_forward_refs_experimental():
-    Foo = create_model("Foo", foo=(List["Bar"], Field(...)))
+    Foo = create_model("Foo", foo=(List["RecordName2"], Field(...)))
     Foo_core_schema = Foo.__pydantic_core_schema__
     
-    Bar = create_model("Bar", bar=(int, Field(...)))
+    RecordName2 = create_model("RecordName2", bar=(int, Field(...)))
     
     Foo.model_rebuild()
-    Bar.model_rebuild()
+    RecordName2.model_rebuild()
     
     try :
-        foo = Foo(foo=[Bar(bar=1), Bar(bar=2)])
+        foo = Foo(foo=[RecordName2(bar=1), RecordName2(bar=2)])
         print(foo)
     except Exception as err:
         print(err)    

@@ -73,18 +73,22 @@ def add_record_validations(model, jadn_type_obj):
     
     return model
 
-def create_parent_model(child_models: list[BaseModel]):
+# def create_parent_model(child_models: list[BaseModel]):
+def create_parent_model(child_models: dict[str, BaseModel]):
     fields = {}
-    for model in child_models:
+    for model_name, model in child_models.items():
         # fields[model.__name__.lower()] = (model, ...)
+        # fields[model.__name__] = (model, ...)
         fields[model.__name__] = (model, ...)
 
-    return create_model("RootSchema", **fields)
+    return create_model("root_model", **fields)
+
 
 def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic models dynamically based on a list of JADN Types."""
 
     p_models = []
+    p_models_dict = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type)
             
@@ -101,32 +105,31 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-            p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-            p_core_schema = p_model.__pydantic_core_schema__
-            p_models.append(p_model)      
+            # if j_type_obj.type_name == "RecordName2":
+            # p_models.append(create_model(j_type_obj.type_name, __base__=Record, **p_fields))
+            p_models_dict[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+                # RecordName2_core = RecordName2.__pydantic_core_schema__
+                # p_models.append(RecordName2)                
+                
+            # else:
+                # p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+                # p_core_schema = p_model.__pydantic_core_schema__
+                # p_models.append(p_model)
             
     # for inner_model in reversed(p_models):
     #     res = inner_model.model_rebuild()
     #     test = ""
             
-    root_model = create_parent_model(p_models)
+    root_model = create_parent_model(p_models_dict)
     core_schema = root_model.__pydantic_core_schema__
+    core_class_vars = root_model.__class_vars__
     try :
         root_model.model_rebuild(
             _parent_namespace_depth=3,
             raise_errors=False
             )
     except Exception as err:
-        print(err)        
-    
-    # for field_name, field in root_model.model_fields.items():
-    #     test = field_name
-    #     test2 = field     
-    
-
-    # root_model.model_rebuild_cache.clear()
-    
-    # Foo.update_forward_refs(Bar=Bar)
+        print(err)
     
     return root_model
 
