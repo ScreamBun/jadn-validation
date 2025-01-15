@@ -35,7 +35,7 @@ def clsName(name: str) -> str:
 def build_custom_models(j_types: list, j_config = None) -> type[BaseModel]:
     """
     Creates a Pydantic models dynamically based on a list of JADN Types.
-    Return a dictionary of models
+    Return a dictionary of models.
     """
 
     p_models_dict = {}
