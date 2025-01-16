@@ -107,22 +107,39 @@ def test_forward_ref():
         }             
     }
     
+    invalid_data_1 = {
+        'RecordName1': {
+            'field_value_1a': {
+                'field_value_2a': 'Anytown'
+            }  
+        },
+        'RecordName2': {
+            'field_value_2zzzz': False
+        }             
+    }    
+    
     err_count = 0
     custom_schema = {}
     try :
-        custom_schema = create_pyd_model(j_schema)
+        custom_schema = Schema(**j_schema)
+        custom_schema.model_rebuild()
     except Exception as err:
         err_count = err_count + 1
         print(err)    
     
     try :
-        # custom_schema.model_rebuild()
         custom_schema.model_validate(valid_data_1)
     except Exception as err:
         err_count = err_count + 1
         print(err)
         
-    assert err_count == 0          
+    try :
+        custom_schema.model_validate(invalid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)        
+        
+    assert err_count == 1
 
 def test_records():
     

@@ -55,27 +55,36 @@ def build_custom_models(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-            p_models_dict[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+            model_name = clsName(j_type_obj.type_name)
+            p_models_dict[j_type_obj.type_name] = create_model(model_name, __base__=Record, **p_fields)
     
     return p_models_dict
 
 class Schema(BaseModel):
     # info: Optional[Information] = Field(default_factory=Information)
-    types: dict = Field(default_factory=dict) 
+    # types: dict = Field(default_factory=dict) 
+    types: dict = {} 
     
     def __init__(self, **kwargs):
         if "types" in kwargs:
             
             j_config = []
             j_types = []
-            if kwargs["info"]["config"]:
+            if "info" in kwargs and "config" in kwargs["info"]:
                 j_config = kwargs["info"]["config"]
                 
-            if kwargs["types"]:
+            if "types" in kwargs:
                 j_types = kwargs["types"]
-                custom_model = build_custom_models(j_types, j_config)
+                custom_models = build_custom_models(j_types, j_config)
+                kwargs["types"] = custom_models
             else:
                 raise ValueError("Types missing from JADN Schema")            
             
-            kwargs["types"] = update_types(kwargs["types"])
+            # kwargs["types"] = update_types(kwargs["types"])
         super().__init__(**kwargs)
+        
+    def model_post_init(self, __context):
+        # custom_models = build_custom_models(self.types, None)
+        # self.types = custom_models
+        test = self.types
+        object.__setattr__(self, '__dict__', test)
