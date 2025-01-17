@@ -3,7 +3,7 @@ from typing import List
 from pydantic import Field, ValidationError, create_model
 from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.models.pyd.structures import Record
-from jadnvalidation.pydantic_schema import create_pyd_model
+from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 
 
 def test_nested_static_models():
@@ -85,7 +85,7 @@ def test_forward_refs_experimental():
 
 def test_forward_ref():
     
-    j_schema =   {
+    j_schema =   {  
         "types": [
             ["RecordName1", "Record", [], "", [
                 [1, "field_value_1a", "RecordName2", [], ""]
@@ -116,30 +116,45 @@ def test_forward_ref():
         'RecordName2': {
             'field_value_2zzzz': False
         }             
-    }    
+    }
+    
+    invalid_data_2 = True
+    
+    invalid_data_3 = {}
     
     err_count = 0
     custom_schema = {}
     try :
-        custom_schema = Schema(**j_schema)
-        custom_schema.model_rebuild()
+        custom_schema = create_pyd_model(j_schema)
     except Exception as err:
         err_count = err_count + 1
         print(err)    
     
     try :
-        custom_schema.model_validate(valid_data_1)
+        data_validation(custom_schema, valid_data_1)
     except Exception as err:
         err_count = err_count + 1
         print(err)
         
     try :
-        custom_schema.model_validate(invalid_data_1)
+        data_validation(custom_schema, invalid_data_1)
     except Exception as err:
         err_count = err_count + 1
-        print(err)        
+        print(err)
         
-    assert err_count == 1
+    try :
+        data_validation(custom_schema, invalid_data_2)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        data_validation(custom_schema, invalid_data_3)        
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)                    
+        
+    assert err_count == 3
 
 def test_records():
     

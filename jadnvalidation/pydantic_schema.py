@@ -105,24 +105,13 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
             p_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
             p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
     
-            # if j_type_obj.type_name == "RecordName2":
-            # p_models.append(create_model(j_type_obj.type_name, __base__=Record, **p_fields))
             p_models_dict[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-                # RecordName2_core = RecordName2.__pydantic_core_schema__
-                # p_models.append(RecordName2)                
-                
-            # else:
-                # p_model = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-                # p_core_schema = p_model.__pydantic_core_schema__
-                # p_models.append(p_model)
-            
-    # for inner_model in reversed(p_models):
-    #     res = inner_model.model_rebuild()
-    #     test = ""
+            globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
+            # RecordName2_core = RecordName2.__pydantic_core_schema__
             
     root_model = create_parent_model(p_models_dict)
     core_schema = root_model.__pydantic_core_schema__
-    core_class_vars = root_model.__class_vars__
+
     try :
         root_model.model_rebuild(
             _parent_namespace_depth=3,
@@ -147,4 +136,10 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
         raise ValueError("Types missing from JADN Schema")
     
     return custom_model
+
+def data_validation(model, data):
+    try :
+        model.model_validate(data)
+    except Exception as err:
+        raise ValueError(err)
 
