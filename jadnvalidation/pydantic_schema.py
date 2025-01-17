@@ -73,7 +73,6 @@ def add_record_validations(model, jadn_type_obj):
     
     return model
 
-# def create_parent_model(child_models: list[BaseModel]):
 def create_parent_model(child_models: dict[str, BaseModel]):
     fields = {}
     for model_name, model in child_models.items():
@@ -110,7 +109,7 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
             # RecordName2_core = RecordName2.__pydantic_core_schema__
             
     root_model = create_parent_model(p_models_dict)
-    core_schema = root_model.__pydantic_core_schema__
+    # core_schema = root_model.__pydantic_core_schema__
 
     try :
         root_model.model_rebuild(

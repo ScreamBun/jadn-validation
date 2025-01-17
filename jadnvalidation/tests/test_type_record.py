@@ -181,11 +181,6 @@ def test_records():
             'field_value_2b': 'Anytown'
         }        
     }
-      
-    # valid_data_2 = {
-    #     'field_value_1': "test field",
-    #     'field_value_2': 'Anytown'
-    # }
     
     invalid_data_1 = {
         'Record-Name1': {
@@ -202,7 +197,6 @@ def test_records():
     custom_schema = {}
     try :
         custom_schema = create_pyd_model(j_schema)
-        # custom_schema.model_rebuild()
     except Exception as err:
         err_count = err_count + 1
         print(err)    
@@ -211,13 +205,7 @@ def test_records():
         custom_schema.model_validate(valid_data_1)
     except Exception as err:
         err_count = err_count + 1
-        print(err)
-        
-    # try :
-    #     custom_schema.model_validate(valid_data_2)
-    # except Exception as err:
-    #     err_count = err_count + 1
-    #     print(err)        
+        print(err)     
         
     try :
         custom_schema.model_validate(invalid_data_1)
@@ -229,7 +217,7 @@ def test_records():
     
         
 
-# TODO: Schema initialization is broken            
+# TODO: Schema initialization is broken, cutom types are ignored...            
 def test_record_legacy_initialization(): 
     
     j_schema = {
