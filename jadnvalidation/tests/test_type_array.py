@@ -6,27 +6,23 @@ from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 
 def test_forward_ref():
-    
+    # i broke this in the move from record; array broke.jpg
     j_schema =   {  
         "types": [
-            ["RecordName1", "Record", [], "", [
-                [1, "field_value_1a", "RecordName2", [], ""]
+            ["ArrayName1", "Array", [], "", [
+                [1, "field_value_1a", "ArrayName2", [], ""]
             ]],
-            ["RecordName2", "Record", [], "", [
+            ["ArrayName2", "Array", [], "", [
                 [1, "field_value_2a", "String", [], ""]
             ]]
         ]
     }
     
     valid_data_1 = {
-        'RecordName1': {
-            'field_value_1a': {
-                'field_value_2a': 'Anytown'
-            }  
+        'ArrayName1': {
+            'field_value_1a': ['Anytown']    
         },
-        'RecordName2': {
-            'field_value_2a': 'Anytown'
-        }             
+        'ArrayName2': ['Anytown']                     
     }
     
     invalid_data_1 = {
