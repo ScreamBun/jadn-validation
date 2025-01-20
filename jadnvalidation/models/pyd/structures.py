@@ -2,26 +2,13 @@ from __future__ import annotations
 from random import randint
 from pydantic import BaseModel, ConfigDict, model_validator
 
-class Array(list[BaseModel]):
-
-    model_config = ConfigDict(
-        from_attributes=True, 
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra='allow')
- 
-    @model_validator(mode='before')
-    @classmethod
-    def validate_data(cls, value: any) -> dict:
-        """
-        Pydantic validator - validate the data as a Record type
-        :param value: data to validate
-        :raise ValueError: invalid data given
-        :return: original data
-        """
-    
+# TODO: Change to BaseModel
+class Array(list):
     """
-    # old logic
+    An ordered list of labeled fields with positionally-defined semantics. 
+    Each field has a position, label, and type.
+    """
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
@@ -31,8 +18,6 @@ class Array(list[BaseModel]):
         if not isinstance(value, list):
             raise ValueError("Invalid list")    
         return value
-    """
-      
 
 class Record(BaseModel):
     """
