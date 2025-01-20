@@ -3,12 +3,12 @@ from __future__ import annotations
 from pydantic import BaseModel, Field, create_model
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
+from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
-from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.structures import Record
