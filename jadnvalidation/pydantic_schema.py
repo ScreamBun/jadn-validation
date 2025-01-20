@@ -8,6 +8,7 @@ from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
+from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.structures import Record
@@ -29,7 +30,9 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         case "Binary":
             py_field = build_pyd_binary_field(jadn_type)
         case "Record":
-            py_field = build_pyd_record_field(jadn_type)            
+            py_field = build_pyd_record_field(jadn_type) 
+        case "Array":
+            py_field = build_pyd_array_field(jadn_type)                
         case default:
             # Custom Type (aka ref type)
             py_field = build_pyd_ref_field(jadn_type)
@@ -114,7 +117,7 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     try :
         root_model.model_rebuild(
             _parent_namespace_depth=3,
-            raise_errors=False
+            raise_errors=True
             )
     except Exception as err:
         print(err)

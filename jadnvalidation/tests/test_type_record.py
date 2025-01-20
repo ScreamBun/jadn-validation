@@ -156,6 +156,102 @@ def test_forward_ref():
         
     assert err_count == 3
 
+def test_forward_ref_deeper():
+    
+    j_schema =   {  
+        "types": [
+            ["RecordName1", "Record", [], "", [
+                [1, "field_value_1a", "RecordName2", [], ""]
+            ]],
+            ["RecordName2", "Record", [], "", [
+                [1, "field_value_2a", "RecordName3", [], ""]
+            ]],
+            ["RecordName3", "Record", [], "", [
+                [1, "field_value_3a", "RecordName4", [], ""]
+            ]],
+            ["RecordName4", "Record", [], "", [
+                [1, "field_value_4a", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_1 = {
+        'RecordName1': {
+            'field_value_1a': {
+                'field_value_2a': {
+                    'field_value_3a': {
+                        'field_value_4a': 'Anytown'
+                }
+                }
+            }  
+        },
+        'RecordName2': {
+            'field_value_2a': {
+                'field_value_3a': {
+                    'field_value_4a': 'Anytown'
+                }
+            }
+        },
+        'RecordName3': {
+            'field_value_3a': {
+                'field_value_4a': 'Anytown'
+            }
+        },
+        'RecordName4': {
+            'field_value_4a': 'Anytown'
+        }               
+    }
+    
+    invalid_data_1 = {
+        'RecordName1': {
+            'field_value_1a': {
+                'field_value_2a': 'Anytown'
+            }  
+        },
+        'RecordName2': {
+            'field_value_2zzzz': False
+        }             
+    }
+    
+    invalid_data_2 = True
+    
+    invalid_data_3 = {}
+    
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)    
+    
+    try :
+        data_validation(custom_schema, valid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        data_validation(custom_schema, invalid_data_1)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        data_validation(custom_schema, invalid_data_2)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)
+        
+    try :
+        data_validation(custom_schema, invalid_data_3)        
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)                    
+        
+    assert err_count == 3
+
+
 def test_records():
     
     j_schema = {
@@ -218,75 +314,4 @@ def test_records():
         
 
 # TODO: Schema initialization is broken, cutom types are ignored...            
-def test_record_legacy_initialization(): 
-    
-    j_schema = {
-        "types": [
-            ["RecordName", "Record", ["{1", "}2"], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", [], ""]
-            ]]
-        ]
-    }   
-    
-    data_1 = {
-        'RecordName': {
-            'field_value_1': "test field",
-            'field_value_2': 'Anytown'
-        }
-    }
-    
-    data_2 = {
-            'field_value_1': "test field",
-            'field_value_2': 'Anytown'
-    }    
-    
-    data_invalid_1 = {
-        'RecordName': {
-            'field_value_1': 123,
-            'field_value_2': 'Anytown'
-        }
-    }    
-    
-    data_invalid_2 = {
-        'field_value_1': 123,
-        'field_value_2': 'Anytown'
-    }     
-    
-    custom_model = None    
-    error_count = 0
-    
-    try:
-        # custom_model = Schema.model_validate(j_schema)
-        custom_model = Schema(**j_schema) 
-        custom_model.model_rebuild()
-        print(custom_model)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-    
-    try:
-        custom_model.model_validate(data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        custom_model.model_validate(data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
-    
-    try:
-        custom_model.model_validate(data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        custom_model.model_validate(data_invalid_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)              
-        
-    assert error_count == 1
+
