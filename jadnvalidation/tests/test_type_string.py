@@ -1,7 +1,6 @@
 import datetime
 from pydantic import ValidationError
 
-from jadnvalidation.models.pyd.schema import Schema
 from jadnvalidation.pydantic_schema import create_pyd_model
 
 
@@ -252,13 +251,16 @@ def test_string_uri_template():
       ]
     }
     
-    valid_data_1 = {'String-Uri-Template': 'https://api.github.com/users/sigmavirus24/gists{/gist_id}'}
+    valid_data_1 = {'String-Uri-Template': 'https://www.example.com/api/v1/items/{/item_id}'}
     invalid_data_1 = {'String-Uri-Template': 'zzzz'}
-    invalid_data_2 = {'String-Uri-Template': '/items/{}}}{{{}}}'}
+    invalid_data_2 = {'String-Uri-Template': '/items/{}'}
     
     error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    try :
+        pyd_model = create_pyd_model(jadn_schema)    
+        print(pyd_model)
+    except Exception as err:
+        print(err)
         
     try:
         pyd_model.model_validate(valid_data_1)

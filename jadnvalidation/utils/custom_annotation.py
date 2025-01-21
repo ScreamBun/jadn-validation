@@ -1,7 +1,8 @@
 import re
 from typing import Annotated, Union
-from pydantic import BeforeValidator, StringConstraints
+from pydantic import AnyHttpUrl, BeforeValidator, StringConstraints
 from jsonpointer import JsonPointer, JsonPointerException
+from uritemplate import URITemplate
 from validators import domain
 
 def validate_bytes(data: Union[str, bytes, bytearray]):
@@ -123,6 +124,23 @@ def validate_str(val: str):
     
     return val
 
+def validate_uri_template(val: str):
+    """
+    Validate URI Template - Implementation of RFC 6570 URI Templates
+    """
+    try:
+        t = URITemplate(val)
+        
+        if not t.variables or len(t.variables) == 0:
+            raise ValueError("URI Template missing template params")           
+        if not isinstance(t, URITemplate):
+            raise ValueError("Not a valid URI Template")         
+        
+    except Exception as ex:
+        raise ValueError(f"Invalid URI Template: {ex}")
+    
+    return val
+
 Hostname = Annotated[str, StringConstraints(pattern=r"^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$")]
 # Hostname = Annotated[str, BeforeValidator(validate_domain)]
 IdnHostname = Annotated[str, BeforeValidator(validate_idn_domain)]
@@ -130,5 +148,6 @@ PydJsonPointer = Annotated[str, BeforeValidator(validate_json_pointer)]
 PydRelJsonPointer = Annotated[str, BeforeValidator(validate_rel_json_pointer)]
 PydRegex = Annotated[str, BeforeValidator(validate_regex)]
 BinaryHex = Annotated[str, BeforeValidator(validate_hex)]
+UriTemplate = Annotated[str, BeforeValidator(validate_uri_template)]
 
 CustStr = Annotated[str, BeforeValidator(validate_str)]
