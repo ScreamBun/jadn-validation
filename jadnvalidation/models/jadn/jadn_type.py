@@ -1,19 +1,31 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 from typing import Any
 
+# TODO: Move to utils
+class MetaEnum(EnumMeta):
+    def __contains__(cls, item):
+        try:
+            cls(item)
+        except ValueError:
+            return False
+        return True
+    
+# TODO: Move to utils
+class BaseEnum(Enum, metaclass=MetaEnum):
+    pass    
 
-class Primitive(Enum):
+class Primitive(BaseEnum):  
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
     NUMBER = 'Number'
     STRING = 'String'
     
-class Structure(Enum):
+class Structure(BaseEnum):
     ARRAY = 'Array'
     RECORD = 'Record'
 
-class Base_Type(Enum):
+class Base_Type(BaseEnum):
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
@@ -39,13 +51,13 @@ class Jadn_Type():
         self.fields = fields
         
 def is_primitive(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Primitive.__members__:
+    if jadn_type in Primitive:
         return True
     else:
         return False
     
 def is_structure(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Structure.__members__:
+    if jadn_type in Structure:
         return True
     else:
         return False          

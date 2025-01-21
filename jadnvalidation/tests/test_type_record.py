@@ -1,7 +1,5 @@
 from __future__ import annotations
-from typing import List
-from pydantic import Field, ValidationError, create_model
-from jadnvalidation.models.pyd.schema import Schema
+from pydantic import Field, create_model
 from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 
@@ -64,23 +62,7 @@ def test_nested_static_models():
         err_count = err_count + 1
         print(err)        
                
-    assert err_count == 1  
-      
-
-def test_forward_refs_experimental():
-    Foo = create_model("Foo", foo=(List["RecordName2"], Field(...)))
-    Foo_core_schema = Foo.__pydantic_core_schema__
-    
-    RecordName2 = create_model("RecordName2", bar=(int, Field(...)))
-    
-    Foo.model_rebuild()
-    RecordName2.model_rebuild()
-    
-    try :
-        foo = Foo(foo=[RecordName2(bar=1), RecordName2(bar=2)])
-        print(foo)
-    except Exception as err:
-        print(err)    
+    assert err_count == 1 
 
 
 def test_forward_ref():
@@ -314,4 +296,75 @@ def test_records():
         
 
 # TODO: Schema initialization is broken, cutom types are ignored...            
-
+# def test_record_legacy_initialization(): 
+    
+#     j_schema = {
+#         "types": [
+#             ["RecordName", "Record", ["{1", "}2"], "", [
+#                 [1, "field_value_1", "String", [], ""],
+#                 [2, "field_value_2", "String", [], ""]
+#             ]]
+#         ]
+#     }   
+    
+#     data_1 = {
+#         'RecordName': {
+#             'field_value_1': "test field",
+#             'field_value_2': 'Anytown'
+#         }
+#     }
+    
+#     data_2 = {
+#             'field_value_1': "test field",
+#             'field_value_2': 'Anytown'
+#     }    
+    
+#     data_invalid_1 = {
+#         'RecordName': {
+#             'field_value_1': 123,
+#             'field_value_2': 'Anytown'
+#         }
+#     }    
+    
+#     data_invalid_2 = {
+#         'field_value_1': 123,
+#         'field_value_2': 'Anytown'
+#     }     
+    
+#     custom_model = None    
+#     error_count = 0
+    
+#     try:
+#         # custom_model = Schema.model_validate(j_schema)
+#         custom_model = Schema(**j_schema) 
+#         custom_model.model_rebuild()
+#         print(custom_model)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)
+    
+#     try:
+#         custom_model.model_validate(data_1)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)
+        
+#     try:
+#         custom_model.model_validate(data_2)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)        
+    
+#     try:
+#         custom_model.model_validate(data_invalid_1)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)
+        
+#     try:
+#         custom_model.model_validate(data_invalid_2)
+#     except ValidationError as e:
+#         error_count = error_count + 1
+#         print(e)              
+        
+#     assert error_count == 1

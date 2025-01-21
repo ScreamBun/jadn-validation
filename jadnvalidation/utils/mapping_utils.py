@@ -1,6 +1,6 @@
 from typing import Annotated, List
 from math import pow
-from pydantic import BeforeValidator, Field
+from pydantic import BeforeValidator, Field, StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
 
 from jadnvalidation.models.jadn.jadn_type import Base_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
@@ -13,10 +13,14 @@ def convert_to_pyd_type(type_str: str) -> type:
     Converts a jadn type to its corresponding Python type.
     """
     type_mapping = {
-        Base_Type.BINARY.value: Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
-        Base_Type.BOOLEAN.value: bool,
-        Base_Type.INTEGER.value: Annotated [int, Field(strict=True, ge=None, le=None)],
-        Base_Type.NUMBER.value: Annotated [float, Field(strict= True, ge=None, le=None)],
+        Base_Type.STRING.value: StrictStr,
+        # Base_Type.BINARY.value: Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
+        Base_Type.BINARY.value: StrictBytes,
+        Base_Type.BOOLEAN.value: StrictBool,
+        # Base_Type.INTEGER.value: Annotated [int, Field(strict=True, ge=None, le=None)],
+        Base_Type.INTEGER.value: StrictInt,
+        # Base_Type.NUMBER.value: Annotated [float, Field(strict= True, ge=None, le=None)],
+        Base_Type.NUMBER.value: StrictFloat,
         Base_Type.ARRAY.value: list,
         Base_Type.RECORD.value: dict
         # Add more mappings as needed
