@@ -163,7 +163,7 @@ def test_forward_ref_deeper():
                 'field_value_2a': {
                     'field_value_3a': {
                         'field_value_4a': 'Anytown'
-                }
+                    }
                 }
             }  
         },

@@ -1,8 +1,4 @@
 from __future__ import annotations
-from typing import List
-from pydantic import Field, ValidationError, create_model
-from jadnvalidation.models.pyd.schema import Schema
-from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 
 def test_forward_ref():
