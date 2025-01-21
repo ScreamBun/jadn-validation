@@ -61,10 +61,7 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_type = AnyUrl
         
     elif pyd_field_mapping.is_uri_template:
-        # note: more validation could be added here using the uritemplate lib if needed
-        # https://pypi.org/project/uritemplate/
         pyd_type = custom_annotation.UriTemplate
-        # pyd_type = AnyUrl
     
     #TODO: Need optional vs required logic, at the moment everything is required ...
     pyd_field = (pyd_type,
