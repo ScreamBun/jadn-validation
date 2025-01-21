@@ -2,7 +2,7 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, is_primitive, is_structure
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
@@ -18,17 +18,17 @@ from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
 def build_pyd_field(jadn_type: Jadn_Type) -> Field:
     py_field = ()
     match jadn_type.base_type:
-        case "String":
+        case Base_Type.STRING.value:
             py_field = build_pyd_str_field(jadn_type)
-        case "Integer":
+        case Base_Type.INTEGER.value:
             py_field = build_pyd_int_field(jadn_type)
-        case "Number":
+        case Base_Type.NUMBER.value:
             py_field = build_pyd_num_field(jadn_type)
-        case "Boolean":
+        case Base_Type.BOOLEAN.value:
             py_field = build_pyd_bool_field(jadn_type) 
-        case "Binary":
+        case Base_Type.BINARY.value:
             py_field = build_pyd_binary_field(jadn_type)
-        case "Record":
+        case Base_Type.RECORD.value:
             py_field = build_pyd_record_field(jadn_type)            
         case default:
             # Custom Type (aka ref type)
@@ -73,43 +73,55 @@ def add_record_validations(model, jadn_type_obj):
     
     return model
 
-def create_parent_model(child_models: dict[str, BaseModel]):
+def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, Field]):
+    
     fields = {}
-    for model_name, model in child_models.items():
-        # fields[model.__name__.lower()] = (model, ...)
-        # fields[model.__name__] = (model, ...)
+    for model_name, model in sub_models.items():
+        # TODO: Sys name?
         fields[model.__name__] = (model, ...)
+
+
+    for field_name, field in root_fields.items():
+        # TODO: Sys name?
+        fields[field_name] = field
 
     return create_model("root_model", **fields)
 
 
 def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
-    """Creates a Pydantic models dynamically based on a list of JADN Types."""
+    """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
 
-    p_models = []
-    p_models_dict = {}
+    p_structure_models = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type)
             
         if j_type_obj:
-            
-            p_fields = {}
-            for j_field in j_type_obj.fields: 
-                j_field_obj = build_jadn_type_obj(j_field)
-                p_field = build_pyd_field(j_field_obj)
-                p_fields[j_field_obj.type_name] = p_field
+
+            p_structure_fields = {}
+            p_primitive_fields = {}
+            if is_structure(j_type_obj.base_type):
+                for j_field in j_type_obj.fields: 
+                    j_field_obj = build_jadn_type_obj(j_field)
+                    p_field = build_pyd_field(j_field_obj)
+                    p_structure_fields[j_field_obj.type_name] = p_field
+                    
+                # TODO: Need different bases per type... 
+                p_structure_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
+                globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)                    
                 
-            # TODO: Create add these to build_pyd_field or their own functions
-            # TODO: See l_config for global_opts
-            p_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
-            p_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))
-    
-            p_models_dict[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-            globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_fields)
-            # RecordName2_core = RecordName2.__pydantic_core_schema__
+                
+                # TODO: Create add these to build_pyd_field or their own functions
+                # TODO: See l_config for global_opts
+                p_structure_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
+                p_structure_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))                
+                    
+            elif is_primitive(j_type_obj.base_type):
+                p_field = build_pyd_field(j_type_obj)
+                p_primitive_fields[j_type_obj.type_name] = p_field
+            else:
+                raise ValueError("Uknnown JAND Type")
             
-    root_model = create_parent_model(p_models_dict)
-    # core_schema = root_model.__pydantic_core_schema__
+    root_model = create_root_model(p_structure_models, p_primitive_fields)
 
     try :
         root_model.model_rebuild(
