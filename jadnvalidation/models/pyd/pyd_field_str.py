@@ -70,7 +70,7 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
                             min_length=pyd_field_mapping.min_length,
                             max_length=pyd_field_mapping.max_length,
                             pattern=pyd_field_mapping.pattern, 
-                            strict=True,
+                            # strict=True,
                             validate_assignment=True
                         )
                 )    

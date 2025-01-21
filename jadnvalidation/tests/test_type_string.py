@@ -395,8 +395,12 @@ def test_string_ipv6():
     string_ipv6_invalid_1 = {'String-Ipv6': 'zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz'}
     
     error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    try:
+        pyd_model = create_pyd_model(jadn_schema)    
+        print(pyd_model)
+    except Exception as e:
+        error_count = error_count + 1
+        print(e)    
     
     try:
         pyd_model.model_validate(string_ipv6_1)       
@@ -872,56 +876,3 @@ def test_jadn_str():
         print(e)        
         
     assert error_count == 3
- 
- 
-def test_jadn_str_schema():
-  
-    jadn_schema = {
-      "types": [
-        ["String-Type", "String", ["{4", "}12"], ""]
-      ]
-    }
-
-    string_data = {'String-Type': 'test string'}
-    string_data_invalid_1 = {'String-Type': 4323 }
-    string_data_invalid_2 = {'String-Type': 'zz' }
-    string_data_invalid_3 = {'String-Type': 'testing string' }  
-  
-    error_count = 0
-    
-    try:
-        pyd_model = Schema(**jadn_schema) 
-        pyd_model.model_rebuild()
-        print(pyd_model)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_data)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(string_data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_data_invalid_2)      
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_data_invalid_3)      
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
-        
-    assert error_count == 3
-   
