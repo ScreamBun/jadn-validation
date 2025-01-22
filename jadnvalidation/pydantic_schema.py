@@ -122,7 +122,7 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
                 p_field = build_pyd_field(j_type_obj)
                 p_primitive_fields[j_type_obj.type_name] = p_field
             else:
-                raise ValueError("Uknnown JAND Type")
+                raise ValueError("Unknown JAND Type")
             
     root_model = create_root_model(p_structure_models, p_primitive_fields)
 

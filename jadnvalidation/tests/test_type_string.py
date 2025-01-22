@@ -254,6 +254,7 @@ def test_string_uri_template():
     valid_data_1 = {'String-Uri-Template': 'https://www.example.com/api/v1/items/{/item_id}'}
     invalid_data_1 = {'String-Uri-Template': 'zzzz'}
     invalid_data_2 = {'String-Uri-Template': '/items/{}'}
+    invalid_data_3 = {'String-Uri-Template': 'https://www.example.com/api/v1/items/'}
     
     error_count = 0
     try :
@@ -266,7 +267,7 @@ def test_string_uri_template():
         pyd_model.model_validate(valid_data_1)
     except ValidationError as e:
         error_count = error_count + 1
-        print(e)              
+        print(e)                 
         
     assert error_count == 0        
         
@@ -280,9 +281,15 @@ def test_string_uri_template():
         pyd_model.model_validate(invalid_data_2)
     except ValidationError as e:
         error_count = error_count + 1
-        print(e)            
+        print(e)
         
-    assert error_count == 2
+    try:
+        pyd_model.model_validate(invalid_data_3)
+    except ValidationError as e:
+        error_count = error_count + 1
+        print(e)                    
+        
+    assert error_count == 3
 
 def test_string_uri_ref():
   
