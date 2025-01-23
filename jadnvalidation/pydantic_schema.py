@@ -95,13 +95,13 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
 
     p_structure_models = {}
+    p_primitive_fields = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type)
             
         if j_type_obj:
 
             p_structure_fields = {}
-            p_primitive_fields = {}
             if is_structure(j_type_obj.base_type):
                 for j_field in j_type_obj.fields: 
                     j_field_obj = build_jadn_type_obj(j_field)
@@ -111,7 +111,6 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
                 # TODO: Need different bases per type... 
                 p_structure_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
                 globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)                    
-                
                 
                 # TODO: Create add these to build_pyd_field or their own functions
                 # TODO: See l_config for global_opts
