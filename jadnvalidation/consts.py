@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable
 from jadnvalidation.utils.ext_dicts import FrozenDict
 
 

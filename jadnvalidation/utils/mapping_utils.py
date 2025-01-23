@@ -1,12 +1,10 @@
-from typing import Annotated, List
+from typing import List
 from math import pow
-from pydantic import BeforeValidator, Field, StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
+from pydantic import StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
 
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config
 from jadnvalidation.models.jadn.jadn_type import Base_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 from jadnvalidation.utils import general_utils
-from jadnvalidation.utils.custom_annotation import validate_bytes
 
 
 def convert_to_pyd_type(type_str: str) -> type:

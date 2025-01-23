@@ -1,6 +1,6 @@
 import datetime
 from ipaddress import IPv4Address, IPv6Address
-from pydantic import AnyUrl, EmailStr, Field, StrictStr
+from pydantic import AnyUrl, EmailStr, Field
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import custom_annotation, mapping_utils
 
