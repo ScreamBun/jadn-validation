@@ -1,6 +1,8 @@
 from enum import Enum, EnumMeta
 from typing import Any
 
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config
+
 # TODO: Move to utils
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):
@@ -35,6 +37,7 @@ class Base_Type(BaseEnum):
     RECORD = 'Record'
 
 class Jadn_Type():
+    config: Jadn_Config = Jadn_Config()
     type_name: str = None
     base_type: Base_Type = None
     type_options: list[str] = None
@@ -43,7 +46,8 @@ class Jadn_Type():
     options: Any = None
     required: bool = False
     
-    def __init__(self, type_name, base_type, type_options = [], type_description = "", fields = []):
+    def __init__(self, type_name, base_type, config, type_options = [], type_description = "", fields = []):
+        self.config = config
         self.type_name = type_name
         self.base_type = base_type    
         self.type_options = type_options    

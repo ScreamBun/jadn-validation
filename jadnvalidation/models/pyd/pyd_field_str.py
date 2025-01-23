@@ -1,6 +1,6 @@
 import datetime
 from ipaddress import IPv4Address, IPv6Address
-from pydantic import AnyUrl, EmailStr, Field
+from pydantic import AnyUrl, EmailStr, Field, StrictStr
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import custom_annotation, mapping_utils
 
@@ -62,6 +62,9 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         
     elif pyd_field_mapping.is_uri_template:
         pyd_type = custom_annotation.UriTemplate
+        
+    if pyd_field_mapping.max_length == None:
+        pyd_field_mapping.max_length = jadn_type.config.MaxString
     
     #TODO: Need optional vs required logic, at the moment everything is required ...
     pyd_field = (pyd_type,

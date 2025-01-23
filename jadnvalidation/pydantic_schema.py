@@ -2,6 +2,7 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field, create_model
 
+from jadnvalidation.models.jadn.jadn_config import DEFAULT_FIELD_NAME_REGEX, DEFAULT_MAX_BINARY, DEFAULT_MAX_ELEMENTS, DEFAULT_MAX_STRING, DEFAULT_NSID_REGEX, DEFAULT_SYS_IND, FIELD_NAME_KEY, MAX_BINARY_KEY, MAX_ELEMENTS_KEY, MAX_STRING_KEY, NSID_KEY, SYS_IND_KEY, Jadn_Config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, is_primitive, is_structure
 from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
@@ -39,13 +40,23 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         
     return py_field
 
-def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
+def build_jadn_type_obj(j_type: list, j_config: dict = None) -> Jadn_Type | None:
     
     jadn_type_obj = None
+    
+    j_config_obj = Jadn_Config(
+        FieldName=j_config.get(FIELD_NAME_KEY, DEFAULT_FIELD_NAME_REGEX),
+        MaxBinary=j_config.get(MAX_BINARY_KEY, DEFAULT_MAX_BINARY),
+        MaxElements=j_config.get(MAX_ELEMENTS_KEY, DEFAULT_MAX_ELEMENTS),
+        MaxString=j_config.get(MAX_STRING_KEY, DEFAULT_MAX_STRING),
+        NSID=j_config.get(NSID_KEY, DEFAULT_NSID_REGEX),
+        Sys=j_config.get(SYS_IND_KEY, DEFAULT_SYS_IND)
+    )
     
     if is_type(j_type):
         # type
         jadn_type_obj = Jadn_Type(
+                config=j_config_obj,
                 type_name=j_type[0], 
                 base_type=j_type[1], 
                 type_options=j_type[2], 
@@ -54,12 +65,13 @@ def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
     elif is_field(j_type):
         # field
         jadn_type_obj = Jadn_Type(
+                config=j_config_obj,
                 type_name=j_type[1], 
                 base_type=j_type[2], 
                 type_options=j_type[3], 
                 type_description=j_type[4])     
     else:
-        print("unknown jadn item")    
+        print("unknown jadn item")
     
     return jadn_type_obj
 
@@ -88,7 +100,7 @@ def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, F
         # TODO: Sys name?
         fields[field_name] = field
 
-    return create_model("root_model", **fields)
+    return create_model("root_model", __base__=Record, **fields)
 
 
 def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
@@ -97,7 +109,7 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
     p_structure_models = {}
     p_primitive_fields = {}
     for j_type in j_types:
-        j_type_obj = build_jadn_type_obj(j_type)
+        j_type_obj = build_jadn_type_obj(j_type, j_config)
             
         if j_type_obj:
 
@@ -121,7 +133,10 @@ def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
                 p_field = build_pyd_field(j_type_obj)
                 p_primitive_fields[j_type_obj.type_name] = p_field
             else:
-                raise ValueError("Unknown JAND Type")
+                raise ValueError("Unknown JADN Type")
+            
+    p_primitive_fields["root_type_opts"] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
+    p_primitive_fields["root_global_opts"] = (str, Field(default="testing root global opts", exclude=True, evaluate=False))             
             
     root_model = create_root_model(p_structure_models, p_primitive_fields)
 

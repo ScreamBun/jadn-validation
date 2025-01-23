@@ -11,7 +11,7 @@ def test_max_string():
         "exports": ["String-Name"],
         "config": {
             "$MaxBinary": 255,
-            "$MaxString": 255,
+            "$MaxString": 10,
             "$MaxElements": 100,
             "$Sys": "$",
             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
@@ -20,12 +20,12 @@ def test_max_string():
         }
         },
         "types": [
-        ["String-Name", "String", [], ""]
+            ["String-Name", "String", [], ""]
         ]
     }
     
-    valid_data_1 = {'String-Name': 'http://puny£code.com'}
-    invalid_data_1 = {'String-Name': 1234}
+    valid_data_1 = {'String-Name': 'asdfghjk'}
+    invalid_data_1 = {'String-Name': 'asdfghjklasdfghjkl'}
     
     error_count = 0
     pyd_model = {}
