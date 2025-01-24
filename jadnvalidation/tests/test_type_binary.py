@@ -193,6 +193,7 @@ def test_binary_min_max():
     invalid_data_3 = {'Binary-Test': bytes_invalid_3}
     
     error_count = 0
+    pyd_model = {}
     try:
         pyd_model = create_pyd_model(jadn_schema)    
         print(pyd_model)

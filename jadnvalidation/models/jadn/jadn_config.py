@@ -1,3 +1,5 @@
+GLOBAL_CONFIG_KEY = "root_global_opts"
+
 MAX_BINARY_KEY = "$MaxBinary"
 MAX_STRING_KEY = "$MaxString"
 MAX_ELEMENTS_KEY = "$MaxElements"

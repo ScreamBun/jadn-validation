@@ -2,6 +2,8 @@ from __future__ import annotations
 from random import randint
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from jadnvalidation.utils.general_utils import get_global_configs
+
 # TODO: Change to BaseModel
 class Array(list):
     """
@@ -40,7 +42,8 @@ class Record(BaseModel):
         :raise ValueError: invalid data given
         :return: original data
         """
-                
+        
+        global_configs = get_global_configs(cls)
         # minProps = cls.__options__.minv or 0
         # maxProps = get_max_v(cls)
 

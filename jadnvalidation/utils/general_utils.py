@@ -1,7 +1,8 @@
 import sys
 from typing import Callable
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, Field, create_model
 from consts import ALLOWED_TYPE_OPTIONS
+from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY
 
 
 def addKey(d: dict, k: str = None) -> Callable:
@@ -32,6 +33,15 @@ def convert_list_to_dict(lst):
     for i in range(0, len(lst), 2):
         res_dict[lst[i]] = lst[i + 1]
     return res_dict
+
+def get_global_configs(p_model):
+    global_configs = None
+    if p_model.model_fields:
+        gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
+        if gc_field_info and gc_field_info.default:
+            global_configs = gc_field_info.default
+                
+    return global_configs
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)

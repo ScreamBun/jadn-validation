@@ -40,9 +40,12 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         
     return py_field
 
-def build_jadn_type_obj(j_type: list, j_config: dict = None) -> Jadn_Type | None:
+def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = {}) -> Jadn_Type | None:
     
     jadn_type_obj = None
+    
+    if j_config == None:
+        j_config = {}
     
     j_config_obj = Jadn_Config(
         FieldName=j_config.get(FIELD_NAME_KEY, DEFAULT_FIELD_NAME_REGEX),
@@ -103,7 +106,7 @@ def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, F
     return create_model("root_model", __base__=Record, **fields)
 
 
-def build_custom_model(j_types: list, j_config = None) -> type[BaseModel]:
+def build_custom_model(j_types: list, j_config = {}) -> type[BaseModel]:
     """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
 
     p_structure_models = {}
