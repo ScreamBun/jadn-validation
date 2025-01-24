@@ -66,9 +66,8 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
     if pyd_field_mapping.max_length == None:
         pyd_field_mapping.max_length = jadn_type.config.MaxString
         
-    if pyd_type == datetime.date or pyd_type == datetime.time or pyd_type == datetime.datetime:
+    if pyd_type in [datetime.date, datetime.time, datetime.datetime, IPv4Address, IPv6Address, AnyUrl]:
         pyd_field_mapping.max_length = None
-        pyd_field_mapping.min_length = None
     
     #TODO: We may need a better way to fill in the Field params
     pyd_field = None
