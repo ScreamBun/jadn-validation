@@ -2,6 +2,7 @@ from __future__ import annotations
 from random import randint
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from jadnvalidation.models.jadn.jadn_config import DEFAULT_MAX_ELEMENTS, MAX_ELEMENTS_KEY
 from jadnvalidation.utils.general_utils import get_global_configs
 
 # TODO: Change to BaseModel
@@ -44,6 +45,17 @@ class Record(BaseModel):
         """
         
         global_configs = get_global_configs(cls)
+        
+        if global_configs and global_configs.MaxElements:
+            max_elements = global_configs.MaxElements
+            
+            if value and isinstance(value, dict):
+                for item in value.values():
+                    if isinstance(item, dict):
+                        if len(item) > max_elements:
+                            raise ValueError(f"Max Number of elements ({max_elements}) exceeded")
+                    break
+        
         # minProps = cls.__options__.minv or 0
         # maxProps = get_max_v(cls)
 

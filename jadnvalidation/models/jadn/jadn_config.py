@@ -33,3 +33,18 @@ class Jadn_Config():
         self.TypeName = TypeName
         self.FieldName = FieldName
         self.NSID = NSID
+        
+def build_jadn_config_obj(j_config_data: dict) -> Jadn_Config:
+    if j_config_data == None:
+        j_config_data = {}
+    
+    j_config_obj = Jadn_Config(
+        FieldName=j_config_data.get(FIELD_NAME_KEY, DEFAULT_FIELD_NAME_REGEX),
+        MaxBinary=j_config_data.get(MAX_BINARY_KEY, DEFAULT_MAX_BINARY),
+        MaxElements=j_config_data.get(MAX_ELEMENTS_KEY, DEFAULT_MAX_ELEMENTS),
+        MaxString=j_config_data.get(MAX_STRING_KEY, DEFAULT_MAX_STRING),
+        NSID=j_config_data.get(NSID_KEY, DEFAULT_NSID_REGEX),
+        Sys=j_config_data.get(SYS_IND_KEY, DEFAULT_SYS_IND)
+    )
+    
+    return j_config_obj

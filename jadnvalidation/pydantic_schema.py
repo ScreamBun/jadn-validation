@@ -2,8 +2,8 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.models.jadn.jadn_config import DEFAULT_FIELD_NAME_REGEX, DEFAULT_MAX_BINARY, DEFAULT_MAX_ELEMENTS, DEFAULT_MAX_STRING, DEFAULT_NSID_REGEX, DEFAULT_SYS_IND, FIELD_NAME_KEY, MAX_BINARY_KEY, MAX_ELEMENTS_KEY, MAX_STRING_KEY, NSID_KEY, SYS_IND_KEY, Jadn_Config
-from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, is_primitive, is_structure
+from jadnvalidation.models.jadn.jadn_config import build_jadn_config_obj
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_primitive, is_structure
 from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
@@ -14,7 +14,6 @@ from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.utils import mapping_utils
-from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
 
 
 def build_pyd_field(jadn_type: Jadn_Type) -> Field:
@@ -40,44 +39,7 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
         
     return py_field
 
-def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = {}) -> Jadn_Type | None:
-    
-    jadn_type_obj = None
-    
-    if j_config == None:
-        j_config = {}
-    
-    j_config_obj = Jadn_Config(
-        FieldName=j_config.get(FIELD_NAME_KEY, DEFAULT_FIELD_NAME_REGEX),
-        MaxBinary=j_config.get(MAX_BINARY_KEY, DEFAULT_MAX_BINARY),
-        MaxElements=j_config.get(MAX_ELEMENTS_KEY, DEFAULT_MAX_ELEMENTS),
-        MaxString=j_config.get(MAX_STRING_KEY, DEFAULT_MAX_STRING),
-        NSID=j_config.get(NSID_KEY, DEFAULT_NSID_REGEX),
-        Sys=j_config.get(SYS_IND_KEY, DEFAULT_SYS_IND)
-    )
-    
-    if is_type(j_type):
-        # type
-        jadn_type_obj = Jadn_Type(
-                config=j_config_obj,
-                type_name=j_type[0], 
-                base_type=j_type[1], 
-                type_options=j_type[2], 
-                type_description=j_type[3],
-                fields=safe_get(j_type, 4, []))
-    elif is_field(j_type):
-        # field
-        jadn_type_obj = Jadn_Type(
-                config=j_config_obj,
-                type_name=j_type[1], 
-                base_type=j_type[2], 
-                type_options=j_type[3], 
-                type_description=j_type[4])     
-    else:
-        print("unknown jadn item")
-    
-    return jadn_type_obj
-
+# Still used??
 def add_record_validations(model, jadn_type_obj):
 
     pyd_field_mapping = mapping_utils.map_type_opts(jadn_type_obj.base_type, jadn_type_obj.type_options)
@@ -106,20 +68,22 @@ def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, F
     return create_model("root_model", __base__=Record, **fields)
 
 
-def build_custom_model(j_types: list, j_config = {}) -> type[BaseModel]:
+def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
+
+    j_config_obj = build_jadn_config_obj(j_config_data)
 
     p_structure_models = {}
     p_primitive_fields = {}
     for j_type in j_types:
-        j_type_obj = build_jadn_type_obj(j_type, j_config)
+        j_type_obj = build_jadn_type_obj(j_type, j_config_obj)
             
         if j_type_obj:
 
             p_structure_fields = {}
             if is_structure(j_type_obj.base_type):
                 for j_field in j_type_obj.fields: 
-                    j_field_obj = build_jadn_type_obj(j_field)
+                    j_field_obj = build_jadn_type_obj(j_field, j_config_obj)
                     p_field = build_pyd_field(j_field_obj)
                     p_structure_fields[j_field_obj.type_name] = p_field
                     
@@ -130,7 +94,7 @@ def build_custom_model(j_types: list, j_config = {}) -> type[BaseModel]:
                 # TODO: Create add these to build_pyd_field or their own functions
                 # TODO: See l_config for global_opts
                 p_structure_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
-                p_structure_fields["global_opts"] = (str, Field(default="testing global opts", exclude=True, evaluate=False))                
+                p_structure_fields["global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))                
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)
@@ -139,7 +103,7 @@ def build_custom_model(j_types: list, j_config = {}) -> type[BaseModel]:
                 raise ValueError("Unknown JADN Type")
             
     p_primitive_fields["root_type_opts"] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
-    p_primitive_fields["root_global_opts"] = (str, Field(default="testing root global opts", exclude=True, evaluate=False))             
+    p_primitive_fields["root_global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
             
     root_model = create_root_model(p_structure_models, p_primitive_fields)
 

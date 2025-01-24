@@ -67,15 +67,23 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
         pyd_field_mapping.max_length = jadn_type.config.MaxString
     
     #TODO: Need optional vs required logic, at the moment everything is required ...
-    pyd_field = (pyd_type,
-                   Field(..., 
+    pyd_field = None
+    if pyd_field_mapping.is_required:        
+        pyd_field = (pyd_type,
+                    Field(..., 
                             description=jadn_type.type_description,
                             min_length=pyd_field_mapping.min_length,
                             max_length=pyd_field_mapping.max_length,
                             pattern=pyd_field_mapping.pattern, 
                             # strict=True,
-                            validate_assignment=True
-                        )
-                )    
-    
+                            validate_assignment=True))
+    else: 
+        pyd_field = (pyd_type,
+                    Field(default=None, 
+                            description=jadn_type.type_description,
+                            min_length=pyd_field_mapping.min_length,
+                            max_length=pyd_field_mapping.max_length,
+                            pattern=pyd_field_mapping.pattern, 
+                            # strict=True,
+                            validate_assignment=True))
     return pyd_field

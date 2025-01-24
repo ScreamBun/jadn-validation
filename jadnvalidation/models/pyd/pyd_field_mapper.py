@@ -24,5 +24,6 @@ class Pyd_Field_Mapper():
     is_uri_ref: bool = False
     is_uri_template: bool = False
     is_duration: bool = False
+    is_required: bool = True
     pattern: str = None
     format: str = None

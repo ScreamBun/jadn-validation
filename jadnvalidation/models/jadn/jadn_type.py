@@ -1,20 +1,8 @@
-from enum import Enum, EnumMeta
 from typing import Any
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
-
-# TODO: Move to utils
-class MetaEnum(EnumMeta):
-    def __contains__(cls, item):
-        try:
-            cls(item)
-        except ValueError:
-            return False
-        return True
-    
-# TODO: Move to utils
-class BaseEnum(Enum, metaclass=MetaEnum):
-    pass    
+from jadnvalidation.utils.enum_utils import BaseEnum
+from jadnvalidation.utils.general_utils import is_field, is_type, safe_get   
 
 class Primitive(BaseEnum):  
     BINARY = 'Binary'
@@ -64,4 +52,30 @@ def is_structure(jadn_type: Jadn_Type) -> bool:
     if jadn_type in Structure:
         return True
     else:
-        return False          
+        return False
+    
+def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
+    
+    jadn_type_obj = None
+    
+    if is_type(j_type):
+        # type
+        jadn_type_obj = Jadn_Type(
+                config=j_config,
+                type_name=j_type[0], 
+                base_type=j_type[1], 
+                type_options=j_type[2], 
+                type_description=j_type[3],
+                fields=safe_get(j_type, 4, []))
+    elif is_field(j_type):
+        # field
+        jadn_type_obj = Jadn_Type(
+                config=j_config,
+                type_name=j_type[1], 
+                base_type=j_type[2], 
+                type_options=j_type[3], 
+                type_description=j_type[4])     
+    else:
+        print("unknown jadn item")
+    
+    return jadn_type_obj       
