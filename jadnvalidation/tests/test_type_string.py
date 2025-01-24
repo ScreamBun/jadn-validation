@@ -2,6 +2,7 @@ import datetime
 from pydantic import ValidationError
 
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.tests.test_utils import create_testing_model, validate_data
 
 
 def test_string_regex():
@@ -755,31 +756,13 @@ def test_string_date():
         {'String-Date': datetime.datetime.now()},
         {'String-Date': 1596542285000}]
   
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err) 
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    for valid_data in valid_data_list:
-        try :
-            data_validation(custom_schema, valid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)       
-        
+    err_count = validate_data(custom_schema, valid_data_list)    
     assert err_count == 0
     
-    for invalid_data in invalid_data_list:
-        try :
-            data_validation(custom_schema, invalid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)               
-        
-    assert err_count == 4
+    err_count = validate_data(custom_schema, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
     
 def test_string_datetime():
   
@@ -800,31 +783,13 @@ def test_string_datetime():
             {'String-Datetime': 'yy2024-01-01zz'}
         ]
   
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err) 
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    for valid_data in valid_data_list:
-        try :
-            data_validation(custom_schema, valid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)       
-        
+    err_count = validate_data(custom_schema, valid_data_list)    
     assert err_count == 0
     
-    for invalid_data in invalid_data_list:
-        try :
-            data_validation(custom_schema, invalid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)
-        
-    assert err_count == 2
+    err_count = validate_data(custom_schema, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
   
 def test_jadn_str():
   
@@ -841,28 +806,10 @@ def test_jadn_str():
                     {'String-Type': 'testing string' }
                 ]
   
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)    
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    for valid_data in valid_data_list:        
-        try :
-            data_validation(custom_schema, valid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)      
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert err_count == 0        
-        
-    for invalid_data in invalid_data_list:         
-        try :
-            data_validation(custom_schema, invalid_data)
-        except Exception as err:
-            err_count = err_count + 1
-            print(err)
-        
-    assert err_count == 3
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)
