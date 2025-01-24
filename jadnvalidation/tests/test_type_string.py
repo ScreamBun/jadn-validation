@@ -1,7 +1,7 @@
 import datetime
 from pydantic import ValidationError
 
-from jadnvalidation.pydantic_schema import create_pyd_model
+from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 
 
 def test_string_regex():
@@ -702,7 +702,7 @@ def test_string_pattern():
     
 def test_string_time():
   
-    jadn_schema = {
+    j_schema = {
       "types": [
         ["String-Time", "String", ["/time"], ""]
       ]
@@ -711,175 +711,158 @@ def test_string_time():
     now = datetime.datetime.now()
     current_time = now.time()
 
-    string_date_time_1 = {'String-Time': current_time}
-    string_date_time_invalid_1 = {'String-Time': 'hfdkjlajfdkl'}
-    string_date_time_invalid_2 = {'String-Time': 1596542285000}
+    valid_data_list = [{'String-Time': current_time}]
+    invalid_data_list = [{'String-Time': 'hfdkjlajfdkl'},
+        {'String-Time': 1596542285000}]
   
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err) 
         
-    try:
-        pyd_model.model_validate(string_date_time_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)  
+    for valid_data in valid_data_list:
+        try :
+            data_validation(custom_schema, valid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)       
         
-    assert error_count == 0
+    assert err_count == 0
     
-    try:
-        pyd_model.model_validate(string_date_time_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    for invalid_data in invalid_data_list:
+        try :
+            data_validation(custom_schema, invalid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)            
         
-    try:
-        pyd_model.model_validate(string_date_time_invalid_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)             
-        
-    assert error_count == 2
+    assert err_count == 2
     
 def test_string_date():
   
-    jadn_schema = {
+    j_schema = {
       "types": [
         ["String-Date", "String", ["/date"], ""]
       ]
     }
 
-    string_date_data_1 = {'String-Date': '2024-01-01'}
-    string_date_data_invalid_1 = {'String-Date': 'hfdkjlajfdkl'}
-    string_date_data_invalid_2 = {'String-Date': 'yy2024-01-01zz'}  
-    string_date_data_invalid_3 = {'String-Date': datetime.datetime.now()}
-    string_date_data_invalid_4 = {'String-Date': 1596542285000}
+    valid_data_list = [{'String-Date': '2024-01-01'}]
+    invalid_data_list = [{'String-Date': 'hfdkjlajfdkl'},
+        {'String-Date': 'yy2024-01-01zz'},
+        {'String-Date': datetime.datetime.now()},
+        {'String-Date': 1596542285000}]
   
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err) 
         
-    try:       
-        pyd_model.model_validate(string_date_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)  
+    for valid_data in valid_data_list:
+        try :
+            data_validation(custom_schema, valid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)       
         
-    assert error_count == 0
+    assert err_count == 0
     
-    try:
-        pyd_model.model_validate(string_date_data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    for invalid_data in invalid_data_list:
+        try :
+            data_validation(custom_schema, invalid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)               
         
-    try:
-        pyd_model.model_validate(string_date_data_invalid_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_date_data_invalid_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_date_data_invalid_4)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                
-        
-    assert error_count == 4
+    assert err_count == 4
     
 def test_string_datetime():
   
-    jadn_schema = {
+    j_schema = {
       "types": [
         ["String-Datetime", "String", ["/date-time"], ""]
       ]
     }
 
-    string_datatime_data_1 = {'String-Datetime': '2024-01-01'}
-    string_datatime_data_2 = {'String-Datetime': datetime.datetime.now()}
-    string_datatime_data_3 = {'String-Datetime': 1596542285000}
-    string_datatime_data_invalid_1 = {'String-Datetime': 'hfdkjlajfdkl'}
-    string_datatime_data_invalid_2 = {'String-Datetime': 'yy2024-01-01zz'}  
-  
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
-        
-    try:
-        pyd_model.model_validate(string_datatime_data_1)   
-        pyd_model.model_validate(string_datatime_data_2)
-        pyd_model.model_validate(string_datatime_data_3)        
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)       
-        
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)  
-        
-    assert error_count == 0
+    valid_data_list = [
+            {'String-Datetime': '2024-01-01'},
+            {'String-Datetime': datetime.datetime.now()},
+            {'String-Datetime': 1596542285000}
+        ]
     
-    try:
-        pyd_model.model_validate(string_datatime_data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    invalid_data_list = [
+            {'String-Datetime': 'hfdkjlajfdkl'},
+            {'String-Datetime': 'yy2024-01-01zz'}
+        ]
+  
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err) 
         
-    try:
-        pyd_model.model_validate(string_datatime_data_invalid_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    for valid_data in valid_data_list:
+        try :
+            data_validation(custom_schema, valid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)       
         
-    assert error_count == 2
+    assert err_count == 0
+    
+    for invalid_data in invalid_data_list:
+        try :
+            data_validation(custom_schema, invalid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)
+        
+    assert err_count == 2
   
 def test_jadn_str():
   
-    jadn_schema = {
+    j_schema = {
       "types": [
         ["String-Type", "String", ["{4", "}12"], ""]
       ]
     }
 
-    string_data = {'String-Type': 'test string'}
-    string_data_invalid_1 = {'String-Type': 4323 }
-    string_data_invalid_2 = {'String-Type': 'zz' }
-    string_data_invalid_3 = {'String-Type': 'testing string' }  
+    valid_data_list = [{'String-Type': 'test string'}]
+    invalid_data_list = [
+                    {'String-Type': 4323 },
+                    {'String-Type': 'zz' },
+                    {'String-Type': 'testing string' }
+                ]
   
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    err_count = 0
+    custom_schema = {}
+    try :
+        custom_schema = create_pyd_model(j_schema)
+    except Exception as err:
+        err_count = err_count + 1
+        print(err)    
         
-    try:
-        pyd_model.model_validate(string_data)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
+    for valid_data in valid_data_list:        
+        try :
+            data_validation(custom_schema, valid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)      
         
-    assert error_count == 0        
+    assert err_count == 0        
         
-    try:
-        pyd_model.model_validate(string_data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
+    for invalid_data in invalid_data_list:         
+        try :
+            data_validation(custom_schema, invalid_data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)
         
-    try:
-        pyd_model.model_validate(string_data_invalid_2)      
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(string_data_invalid_3)      
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
-        
-    assert error_count == 3
+    assert err_count == 3
