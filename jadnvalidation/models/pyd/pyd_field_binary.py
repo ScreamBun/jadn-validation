@@ -14,7 +14,10 @@ def build_pyd_binary_field(jadn_type: Jadn_Type) -> Field:
     if pyd_field_mapping.is_ipv4_addr:
         pyd_type = IPv4Address
     if pyd_field_mapping.is_ipv6_addr:
-        pyd_type = IPv6Address           
+        pyd_type = IPv6Address
+        
+    if pyd_field_mapping.max_length == None:
+        pyd_field_mapping.max_length = jadn_type.config.MaxBinary     
     
     pyd_field = (pyd_type,
                    Field(..., 
