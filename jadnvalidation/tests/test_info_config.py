@@ -440,5 +440,75 @@ def test_field_name_regex():
     err_count = validate_data(custom_schema, valid_data_list)    
     total_errs = total_errs + err_count
     
-    assert total_errs == 1    
+    assert total_errs == 1
+  
+# TODO: Waiting for namespace logic    
+# def test_nsid_regex():
+  
+#     invalid_j_schema_1 = {
+#         "info": {
+#             "package": "http://test/v1.0",
+#             "title": "Test Title",
+#             "exports": ["Record-Name"],
+#             "config": {
+#             "$MaxBinary": 255,
+#             "$MaxString": 255,
+#             "$MaxElements": 100,
+#             "$Sys": "$",
+#             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
+#             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+#             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+#             }
+#         },
+#         "types": [
+#             ["Record-Name", "Record", [], "", [
+#                 [1, "FIELD_value_1", "String", [], ""],
+#                 [2, "field_value_2", "String", [], ""],
+#                 [3, "field_value_3", "String", ["[0"], ""]
+#             ]]
+#         ]
+#     }
+    
+#     valid_j_schema_1 = {
+#         "info": {
+#             "package": "http://test/v1.0",
+#             "title": "Test Title",
+#             "exports": ["Record-Name"],
+#             "config": {
+#             "$MaxBinary": 255,
+#             "$MaxString": 255,
+#             "$MaxElements": 100,
+#             "$Sys": "&",
+#             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
+#             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+#             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+#             }
+#         },
+#         "types": [
+#             ["Record-Name", "Record", [], "", [
+#                 [1, "field_value_1", "String", [], ""],
+#                 [2, "field_value_2", "String", [], ""],
+#                 [3, "field_value_3", "String", [], ""]
+#             ]]
+#         ]
+#     }
+    
+#     valid_data_list = [{ 
+#                         "Record-Name": {
+#                             "field_value_1" : "test",
+#                             "field_value_2" : "test",
+#                             "field_value_3" : "test"
+#                         }
+#                     }]    
+  
+#     total_errs = 0
+#     custom_schema, err_count = create_testing_model(invalid_j_schema_1)
+#     total_errs = total_errs + err_count
+#     custom_schema, err_count = create_testing_model(valid_j_schema_1)
+#     total_errs = total_errs + err_count
+        
+#     err_count = validate_data(custom_schema, valid_data_list)    
+#     total_errs = total_errs + err_count
+    
+#     assert total_errs == 1     
     
