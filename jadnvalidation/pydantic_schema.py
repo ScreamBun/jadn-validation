@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+import re
 from pydantic import BaseModel, Field, create_model
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, build_jadn_config_obj
@@ -67,10 +68,21 @@ def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, F
 
     return create_model("root_model", __base__=Record, **fields)
 
-def validate_name(name: str, j_config: Jadn_Config):
+def validate_type_name(name: str, j_config: Jadn_Config):
     
     if name.startswith(j_config.Sys):
-        raise ValueError(f"{name} cannot begin with {j_config.Sys}")
+        raise ValueError(f"Type Name {name} cannot begin with {j_config.Sys}")
+    
+    if not re.search(j_config.TypeName, name):
+        raise ValueError(f"Invalid Type Name {name} per the Schema / info / config / $TypeName regex")
+    
+def validate_field_name(name: str, j_config: Jadn_Config):
+    
+    if name.startswith(j_config.Sys):
+        raise ValueError(f"Field {name} cannot begin with {j_config.Sys}")
+    
+    if not re.search(j_config.FieldName, name):
+        raise ValueError(f"Invalid Field Name {name} per the Schema / info / config / $FieldName regex")
 
 def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
@@ -81,7 +93,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     p_primitive_fields = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type, j_config_obj)
-        validate_name(j_type_obj.type_name, j_config_obj)
+        validate_type_name(j_type_obj.type_name, j_config_obj)
             
         if j_type_obj:
 
@@ -89,7 +101,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
             if is_structure(j_type_obj.base_type):
                 for j_field in j_type_obj.fields: 
                     j_field_obj = build_jadn_type_obj(j_field, j_config_obj)
-                    validate_name(j_field_obj.type_name, j_config_obj)
+                    validate_field_name(j_field_obj.type_name, j_config_obj)
                     p_field = build_pyd_field(j_field_obj)
                     p_structure_fields[j_field_obj.type_name] = p_field
                     
