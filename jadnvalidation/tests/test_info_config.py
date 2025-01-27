@@ -1,10 +1,11 @@
 from pydantic import ValidationError
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.tests.test_utils import create_testing_model, validate_data
 
 
 def test_max_string():
   
-    jadn_schema = {
+    j_schema = {
         "info": {
         "package": "http://test/v1.0",
         "title": "Test Title",
@@ -24,37 +25,20 @@ def test_max_string():
         ]
     }
     
-    valid_data_1 = {'String-Name': 'asdfghjk'}
-    invalid_data_1 = {'String-Name': 'asdfghjklasdfghjkl'}
+    valid_data_list = [{'String-Name': 'asdfghjk'}]
+    invalid_data_list = [{'String-Name': 'asdfghjklasdfghjkl'}]
     
-    error_count = 0
-    pyd_model = {}
-    
-    try :
-        pyd_model = create_pyd_model(jadn_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(pyd_model, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)           
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert error_count == 0        
-        
-    try:
-        data_validation(pyd_model, invalid_data_1)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)         
-        
-    assert error_count == 1
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_max_string_order_of_precedence():
   
-    jadn_schema = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
@@ -74,37 +58,20 @@ def test_max_string_order_of_precedence():
         ]
     }
     
-    valid_data_1 = {'String-Name': 'asdf'}
-    invalid_data_1 = {'String-Name': 'asdfghjklasdfghjkl'}
+    valid_data_list = [{'String-Name': 'asdf'}]
+    invalid_data_list = [{'String-Name': 'asdfghjklasdfghjkl'}]
     
-    error_count = 0
-    pyd_model = {}
-    
-    try :
-        pyd_model = create_pyd_model(jadn_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(pyd_model, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)           
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert error_count == 0        
-        
-    try:
-        data_validation(pyd_model, invalid_data_1)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)         
-        
-    assert error_count == 1
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_max_binary():
   
-    jadn_schema = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
@@ -124,37 +91,20 @@ def test_max_binary():
         ]
     }
     
-    valid_data_1 = {"Binary-Name": b"test"}
-    invalid_data_1 = {"Binary-Name": b"testing"}
+    valid_data_list = [{"Binary-Name": b"test"}]
+    invalid_data_list = [{"Binary-Name": b"testing"}]
     
-    error_count = 0
-    pyd_model = {}
-    
-    try :
-        pyd_model = create_pyd_model(jadn_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(pyd_model, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)           
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert error_count == 0        
-        
-    try:
-        data_validation(pyd_model, invalid_data_1)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)         
-        
-    assert error_count == 1
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_max_binary_order_of_precedence():
   
-    jadn_schema = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
@@ -174,40 +124,24 @@ def test_max_binary_order_of_precedence():
         ]
     }
     
-    valid_data_1 = {"Binary-Name": b"zz"}
-    invalid_data_1 = {"Binary-Name": b"testing"}
+    valid_data_list = [{"Binary-Name": b"zz"}]
+    invalid_data_list = [{"Binary-Name": b"testing"}]
     
-    error_count = 0
-    pyd_model = {}
-    
-    try :
-        pyd_model = create_pyd_model(jadn_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(pyd_model, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)           
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert error_count == 0        
-        
-    try:
-        data_validation(pyd_model, invalid_data_1)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)         
-        
-    assert error_count == 1
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_max_elements_record():
   
-    jadn_schema = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
+            "exports": ["Record-Name"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -216,54 +150,36 @@ def test_max_elements_record():
             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-            },
-            "exports": ["Record-Name"]
+            }
         },
         "types": [
             ["Record-Name", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", [], ""]
+                [3, "field_value_3", "String", ["[0"], ""]
             ]]
         ]
     }
     
-    valid_data_1 = { 
+    valid_data_list = [{ 
                         "Record-Name": {
                             "field_value_1" : "test",
                             "field_value_2" : "test"
                         }
-                    }
+                    }]
     
-    invalid_data_1 = {
+    invalid_data_list = [{
                         "Record-Name": {
                             "field_value_1" : "test",
                             "field_value_2" : "test",
                             "field_value_3" : "test"
                         }
-                    }
-    
-    error_count = 0
-    pyd_model = {}
-    
-    try :
-        pyd_model = create_pyd_model(jadn_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
+                    }]
+  
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(pyd_model, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)           
+    err_count = validate_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    assert error_count == 0        
-        
-    try:
-        data_validation(pyd_model, invalid_data_1)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)         
-        
-    assert error_count == 1      
+    err_count = validate_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)   

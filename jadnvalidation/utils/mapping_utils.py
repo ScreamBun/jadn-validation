@@ -159,6 +159,14 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 
             case "}": 
                 set_max_length(opt_val, j_type, pyd_field_mapper)
+            case "[": 
+                set_min_length(opt_val, j_type, pyd_field_mapper)
+                
+                if opt_val:
+                    if int(opt_val) == 0:
+                        pyd_field_mapper.is_required = False
+            case "]": 
+                set_max_length(opt_val, j_type, pyd_field_mapper)                                   
             case "q":           # unique - ArrayOf instance must not contain duplicate values (Section 3.2.1.8)
                 py_field = ""
             case "s":           # set - ArrayOf instance is unordered and unique (Section 3.2.1.9)
