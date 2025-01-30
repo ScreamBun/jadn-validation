@@ -26,6 +26,19 @@ def convert_to_pyd_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
 
+def use_enum_id(j_type_opts: List[str]) -> bool:
+    use_id = False
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "=":
+                use_id = True
+                break   
+    
+    return use_id
+    
+
 def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
         # Custom limits

@@ -1,12 +1,15 @@
 
 from __future__ import annotations
 import re
+from typing import Union
 from pydantic import BaseModel, Field, create_model
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, build_jadn_config_obj
-from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_primitive, is_structure
+from jadnvalidation.models.jadn.jadn_enum import Jadn_Enum, build_jadn_enum_field_obj
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_enumeration, is_primitive, is_structure
 from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
+from jadnvalidation.models.pyd.pyd_field_enum import build_pyd_enum_field
 from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
@@ -17,7 +20,7 @@ from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.utils import mapping_utils
 
 
-def build_pyd_field(jadn_type: Jadn_Type) -> Field:
+def build_pyd_field(jadn_type: Union[Jadn_Type, Jadn_Enum]) -> Field:
     py_field = ()
     match jadn_type.base_type:
         case Base_Type.STRING.value:
@@ -30,7 +33,9 @@ def build_pyd_field(jadn_type: Jadn_Type) -> Field:
             py_field = build_pyd_bool_field(jadn_type) 
         case Base_Type.BINARY.value:
             py_field = build_pyd_binary_field(jadn_type)
-        case "Record":
+        case Base_Type.ENUMERATED.value:
+            py_field = build_pyd_enum_field(jadn_type)             
+        case Base_Type.RECORD.value:
             py_field = build_pyd_record_field(jadn_type) 
         case "Array":
             py_field = build_pyd_array_field(jadn_type)                
@@ -89,25 +94,30 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
 
     j_config_obj = build_jadn_config_obj(j_config_data)
 
-    p_structure_models = {}
-    p_primitive_fields = {}
+    p_models = {}
+    p_fields = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type, j_config_obj)
         validate_type_name(j_type_obj.type_name, j_config_obj)
             
         if j_type_obj:
 
-            p_structure_fields = {}
-            if is_structure(j_type_obj.base_type):
+            if is_enumeration(j_type_obj.base_type):
+                use_id = mapping_utils.use_enum_id(j_type_obj.type_options)
+                j_field_obj = build_jadn_enum_field_obj(j_type_obj, use_id)
+                p_field = build_pyd_field(j_field_obj)
+                p_fields[j_type_obj.type_name] = p_field
+                
+            elif is_structure(j_type_obj.base_type):
+                p_structure_fields = {}
                 for j_field in j_type_obj.fields: 
                     j_field_obj = build_jadn_type_obj(j_field, j_config_obj)
                     validate_field_name(j_field_obj.type_name, j_config_obj)
                     p_field = build_pyd_field(j_field_obj)
                     p_structure_fields[j_field_obj.type_name] = p_field
                     
-                # TODO: Need different bases per type... 
-                p_structure_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
-                globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)                    
+                p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
+                globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
                 
                 # TODO: Create add these to build_pyd_field or their own functions
                 # TODO: See l_config for global_opts
@@ -116,14 +126,15 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)
-                p_primitive_fields[j_type_obj.type_name] = p_field
+                p_fields[j_type_obj.type_name] = p_field
             else:
+                # TODO: Add other bases types...
                 raise ValueError("Unknown JADN Type")
             
-    p_primitive_fields["root_type_opts"] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
-    p_primitive_fields["root_global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
+    p_fields["root_type_opts"] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
+    p_fields["root_global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
             
-    root_model = create_root_model(p_structure_models, p_primitive_fields)
+    root_model = create_root_model(p_models, p_fields)
 
     try :
         root_model.model_rebuild(

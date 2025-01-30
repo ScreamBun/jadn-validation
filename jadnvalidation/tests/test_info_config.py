@@ -1,5 +1,3 @@
-from pydantic import ValidationError
-from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
 from jadnvalidation.tests.test_utils import create_testing_model, validate_data
 
 
