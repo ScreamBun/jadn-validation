@@ -5,42 +5,6 @@ from jadnvalidation.models.jadn.jadn import Config, Info, Jadn
 from jadnvalidation.utils.general_utils import split_on_first_char
 from pydantic_schema import create_pyd_model
 
-
-def test_theory():
-  
-    jadn_schema = {
-      "info": {
-        "package": "http://test/v1.0",
-        "exports": []
-      },
-      "types": [
-        ["String-Type", "String", [], "string description"],
-        ["Number-Type", "Number", [], "number description"],
-        ["Integer-Type", "Integer", [], "integer description"],
-        ["Boolean-Type", "Boolean", [], "boolean description"]
-      ]
-    }
-    
-    test_jadn_data = { 
-                      'String-Type': 'test string', 
-                      'Number-Type': 123.50,
-                      'Integer-Type': 123,
-                      'Boolean-Type': True
-                      }
-
-    test_jadn_data_invalid = { 
-                              'String-Type': 'test string', 
-                              'Number-Type': 123.50,
-                              'Integer-Type': 'fdasdsaf',
-                              'Boolean-Type': True
-                            }    
-  
-    try:
-        pyd_model = create_pyd_model(jadn_schema)
-        pyd_model.model_validate(test_jadn_data)   
-        pyd_model.model_validate(test_jadn_data_invalid)  
-    except ValidationError as e: 
-        print(e)
         
 def test_jadn():
     
