@@ -15,18 +15,16 @@ def clsName(name: str) -> str:
         return name
     return SysAlias.sub("__", name)
 
-def build_pyd_ref_field(jadn_type: Jadn_Type) -> Field: 
-    # pyd_type = jadn_type.type_name
+def build_pyd_ref_field(jadn_type: Jadn_Type, force_optional: bool = False) -> Field:
+    
+    '''
+    force_optional: Used by choice fields.
+    '''     
+
     pyd_type = clsName(jadn_type.base_type)
-    is_required = True
-    # ref_name = "RootSchema." + pyd_type 
-    # pyd_type = "jadnvalidation.pydantic_schema.RecordName2"
-    # pyd_type = str_to_class(jadn_type.base_type)
+    is_required = True        
     
-    #TODO: determine ref field opts
-    # pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)          
-    
-    if is_required:
+    if is_required and not force_optional:
         pyd_field = (pyd_type,
                    Field(
                             ...,
@@ -45,9 +43,6 @@ def build_pyd_ref_field(jadn_type: Jadn_Type) -> Field:
                             # min_length=pyd_field_mapping.min_length,
                             # max_length=pyd_field_mapping.max_length
                         )
-                )        
-        
-    
-    # pyd_field = Annotated[pyd_type, Field(default=pyd_type)]
+                )
     
     return pyd_field 

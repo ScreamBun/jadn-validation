@@ -5,7 +5,12 @@ from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils import custom_annotation, mapping_utils
 
 
-def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
+def build_pyd_str_field(jadn_type: Jadn_Type, force_optional: bool = False) -> Field:
+    
+    '''
+    force_optional: Used by choice fields.
+    '''
+    
     pyd_type = mapping_utils.convert_to_pyd_type(jadn_type.base_type)
     pyd_field_mapping = mapping_utils.map_type_opts(jadn_type.base_type, jadn_type.type_options)
 
@@ -71,14 +76,13 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
     
     #TODO: We may need a better way to fill in the Field params
     pyd_field = None
-    if pyd_field_mapping.is_required:        
+    if pyd_field_mapping.is_required and not force_optional:        
         pyd_field = (pyd_type,
                     Field(..., 
                             description=jadn_type.type_description,
                             min_length=pyd_field_mapping.min_length,
                             max_length=pyd_field_mapping.max_length,
-                            pattern=pyd_field_mapping.pattern, 
-                            # strict=True,
+                            pattern=pyd_field_mapping.pattern,
                             validate_assignment=True))
     else: 
         pyd_field = (pyd_type,
@@ -87,6 +91,8 @@ def build_pyd_str_field(jadn_type: Jadn_Type) -> Field:
                             min_length=pyd_field_mapping.min_length,
                             max_length=pyd_field_mapping.max_length,
                             pattern=pyd_field_mapping.pattern, 
-                            # strict=True,
-                            validate_assignment=True))
+                            validate_assignment=True
+                            )
+                    )
+        
     return pyd_field

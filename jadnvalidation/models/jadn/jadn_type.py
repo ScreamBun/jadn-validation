@@ -1,6 +1,7 @@
 from typing import Any
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
+from jadnvalidation.models.pyd.specializations import Choice
 from jadnvalidation.utils.enum_utils import BaseEnum
 from jadnvalidation.utils.general_utils import is_field, is_type, safe_get   
 
@@ -14,6 +15,9 @@ class Primitive(BaseEnum):
 class Enumeration(BaseEnum):
     ENUMERATED = 'Enumerated'
     
+class Specilization(BaseEnum):
+    CHOICE = 'Choice'    
+    
 class Structure(BaseEnum):
     ARRAY = 'Array'
     RECORD = 'Record'
@@ -26,6 +30,7 @@ class Base_Type(BaseEnum):
     STRING = 'String'
     ARRAY = 'Array'
     ENUMERATED = 'Enumerated'
+    CHOICE = 'Choice'
     RECORD = 'Record'
 
 class Jadn_Type():
@@ -59,7 +64,13 @@ def is_enumeration(jadn_type: Jadn_Type) -> bool:
     if jadn_type in Enumeration:
         return True
     else:
-        return False    
+        return False 
+    
+def is_specialization(jadn_type: Jadn_Type) -> bool:
+    if jadn_type in Specilization:
+        return True
+    else:
+        return False       
     
 def is_structure(jadn_type: Jadn_Type) -> bool:
     if jadn_type in Structure:
