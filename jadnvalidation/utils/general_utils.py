@@ -2,7 +2,8 @@ import sys
 from typing import Callable
 from pydantic import BaseModel, Field, create_model
 from consts import ALLOWED_TYPE_OPTIONS
-from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY
+from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
+from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
 
 def addKey(d: dict, k: str = None) -> Callable:
@@ -37,7 +38,9 @@ def convert_list_to_dict(lst):
 def get_global_configs(p_model):
     global_configs = None
     if p_model.model_fields:
-        gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
+        gc_field_info = p_model.model_fields.get(ROOT_GLOBAL_CONFIG_KEY, None)
+        if not gc_field_info:
+            gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
         if gc_field_info and gc_field_info.default:
             global_configs = gc_field_info.default
                 
@@ -45,6 +48,15 @@ def get_global_configs(p_model):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+def get_type_opts(p_model) -> Pyd_Field_Mapper:
+    opts = None
+    if p_model.model_fields:
+        type_opts_field = p_model.model_fields.get(TYPE_OPTS_KEY, None)
+        if type_opts_field and type_opts_field.default:
+            opts = type_opts_field.default
+                
+    return opts
 
 def is_type(jadn_type: list[any]):
     if len(jadn_type) > 0:

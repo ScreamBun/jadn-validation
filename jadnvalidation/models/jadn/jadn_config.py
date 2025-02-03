@@ -1,4 +1,7 @@
-GLOBAL_CONFIG_KEY = "root_global_opts"
+ROOT_GLOBAL_CONFIG_KEY = "root_global_config"
+# ROOT_TYPE_OPTS_KEY = "root_type_opts"
+GLOBAL_CONFIG_KEY = "global_config"
+TYPE_OPTS_KEY = "type_opts"
 
 MAX_BINARY_KEY = "$MaxBinary"
 MAX_STRING_KEY = "$MaxString"

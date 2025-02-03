@@ -4,7 +4,7 @@ import re
 from typing import Union
 from pydantic import BaseModel, Field, create_model
 
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, build_jadn_config_obj
+from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY, Jadn_Config, build_jadn_config_obj
 from jadnvalidation.models.jadn.jadn_enum import Jadn_Enum, build_jadn_enum_field_obj
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_enumeration, is_primitive, is_specialization, is_structure
 from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
@@ -107,11 +107,15 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     p_field = build_pyd_field(j_field_obj, True)
                     p_structure_fields[j_field_obj.type_name] = p_field
                     
+                j_type_opts_obj = None
+                if j_type_obj.type_options:
+                   j_type_opts_obj = mapping_utils.map_type_opts(j_type_obj.base_type, j_type_obj.type_options)                    
+                    
+                p_structure_fields[TYPE_OPTS_KEY] = (str, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+                p_structure_fields[GLOBAL_CONFIG_KEY] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))                    
+                    
                 p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Choice, **p_structure_fields)
                 globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Choice, **p_structure_fields)
-                
-                p_structure_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
-                p_structure_fields["global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
 
             elif is_structure(j_type_obj.base_type):
                 p_structure_fields = {}
@@ -121,17 +125,24 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     p_field = build_pyd_field(j_field_obj)
                     p_structure_fields[j_field_obj.type_name] = p_field
                 
+                j_type_opts_obj = None
+                if j_type_obj.type_options:
+                   j_type_opts_obj = mapping_utils.map_type_opts(j_type_obj.base_type, j_type_obj.type_options)                
+                
                 if j_type_obj.base_type == Base_Type.RECORD.value:
+                    p_structure_fields[TYPE_OPTS_KEY] = (dict, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+                    p_structure_fields[GLOBAL_CONFIG_KEY] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
+                                    
                     p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
                     globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
                 elif j_type_obj.base_type == Base_Type.MAP.value:
+                    p_structure_fields[TYPE_OPTS_KEY] = (dict, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+                    p_structure_fields[GLOBAL_CONFIG_KEY] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
+                                    
                     p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)
                     globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)                    
                 else:
                     raise ValueError("Unknown JADN Structure")                    
-                
-                p_structure_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
-                p_structure_fields["global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)
@@ -140,8 +151,8 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                 # TODO: Add other bases types...
                 raise ValueError("Unknown JADN Type")
             
-    p_fields["root_type_opts"] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
-    p_fields["root_global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
+    # p_fields[ROOT_TYPE_OPTS_KEY] = (str, Field(default="testing root model opts", exclude=True, evaluate=False))
+    p_fields[ROOT_GLOBAL_CONFIG_KEY] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
             
     root_model = create_root_model(p_models, p_fields)
     root_model.model_rebuild(_parent_namespace_depth=3, raise_errors=True)

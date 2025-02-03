@@ -3,7 +3,7 @@ from random import randint
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from jadnvalidation.models.jadn.jadn_config import DEFAULT_MAX_ELEMENTS, MAX_ELEMENTS_KEY
-from jadnvalidation.utils.general_utils import get_global_configs
+from jadnvalidation.utils.general_utils import get_global_configs, get_type_opts
 
 # TODO: Change to BaseModel
 class Array(list):
@@ -46,6 +46,7 @@ class Map(BaseModel):
         """
         
         global_configs = get_global_configs(cls)
+        type_opts = get_type_opts(cls)
         model_fields = cls.model_fields
         model_fields_len = len(model_fields)        
         
