@@ -1,4 +1,4 @@
-from jadnvalidation.tests.test_utils import create_testing_model, validate_data
+from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
 
 
 def test_max_string():
@@ -28,10 +28,10 @@ def test_max_string():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_max_string_order_of_precedence():
@@ -61,10 +61,10 @@ def test_max_string_order_of_precedence():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_max_binary():
@@ -94,10 +94,10 @@ def test_max_binary():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_max_binary_order_of_precedence():
@@ -127,10 +127,10 @@ def test_max_binary_order_of_precedence():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_max_elements_record():
@@ -176,10 +176,10 @@ def test_max_elements_record():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_sys_indicator():
@@ -275,7 +275,7 @@ def test_sys_indicator():
             ["Record-Name", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", [], ""]
+                [3, "field_value_3", "String", ["[0"], ""]
             ]]
         ]
     }
@@ -297,7 +297,7 @@ def test_sys_indicator():
     custom_schema, err_count = create_testing_model(valid_j_schema_1)
     total_errs = total_errs + err_count
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     total_errs = total_errs + err_count
     
     assert total_errs == 3
@@ -366,7 +366,7 @@ def test_type_name_regex():
     custom_schema, err_count = create_testing_model(valid_j_schema_1)
     total_errs = total_errs + err_count
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     total_errs = total_errs + err_count
     
     assert total_errs == 1
@@ -435,7 +435,7 @@ def test_field_name_regex():
     custom_schema, err_count = create_testing_model(valid_j_schema_1)
     total_errs = total_errs + err_count
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     total_errs = total_errs + err_count
     
     assert total_errs == 1

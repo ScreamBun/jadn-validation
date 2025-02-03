@@ -1,6 +1,6 @@
 import datetime
 
-from jadnvalidation.tests.test_utils import create_testing_model, validate_data
+from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
 
 
 def test_string_regex():
@@ -18,10 +18,10 @@ def test_string_regex():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_relative_json_pointer():
@@ -39,10 +39,10 @@ def test_string_relative_json_pointer():
         
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_json_pointer():
@@ -60,10 +60,10 @@ def test_string_json_pointer():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_iri_ref():
@@ -82,10 +82,10 @@ def test_string_iri_ref():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_iri():
@@ -104,10 +104,10 @@ def test_string_iri():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_uri_template():
@@ -125,10 +125,10 @@ def test_string_uri_template():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_uri_ref():
@@ -147,10 +147,10 @@ def test_string_uri_ref():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_uri():
@@ -168,10 +168,10 @@ def test_string_uri():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_ipv6():
@@ -189,10 +189,10 @@ def test_string_ipv6():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
 def test_string_ipv4():
@@ -209,10 +209,10 @@ def test_string_ipv4():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
 def test_string_idn_hostname():
@@ -229,10 +229,10 @@ def test_string_idn_hostname():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)          
     
 def test_string_hostname():
@@ -251,10 +251,10 @@ def test_string_hostname():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_idn_email():
@@ -270,10 +270,10 @@ def test_string_idn_email():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_email():
@@ -294,10 +294,10 @@ def test_string_email():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_pattern():
@@ -314,10 +314,10 @@ def test_string_pattern():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
     
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_time():
@@ -337,10 +337,10 @@ def test_string_time():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
     
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_date():
@@ -359,10 +359,10 @@ def test_string_date():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)
+    err_count = validate_valid_data(custom_schema, valid_data_list)
     assert err_count == 0
     
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_datetime():
@@ -386,10 +386,10 @@ def test_string_datetime():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
     
-    err_count = validate_data(custom_schema, invalid_data_list)    
+    err_count = validate_valid_data(custom_schema, invalid_data_list)    
     assert err_count == len(invalid_data_list)
   
 def test_jadn_str():
@@ -409,8 +409,8 @@ def test_jadn_str():
   
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)

@@ -14,7 +14,17 @@ def create_testing_model(j_schema: dict) -> tuple[type[BaseModel] | dict, Litera
         print(err)
     return custom_schema, err_count
 
-def validate_data(schema: type[BaseModel], data_list: list) -> int:
+def validate_valid_data(schema: type[BaseModel], data_list: list) -> int:
+    err_count = 0
+    for data in data_list:
+        try :
+            data_validation(schema, data)
+        except Exception as err:
+            err_count = err_count + 1
+            print(err)
+    return err_count
+
+def validate_invalid_data(schema: type[BaseModel], data_list: list) -> int:
     err_count = 0
     for data in data_list:
         try :

@@ -1,4 +1,4 @@
-from jadnvalidation.tests.test_utils import create_testing_model, validate_data
+from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
 
 def test_enum():
   
@@ -18,10 +18,10 @@ def test_enum():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_enum_ids():
@@ -42,8 +42,8 @@ def test_enum_ids():
     
     custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)    

@@ -18,7 +18,7 @@ from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.specializations import Choice
-from jadnvalidation.models.pyd.structures import Record
+from jadnvalidation.models.pyd.structures import Map, Record
 from jadnvalidation.utils import mapping_utils
 
 
@@ -48,20 +48,6 @@ def build_pyd_field(jadn_type: Union[Jadn_Type, Jadn_Enum], force_optional: bool
             py_field = build_pyd_ref_field(jadn_type, force_optional)
         
     return py_field
-
-# Still used??
-# def add_record_validations(model, jadn_type_obj):
-
-#     pyd_field_mapping = mapping_utils.map_type_opts(jadn_type_obj.base_type, jadn_type_obj.type_options)
-#     if pyd_field_mapping and pyd_field_mapping.min_length:
-#         model.minv = Field(default=pyd_field_mapping.min_length)
-
-#     if pyd_field_mapping and pyd_field_mapping.max_length:
-#         model.maxv = Field(default=pyd_field_mapping.max_length)
-        
-#     model.jadn_type = jadn_type_obj.base_type
-    
-#     return model
 
 def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, Field]):
     
@@ -134,9 +120,15 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     validate_field_name(j_field_obj.type_name, j_config_obj)
                     p_field = build_pyd_field(j_field_obj)
                     p_structure_fields[j_field_obj.type_name] = p_field
-                    
-                p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
-                globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
+                
+                if j_type_obj.base_type == Base_Type.RECORD.value:
+                    p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
+                    globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
+                elif j_type_obj.base_type == Base_Type.MAP.value:
+                    p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)
+                    globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)                    
+                else:
+                    raise ValueError("Unknown JADN Structure")                    
                 
                 p_structure_fields["type_opts"] = (str, Field(default="testing model opts", exclude=True, evaluate=False))
                 p_structure_fields["global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
@@ -152,14 +144,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     p_fields["root_global_opts"] = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))             
             
     root_model = create_root_model(p_models, p_fields)
-
-    try :
-        root_model.model_rebuild(
-            _parent_namespace_depth=3,
-            raise_errors=True
-            )
-    except Exception as err:
-        print(err)
+    root_model.model_rebuild(_parent_namespace_depth=3, raise_errors=True)
     
     return root_model
 

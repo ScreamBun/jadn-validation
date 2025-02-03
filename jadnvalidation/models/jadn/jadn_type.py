@@ -20,6 +20,7 @@ class Specilization(BaseEnum):
     
 class Structure(BaseEnum):
     ARRAY = 'Array'
+    MAP = 'Map'
     RECORD = 'Record'
 
 class Base_Type(BaseEnum):
@@ -29,8 +30,9 @@ class Base_Type(BaseEnum):
     NUMBER = 'Number'
     STRING = 'String'
     ARRAY = 'Array'
-    ENUMERATED = 'Enumerated'
     CHOICE = 'Choice'
+    ENUMERATED = 'Enumerated'
+    MAP = 'Map'
     RECORD = 'Record'
 
 class Jadn_Type():
