@@ -18,6 +18,9 @@ def addKey(d: dict, k: str = None) -> Callable:
         return fun
     return wrapped
 
+def all_unique(lst):
+  return len(lst) == len(set(lst))
+
 def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
     return create_model(
         model_name,

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from jadnvalidation.utils.general_utils import get_global_configs, get_type_opts
+from jadnvalidation.utils.general_utils import all_unique, get_global_configs, get_type_opts
 
 
 class Choice(BaseModel):
@@ -44,6 +44,19 @@ class Choice(BaseModel):
             data_keys = value.keys()
             data_keys_len = len(data_keys)
             
+            if type_opts and type_opts.use_field_id:
+                # If using field id, then all ids should be integers and unique
+                try:
+                   int_list = [int(x) for x in data_keys] 
+                except:
+                    raise ValueError(f"Choice option key/id must be an integer")
+                
+                try:
+                    if not all_unique(data_keys):
+                        raise ValueError(f"All Choice option keys/ids must be unique")
+                except:
+                    raise ValueError(f"Unable to check Choice option keys/ids for uniqueness")                
+                                
             # Choice data cannot exceed the number choice options
             if data_keys_len > model_fields_len:
                 raise ValueError(f"Choice options cannot exceed {model_fields_len} options")
@@ -53,8 +66,5 @@ class Choice(BaseModel):
             for data_key in data_keys:
                 if data_key not in model_field_keys:
                     raise ValueError(f"Choice option '{data_key}' not found")
-        
-        
-        # TODO: min/max checks....     
 
         return value

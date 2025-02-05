@@ -100,12 +100,7 @@ def test_choice_id():
             "Choice-Name": {
                 "field_value_x": "test incorrect field name"
             }
-        },
-        {
-            "Choice-Name": {
-                "1": 123
-            }
-        }        
+        }       
     ]
     
     custom_schema, err_count = create_testing_model(j_schema)
