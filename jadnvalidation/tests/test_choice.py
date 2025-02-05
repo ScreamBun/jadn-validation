@@ -1,4 +1,4 @@
-from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
+from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
 
 
 def test_choice():
@@ -113,5 +113,5 @@ def test_choice_id():
     err_count = validate_valid_data(custom_schema, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_invalid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)      

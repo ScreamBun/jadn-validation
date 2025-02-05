@@ -2,6 +2,7 @@ from __future__ import annotations
 from pydantic import Field, create_model
 from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
 
 
 def test_nested_static_models():
@@ -78,7 +79,7 @@ def test_forward_ref():
         ]
     }
     
-    valid_data_1 = {
+    valid_data_list = [{
         'RecordName1': {
             'field_value_1a': {
                 'field_value_2a': 'Anytown'
@@ -87,9 +88,9 @@ def test_forward_ref():
         'RecordName2': {
             'field_value_2a': 'Anytown'
         }             
-    }
+    }]
     
-    invalid_data_1 = {
+    invalid_data_list = [{
         'RecordName1': {
             'field_value_1a': {
                 'field_value_2a': 'Anytown'
@@ -97,46 +98,18 @@ def test_forward_ref():
         },
         'RecordName2': {
             'field_value_2zzzz': False
-        }             
-    }
+        }
+    },
+    { 'true' : 'True' },
+    {}]                         
     
-    invalid_data_2 = True
-    
-    invalid_data_3 = {}
-    
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)    
-    
-    try :
-        data_validation(custom_schema, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(custom_schema, invalid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    try :
-        data_validation(custom_schema, invalid_data_2)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
-        
-    try :
-        data_validation(custom_schema, invalid_data_3)        
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)                    
-        
-    assert err_count == 3
+    err_count = validate_invalid_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
 
 def test_forward_ref_deeper():
     
@@ -157,7 +130,7 @@ def test_forward_ref_deeper():
         ]
     }
     
-    valid_data_1 = {
+    valid_data_list = [{
         'RecordName1': {
             'field_value_1a': {
                 'field_value_2a': {
@@ -182,9 +155,9 @@ def test_forward_ref_deeper():
         'RecordName4': {
             'field_value_4a': 'Anytown'
         }               
-    }
+    }]
     
-    invalid_data_1 = {
+    invalid_data_list = [{
         'RecordName1': {
             'field_value_1a': {
                 'field_value_2a': 'Anytown'
@@ -193,45 +166,17 @@ def test_forward_ref_deeper():
         'RecordName2': {
             'field_value_2zzzz': False
         }             
-    }
+    },
+    { 'true' : 'True' },
+    {}]
     
-    invalid_data_2 = True
-    
-    invalid_data_3 = {}
-    
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)    
-    
-    try :
-        data_validation(custom_schema, valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        data_validation(custom_schema, invalid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-    try :
-        data_validation(custom_schema, invalid_data_2)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
-        
-    try :
-        data_validation(custom_schema, invalid_data_3)        
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)                    
-        
-    assert err_count == 3
+    err_count = validate_invalid_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list)  
 
 
 def test_records():
@@ -249,7 +194,7 @@ def test_records():
         ]
     }  
     
-    valid_data_1 = {
+    valid_data_list = [{
         'Record-Name1': {
             'field_value_1a': "test field",
             'field_value_2a': 'Anytown'
@@ -258,9 +203,9 @@ def test_records():
             'field_value_1b': "test field",
             'field_value_2b': 'Anytown'
         }        
-    }
+    }]
     
-    invalid_data_1 = {
+    invalid_data_list = [{
         'Record-Name1': {
             'field_value_1a': True,
             'field_value_2a': 'Anytown'
@@ -269,102 +214,12 @@ def test_records():
             'field_value_1b': "test field",
             'field_value_2b': False
         }        
-    }
+    }]
     
-    err_count = 0
-    custom_schema = {}
-    try :
-        custom_schema = create_pyd_model(j_schema)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)    
-    
-    try :
-        custom_schema.model_validate(valid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)     
+    custom_schema, err_count = create_testing_model(j_schema)
         
-    try :
-        custom_schema.model_validate(invalid_data_1)
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
-               
-    assert err_count == 1
-    
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    assert err_count == 0
         
-
-# TODO: Schema initialization is broken, cutom types are ignored...            
-# def test_record_legacy_initialization(): 
-    
-#     j_schema = {
-#         "types": [
-#             ["RecordName", "Record", ["{1", "}2"], "", [
-#                 [1, "field_value_1", "String", [], ""],
-#                 [2, "field_value_2", "String", [], ""]
-#             ]]
-#         ]
-#     }   
-    
-#     data_1 = {
-#         'RecordName': {
-#             'field_value_1': "test field",
-#             'field_value_2': 'Anytown'
-#         }
-#     }
-    
-#     data_2 = {
-#             'field_value_1': "test field",
-#             'field_value_2': 'Anytown'
-#     }    
-    
-#     data_invalid_1 = {
-#         'RecordName': {
-#             'field_value_1': 123,
-#             'field_value_2': 'Anytown'
-#         }
-#     }    
-    
-#     data_invalid_2 = {
-#         'field_value_1': 123,
-#         'field_value_2': 'Anytown'
-#     }     
-    
-#     custom_model = None    
-#     error_count = 0
-    
-#     try:
-#         # custom_model = Schema.model_validate(j_schema)
-#         custom_model = Schema(**j_schema) 
-#         custom_model.model_rebuild()
-#         print(custom_model)
-#     except ValidationError as e:
-#         error_count = error_count + 1
-#         print(e)
-    
-#     try:
-#         custom_model.model_validate(data_1)
-#     except ValidationError as e:
-#         error_count = error_count + 1
-#         print(e)
-        
-#     try:
-#         custom_model.model_validate(data_2)
-#     except ValidationError as e:
-#         error_count = error_count + 1
-#         print(e)        
-    
-#     try:
-#         custom_model.model_validate(data_invalid_1)
-#     except ValidationError as e:
-#         error_count = error_count + 1
-#         print(e)
-        
-#     try:
-#         custom_model.model_validate(data_invalid_2)
-#     except ValidationError as e:
-#         error_count = error_count + 1
-#         print(e)              
-        
-#     assert error_count == 1
+    err_count = validate_invalid_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
