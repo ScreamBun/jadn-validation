@@ -178,6 +178,52 @@ def test_forward_ref_deeper():
     err_count = validate_invalid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list)  
 
+def test_records_min_max():
+    
+    j_schema = {
+        "types": [
+            ["Record-Name1", "Record", ["{2", "}2"], "", [
+                [1, "field_value_1a", "String", ["{0", "[0"], ""],
+                [2, "field_value_2a", "String", ["{0", "[0"], ""],
+                [3, "field_value_3a", "String", ["{0", "[0"], ""]
+            ]],
+            ["Record-Name2", "Record", ["{2", "}2"], "", [
+                [1, "field_value_1b", "String", ["{0", "[0"], ""],
+                [2, "field_value_2b", "String", ["{0", "[0"], ""],
+                [3, "field_value_3b", "String", ["{0", "[0"], ""]            
+            ]]
+        ]
+    }  
+    
+    valid_data_list = [{
+        'Record-Name1': {
+            'field_value_1a': "test field",
+            'field_value_2a': 'Anytown'
+        },
+        'Record-Name2': {
+            'field_value_1b': "test field",
+            'field_value_2b': 'Anytown'
+        }        
+    }]
+    
+    invalid_data_list = [{
+        'Record-Name1': {
+            'field_value_1a': "test field"
+        },
+        'Record-Name2': {
+            'field_value_1b': "test field",
+            'field_value_2b': "test field",
+            'field_value_3b': "test field"
+        }        
+    }]
+    
+    custom_schema, err_count = create_testing_model(j_schema)
+        
+    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(custom_schema, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
 
 def test_records():
     

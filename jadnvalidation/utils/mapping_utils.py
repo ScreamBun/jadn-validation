@@ -38,7 +38,6 @@ def use_field_id(j_type_opts: List[str]) -> bool:
     
     return use_id
     
-
 def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
         # Custom limits
@@ -194,3 +193,22 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
                 
     return pyd_field_mapper
+
+def get_min_max(global_configs, type_opts):
+    min_elements = None
+    max_elements = None
+    
+    if global_configs and global_configs.MaxElements:
+        max_elements = global_configs.MaxElements
+    
+    if type_opts and type_opts.max_length:
+        max_elements = type_opts.max_length
+    elif type_opts and type_opts.le:
+        max_elements = type_opts.le
+            
+    if type_opts and type_opts.min_length:
+        min_elements = type_opts.min_length
+    elif type_opts and type_opts.ge:
+        min_elements = type_opts.ge
+        
+    return min_elements, max_elements
