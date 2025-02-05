@@ -26,7 +26,7 @@ def convert_to_pyd_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
 
-def use_enum_id(j_type_opts: List[str]) -> bool:
+def use_field_id(j_type_opts: List[str]) -> bool:
     use_id = False
     
     if j_type_opts:
@@ -78,7 +78,7 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
         
         match opt_char_id:
             case "=":           # id - Items and Fields are denoted by FieldID rather than FieldName (Section 3.2.1.1)
-                py_field = ""
+                pyd_field_mapper.use_field_id = True
             case "*":           # vtype - Value type for ArrayOf and MapOf (Section 3.2.1.2)
                 py_field = ""
             case "+":           # ktype - Key type for MapOf (Section 3.2.1.3)

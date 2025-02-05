@@ -27,3 +27,4 @@ class Pyd_Field_Mapper():
     is_required: bool = True
     pattern: str = None
     format: str = None
+    use_field_id: bool = False

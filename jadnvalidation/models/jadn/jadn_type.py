@@ -97,6 +97,7 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None
         # field
         jadn_type_obj = Jadn_Type(
                 config=j_config,
+                id=j_type[0],
                 type_name=j_type[1], 
                 base_type=j_type[2], 
                 type_options=j_type[3], 

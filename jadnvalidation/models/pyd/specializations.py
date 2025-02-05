@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from jadnvalidation.utils.general_utils import get_global_configs
+from jadnvalidation.utils.general_utils import get_global_configs, get_type_opts
 
 
 class Choice(BaseModel):
@@ -25,6 +25,7 @@ class Choice(BaseModel):
         """
         
         global_configs = get_global_configs(cls)
+        type_opts = get_type_opts(cls)
         
         if global_configs and global_configs.MaxElements:
             max_elements = global_configs.MaxElements
