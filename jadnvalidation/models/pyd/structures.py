@@ -61,16 +61,20 @@ class Map(BaseModel):
         type_opts = get_type_opts(cls)
         model_fields = cls.model_fields
         model_fields_len = len(model_fields)        
+
+        # Min / Max Elements Validation
+        min, max = get_min_max(global_configs, type_opts)
+        validate_min_max_items(value, min, max)
         
-        if global_configs and global_configs.MaxElements:
-            max_elements = global_configs.MaxElements
+        # if global_configs and global_configs.MaxElements:
+        #     max_elements = global_configs.MaxElements
             
-            if value and isinstance(value, dict):
-                for item in value.values():
-                    if isinstance(item, dict):
-                        if len(item) > max_elements:
-                            raise ValueError(f"Max Number of elements ({max_elements}) exceeded")
-                    break
+        #     if value and isinstance(value, dict):
+        #         for item in value.values():
+        #             if isinstance(item, dict):
+        #                 if len(item) > max_elements:
+        #                     raise ValueError(f"Max Number of elements ({max_elements}) exceeded")
+        #             break
                 
         if value and isinstance(value, dict):
             data_keys = value.keys()
@@ -78,13 +82,13 @@ class Map(BaseModel):
             
             # Map data cannot exceed the number of mappings, unless extends is selected
             if data_keys_len > model_fields_len:
-                raise ValueError(f"Choice options cannot exceed {model_fields_len} options")
+                raise ValueError(f"Map cannot exceed {model_fields_len} options")
             
             # Map data must be a mapping
             model_field_keys = model_fields.keys()
             for data_key in data_keys:
                 if data_key not in model_field_keys:
-                    raise ValueError(f"Choice option '{data_key}' not found")                
+                    raise ValueError(f"Map key '{data_key}' not found")                
 
         return value  
 
