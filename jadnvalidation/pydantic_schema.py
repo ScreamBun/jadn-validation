@@ -11,7 +11,7 @@ from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_choice import build_pyd_choice_field
 from jadnvalidation.models.pyd.pyd_field_enum import build_pyd_enum_field
-from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
+# from jadnvalidation.models.pyd.pyd_field_ref import build_pyd_ref_field
 from jadnvalidation.models.pyd.pyd_field_str import build_pyd_str_field
 from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
@@ -20,6 +20,77 @@ from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.specializations import Choice
 from jadnvalidation.models.pyd.structures import Map, Record
 from jadnvalidation.utils import mapping_utils
+from jadnvalidation.utils.general_utils import safe_get
+
+
+ValidName = re.compile(r"^[A-Za-z_][A-Za-z0-9_]_")
+SysAlias = re.compile(r"[:$?&|!{}\[\]()^~*\"'+\-\s]")
+
+def clsName(name: str) -> str:
+    if ValidName.match(name):
+        return name
+    return SysAlias.sub("__", name)
+
+def is_ref_primitive(ref_name: str):
+    ref_type = None
+    j_root_types = globals()['j_types']
+    j_config_obj = globals()['j_config_obj']    
+    for j_root_type in j_root_types:
+        j_root_type_obj = build_jadn_type_obj(j_root_type, j_config_obj)
+        if j_root_type_obj.type_name == ref_name:
+            if is_primitive(j_root_type_obj.base_type):
+                ref_type = j_root_type_obj
+                break
+    return ref_type
+
+# WARNING: References in Pydantic only work when pointing to another model
+def build_pyd_ref_field(j_type: Jadn_Type, force_optional: bool = False) -> Field:
+    
+    '''
+    force_optional: Used by choice fields.
+    '''     
+
+    pyd_field = ()
+    p_type = clsName(j_type.base_type)
+    is_required = True
+    
+    # Pydantic Limitation: Cannot reference fields (root primitives), models (root structures) only. 
+    # To resolve this we check reference fields to see if their ref is a primitive.  
+    # If it is, then go ahead and create the field as a primitive. 
+    if ref_type := is_ref_primitive(p_type):
+        match ref_type.base_type:
+            case Base_Type.STRING.value:
+                pyd_field = build_pyd_str_field(ref_type, force_optional)
+            case Base_Type.INTEGER.value:
+                pyd_field = build_pyd_int_field(ref_type, force_optional)
+            case Base_Type.NUMBER.value:
+                pyd_field = build_pyd_num_field(ref_type, force_optional)
+            case Base_Type.BOOLEAN.value:
+                pyd_field = build_pyd_bool_field(ref_type, force_optional) 
+            case Base_Type.BINARY.value:
+                pyd_field = build_pyd_binary_field(ref_type, force_optional)
+            case default:
+                raise ValueError("Unknow refernce type")
+    # Else, the reference should be a model (root structure), which is safe to use.
+    else:
+        if is_required and not force_optional:
+            pyd_field = (p_type,
+                    Field(
+                                ...,
+                                description=j_type.type_description,
+                                title="reference type"
+                            )
+                    )
+        else:
+            pyd_field = (p_type,
+                    Field(
+                                default=None,
+                                description=j_type.type_description,
+                                title="reference type"
+                            )
+                    )
+    
+    return pyd_field 
 
 
 def build_pyd_field(jadn_type: Union[Jadn_Type, Jadn_Enum], force_optional: bool = False) -> Field:
@@ -41,7 +112,7 @@ def build_pyd_field(jadn_type: Union[Jadn_Type, Jadn_Enum], force_optional: bool
             py_field = build_pyd_choice_field(jadn_type, force_optional)          
         case Base_Type.RECORD.value:
             py_field = build_pyd_record_field(jadn_type, force_optional) 
-        case "Array":
+        case Base_Type.ARRAY.value:
             py_field = build_pyd_array_field(jadn_type, force_optional)
         case default:
             # Custom Type (aka ref type)
@@ -56,7 +127,6 @@ def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, F
         # TODO: Sys name?
         fields[model.__name__] = (model, ...)
 
-
     for field_name, field in root_fields.items():
         # TODO: Sys name?
         fields[field_name] = field
@@ -69,7 +139,7 @@ def validate_type_name(name: str, j_config: Jadn_Config):
         raise ValueError(f"Type Name {name} cannot begin with {j_config.Sys}")
     
     if not re.search(j_config.TypeName, name):
-        raise ValueError(f"Invalid Type Name {name} per the Schema / info / config / $TypeName regex")
+        raise ValueError(f"Invalid Type Name {name} per the Schema / info / config / TypeName regex")
     
 def validate_field_name(name: str, j_config: Jadn_Config):
     
@@ -84,6 +154,9 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
 
     j_config_obj = build_jadn_config_obj(j_config_data)
     global_config_field = (dict, Field(default=j_config_obj, exclude=True, evaluate=False))
+    
+    globals()['j_types'] = j_types
+    globals()['j_config_obj'] = j_config_obj
 
     p_models = {}
     p_fields = {}
@@ -163,8 +236,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
             else:
                 # TODO: Add other bases types...
                 raise ValueError("Unknown JADN Type")
-       
-    # TODO: Build this once....        
+               
     p_fields[ROOT_GLOBAL_CONFIG_KEY] = global_config_field            
             
     root_model = create_root_model(p_models, p_fields)
