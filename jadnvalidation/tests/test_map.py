@@ -184,10 +184,14 @@ def test_map_ref_field():
             "exports": ["Map-Name"]
         },
         "types": [
-            ["StringName", "String", ["{0"], ""],
+            ["IntegerTest", "Integer", ["{0"], ""],
+            ["StringTest", "String", ["{0"], ""],
             ["Map-Name", "Map", [], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "StringName", [], ""]
+                [1, "field_value_1", "IntegerTest", [], ""],
+                [2, "field_value_2", "StringTest", [], ""]
+            ]],
+            ["RecordTest", "Record", ["{0"], "", [
+                [1, "field_value_1", "String", [], ""]
             ]]
         ]
     }
@@ -195,13 +199,13 @@ def test_map_ref_field():
     valid_data_list = [
             {
                 "Map-Name": {
-                    "field_value_1": "placeat repellendus sit",
+                    "field_value_1": 123,
                     "field_value_2": "molestias, sit elit. sit"
                 }
             }, 
             {
                 "Map-Name": {
-                    "field_value_1": "molestias, amet nobis",
+                    "field_value_1": 321,
                     "field_value_2": "repellendus architecto"
                 }
             }
@@ -210,7 +214,7 @@ def test_map_ref_field():
     invalid_data_list = [
         {
             "Map-Name": {
-                "field_value_1": "placeat repellendus sit",
+                "field_value_1": 123,
                 "field_value_2": "molestias, sit elit. sit",
                 "field_value_3": "test extra field validation"
             }
@@ -222,7 +226,7 @@ def test_map_ref_field():
         },
         {
             "Map-Name": {
-                "field_value_1": 123
+                "field_value_1": True
             }
         }        
     ]

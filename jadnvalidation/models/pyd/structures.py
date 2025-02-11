@@ -102,7 +102,7 @@ class Record(BaseModel):
         from_attributes=True, 
         arbitrary_types_allowed=True,
         validate_assignment=True,
-        extra='allow')
+        extra='forbid')
  
     @model_validator(mode='before')
     @classmethod

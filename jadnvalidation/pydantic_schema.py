@@ -120,6 +120,27 @@ def build_pyd_field(jadn_type: Union[Jadn_Type, Jadn_Enum], force_optional: bool
         
     return py_field
 
+def build_type_opts_field(j_type_obj: Jadn_Type):
+    j_type_opts_obj = None
+    if j_type_obj.type_options:
+        j_type_opts_obj = mapping_utils.map_type_opts(j_type_obj.base_type, j_type_obj.type_options)    
+    
+    return (dict, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+
+# Used to add models to the root model
+def convert_model_to_field(j_type: Jadn_Type, base_cls, p_fields: dict):
+    type_opts_obj = None
+    if j_type.type_options:
+        type_opts_obj = mapping_utils.map_type_opts(j_type.base_type, j_type.type_options)    
+    
+    p_model = create_model(j_type.type_name, __base__=base_cls, **p_fields)
+    
+    p_field = (p_model, ...) # Default to mandatory
+    if type_opts_obj and not type_opts_obj.is_required:
+        p_field = (p_model, Field(default=None))
+      
+    return p_model, p_field
+
 def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, Field]):
     
     fields = {}
@@ -171,9 +192,8 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                 j_field_obj = build_jadn_enum_field_obj(j_type_obj, use_id)
                 p_field = build_pyd_field(j_field_obj)
                 p_fields[j_type_obj.type_name] = p_field
-                
-            # TODO: Possibly combine with is_structure block of code below....                
-            elif is_specialization(j_type_obj.base_type):                
+                              
+            elif is_specialization(j_type_obj.base_type): # Choice
                 p_structure_fields = {}
                 for j_field in j_type_obj.fields: 
                     j_field_obj = build_jadn_type_obj(j_field, j_config_obj)
@@ -184,19 +204,17 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     if use_id:
                         p_structure_fields[str(j_field_obj.id)] = p_field
                     else:
-                        p_structure_fields[j_field_obj.type_name] = p_field
-                        
-                j_type_opts_obj = None
-                if j_type_obj.type_options:
-                   j_type_opts_obj = mapping_utils.map_type_opts(j_type_obj.base_type, j_type_obj.type_options)                    
+                        p_structure_fields[j_field_obj.type_name] = p_field                 
                     
-                p_structure_fields[TYPE_OPTS_KEY] = (str, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+                p_structure_fields[TYPE_OPTS_KEY] = build_type_opts_field(j_type_obj)
                 p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field                   
                     
-                p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Choice, **p_structure_fields)
-                globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Choice, **p_structure_fields)
+                base_cls = eval(j_type_obj.base_type)                    
+                p_model, p_field = convert_model_to_field(j_type_obj, base_cls, p_structure_fields)
+                p_fields[j_type_obj.type_name] = p_field
+                globals()[j_type_obj.type_name] = p_model
 
-            elif is_structure(j_type_obj.base_type):
+            elif is_structure(j_type_obj.base_type):  # Array, Map or Record
                 p_structure_fields = {}
                 use_id = mapping_utils.use_field_id(j_type_obj.type_options)
                 
@@ -207,34 +225,24 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     if use_id:
                         p_structure_fields[str(j_field_obj.id)] = p_field
                     else:
-                        p_structure_fields[j_field_obj.type_name] = p_field   
+                        p_structure_fields[j_field_obj.type_name] = p_field
                 
-                j_type_opts_obj = None
-                if j_type_obj.type_options:
-                   j_type_opts_obj = mapping_utils.map_type_opts(j_type_obj.base_type, j_type_obj.type_options)
-                
-                if j_type_obj.base_type == Base_Type.RECORD.value:
-                    p_structure_fields[TYPE_OPTS_KEY] = (dict, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
+                if j_type_obj.base_type == Base_Type.RECORD.value or j_type_obj.base_type == Base_Type.MAP.value:
+                    p_structure_fields[TYPE_OPTS_KEY] = build_type_opts_field(j_type_obj)
                     p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field
                                     
-                    p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
-                    globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Record, **p_structure_fields)
-                    
-                elif j_type_obj.base_type == Base_Type.MAP.value:
-                    p_structure_fields[TYPE_OPTS_KEY] = (dict, Field(default=j_type_opts_obj, exclude=True, evaluate=False))
-                    p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field
+                    base_cls = eval(j_type_obj.base_type)                                    
+                    p_model, p_field = convert_model_to_field(j_type_obj, base_cls, p_structure_fields)
+                    p_fields[j_type_obj.type_name] = p_field                                  
                                     
-                    p_models[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)
-                    globals()[j_type_obj.type_name] = create_model(j_type_obj.type_name, __base__=Map, **p_structure_fields)                    
-                    
+                    globals()[j_type_obj.type_name] = p_model
                 else:
-                    raise ValueError("Unknown JADN Structure")                    
+                    raise ValueError("Unknown JADN Structure")
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)
                 p_fields[j_type_obj.type_name] = p_field
             else:
-                # TODO: Add other bases types...
                 raise ValueError("Unknown JADN Type")
                
     p_fields[ROOT_GLOBAL_CONFIG_KEY] = global_config_field            
@@ -243,7 +251,6 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     root_model.model_rebuild(_parent_namespace_depth=3, raise_errors=True)
     
     return root_model
-
 
 
 # ** MAIN ENTRY POINT **
