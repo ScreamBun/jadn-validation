@@ -141,19 +141,6 @@ def convert_model_to_field(j_type: Jadn_Type, base_cls, p_fields: dict):
       
     return p_model, p_field
 
-def create_root_model(sub_models: dict[str, BaseModel], root_fields: dict[str, Field]):
-    
-    fields = {}
-    for model_name, model in sub_models.items():
-        # TODO: Sys name?
-        fields[model.__name__] = (model, ...)
-
-    for field_name, field in root_fields.items():
-        # TODO: Sys name?
-        fields[field_name] = field
-
-    return create_model("root_model", __base__=Record, **fields)
-
 def validate_type_name(name: str, j_config: Jadn_Config):
     
     if name.startswith(j_config.Sys):
@@ -247,7 +234,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                
     p_fields[ROOT_GLOBAL_CONFIG_KEY] = global_config_field            
             
-    root_model = create_root_model(p_models, p_fields)
+    root_model = create_model("root_model", __base__=Record, **p_fields)
     root_model.model_rebuild(_parent_namespace_depth=3, raise_errors=True)
     
     return root_model
