@@ -1,38 +1,57 @@
 from __future__ import annotations
-from random import randint
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from jadnvalidation.models.jadn.jadn_config import DEFAULT_MAX_ELEMENTS, MAX_ELEMENTS_KEY
 from jadnvalidation.utils.general_utils import get_global_configs, get_type_opts
 from jadnvalidation.utils.mapping_utils import get_min_max
 
-def validate_min_max_items(value, min, max):
+def validate_min_max_dict_items(value, min, max):
     if min or max:
         if value and isinstance(value, dict):
-            # for item in value.values():
-                if isinstance(value, dict):
-                    if min and len(value.values()) < min:
-                        raise ValueError(f"Min Number of elements ({min}) required")                    
-                    if max and len(value.values()) > max:
-                        raise ValueError(f"Max Number of elements ({max}) exceeded")
-                # break    
+            if min and len(value.values()) < min:
+                raise ValueError(f"Min Number of elements ({min}) required")                    
+            if max and len(value.values()) > max:
+                raise ValueError(f"Max Number of elements ({max}) exceeded")
 
-# TODO: Change to BaseModel
-class Array(list):
+class Array(BaseModel):
     """
     An ordered list of labeled fields with positionally-defined semantics. 
     Each field has a position, label, and type.
     """
+    
+    model_config = ConfigDict(
+        from_attributes=True, 
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra='allow')    
 
+    @model_validator(mode='before')
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+    def validate_data(cls, value: any) -> list:
+        """
+        Array Custom Rules:
+        - ...
+        """
 
-    @classmethod
-    def validate(cls, value: any, values):
-        if not isinstance(value, list):
-            raise ValueError("Invalid list")    
-        return value
+        global_configs = get_global_configs(cls)
+        type_opts = get_type_opts(cls)
+
+        # TODO: Check min / max for arrays
+        # Min / Max Elements Validation
+        # min, max = get_min_max(global_configs, type_opts)
+        # validate_min_max_items(value, min, max)
+    
+        # TODO: Add custom JADN rules for array data        
+        # if value and isinstance(value, dict):
+        #     model_fields = cls.model_fields
+        #     data_keys = value.keys()
+            
+        #     # Validate map keys
+        #     model_field_keys = model_fields.keys()
+        #     for data_key in data_keys:
+        #         if data_key not in model_field_keys:
+        #             raise ValueError(f"Map key '{data_key}' not found")                
+
+        return value 
     
 class Map(BaseModel):
     """
@@ -44,7 +63,7 @@ class Map(BaseModel):
         from_attributes=True, 
         arbitrary_types_allowed=True,
         validate_assignment=True,
-        extra='allow')
+        extra='forbid')
  
     @model_validator(mode='before')
     @classmethod
@@ -56,35 +75,19 @@ class Map(BaseModel):
         - An instance of a Map, MapOf, or Record type with a key mapped to a null value MUST compare as equal 
           to an otherwise identical instance without that key.
         """
-        
+
         global_configs = get_global_configs(cls)
         type_opts = get_type_opts(cls)
-        model_fields = cls.model_fields
-        model_fields_len = len(model_fields)        
-
+        
         # Min / Max Elements Validation
         min, max = get_min_max(global_configs, type_opts)
-        validate_min_max_items(value, min, max)
+        validate_min_max_dict_items(value, min, max)
         
-        # if global_configs and global_configs.MaxElements:
-        #     max_elements = global_configs.MaxElements
-            
-        #     if value and isinstance(value, dict):
-        #         for item in value.values():
-        #             if isinstance(item, dict):
-        #                 if len(item) > max_elements:
-        #                     raise ValueError(f"Max Number of elements ({max_elements}) exceeded")
-        #             break
-                
         if value and isinstance(value, dict):
+            model_fields = cls.model_fields
             data_keys = value.keys()
-            data_keys_len = len(data_keys)
             
-            # Map data cannot exceed the number of mappings, unless extends is selected
-            if data_keys_len > model_fields_len:
-                raise ValueError(f"Map cannot exceed {model_fields_len} options")
-            
-            # Map data must be a mapping
+            # Validate map keys
             model_field_keys = model_fields.keys()
             for data_key in data_keys:
                 if data_key not in model_field_keys:
@@ -119,6 +122,6 @@ class Record(BaseModel):
         
         # Min / Max Elements Validation
         min, max = get_min_max(global_configs, type_opts)
-        validate_min_max_items(value, min, max)
+        validate_min_max_dict_items(value, min, max)
 
         return value 

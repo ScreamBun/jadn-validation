@@ -18,7 +18,7 @@ from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
 from jadnvalidation.models.pyd.specializations import Choice
-from jadnvalidation.models.pyd.structures import Map, Record
+from jadnvalidation.models.pyd.structures import Map, Record, Array
 from jadnvalidation.utils import mapping_utils
 from jadnvalidation.utils.general_utils import safe_get
 
@@ -166,7 +166,6 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     globals()['j_types'] = j_types
     globals()['j_config_obj'] = j_config_obj
 
-    p_models = {}
     p_fields = {}
     for j_type in j_types:
         j_type_obj = build_jadn_type_obj(j_type, j_config_obj)
@@ -214,17 +213,20 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     else:
                         p_structure_fields[j_field_obj.type_name] = p_field
                 
-                if j_type_obj.base_type == Base_Type.RECORD.value or j_type_obj.base_type == Base_Type.MAP.value:
-                    p_structure_fields[TYPE_OPTS_KEY] = build_type_opts_field(j_type_obj)
-                    p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field
-                                    
-                    base_cls = eval(j_type_obj.base_type)                                    
-                    p_model, p_field = convert_model_to_field(j_type_obj, base_cls, p_structure_fields)
-                    p_fields[j_type_obj.type_name] = p_field                                  
-                                    
-                    globals()[j_type_obj.type_name] = p_model
-                else:
-                    raise ValueError("Unknown JADN Structure")
+                # TODO: For array we may need to add fields to a model with a field type list.
+                # Several fields and model layers are needed... 
+                
+                # if j_type_obj.base_type == Base_Type.RECORD.value or j_type_obj.base_type == Base_Type.MAP.value:
+                p_structure_fields[TYPE_OPTS_KEY] = build_type_opts_field(j_type_obj)
+                p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field
+                                
+                base_cls = eval(j_type_obj.base_type)                                    
+                p_model, p_field = convert_model_to_field(j_type_obj, base_cls, p_structure_fields)
+                p_fields[j_type_obj.type_name] = p_field                                  
+                                
+                globals()[j_type_obj.type_name] = p_model
+                # else:
+                #     raise ValueError("Unknown JADN Structure")
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)
