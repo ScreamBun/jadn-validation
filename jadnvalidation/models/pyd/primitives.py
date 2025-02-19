@@ -62,19 +62,16 @@ class Integer(int):
         
         return value
 
-# TODO: May not be needed
 class String(str):
-
-    @classmethod
-    def __init__(self, **data):
-        hit = ""
+    
+    __test: str = "test"
     
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: any, values):
+    def validate(cls, value: str) -> str:
         if not isinstance(value, str):
-            raise ValueError("Invalid string")
+            raise ValueError("Value must be a string")
         return value

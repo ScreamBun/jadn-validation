@@ -1,5 +1,5 @@
 import sys
-from typing import Callable
+from typing import Callable, Union
 from pydantic import BaseModel, Field, create_model
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
@@ -21,6 +21,22 @@ def addKey(d: dict, k: str = None) -> Callable:
 def all_unique(lst):
   return len(lst) == len(set(lst))
 
+def create_derived_class(base_class, class_name, extra_methods=None):
+    """
+    Dynamically creates a new class inheriting from base_class.
+
+    Args:
+        base_class: The class to inherit from.
+        class_name: The name of the new class.
+        extra_methods: A dictionary of additional methods for the new class.
+
+    Returns:
+        The newly created class.
+    """
+    if extra_methods is None:
+        extra_methods = {}
+    return type(class_name, (base_class,), extra_methods)
+
 def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
     return create_model(
         model_name,
@@ -37,6 +53,9 @@ def convert_list_to_dict(lst):
     for i in range(0, len(lst), 2):
         res_dict[lst[i]] = lst[i + 1]
     return res_dict
+
+def create_dynamic_union(*types):
+    return Union[types]
 
 def get_global_configs(p_model):
     global_configs = None
