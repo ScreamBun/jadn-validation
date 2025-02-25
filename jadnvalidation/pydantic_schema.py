@@ -4,6 +4,7 @@ import re
 from typing import List, Union
 from pydantic import BaseModel, Field, create_model
 
+from jadnvalidation.jadn_custom_validation import custom_validation
 from jadnvalidation.models.jadn.jadn_config import ARRAY_TYPE_OPTS_KEY, GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY, Jadn_Config, build_jadn_config_obj
 from jadnvalidation.models.jadn.jadn_enum import Jadn_Enum, build_jadn_enum_field_obj
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_array, is_enumeration, is_primitive, is_record_or_map, is_specialization, is_structure
@@ -260,8 +261,6 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     
     return root_model
 
-
-# ** MAIN ENTRY POINT **
 def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     j_config = j_schema.get('info', {}).get('config')
     j_types = j_schema.get('types')
@@ -274,9 +273,15 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     
     return custom_model
 
-def data_validation(model, data):
-    try :
-        model.model_validate(data)
-    except Exception as err:
-        raise ValueError(err)
+def data_validation(pyd_model = None, jadn_schema = None, data = {}):
+    if pyd_model:
+        try :
+            pyd_model.model_validate(data)
+        except Exception as err:
+            raise ValueError(err)
+    if jadn_schema:
+        try :
+            custom_validation(jadn_schema, data)
+        except Exception as err:
+            raise ValueError(err)        
 
