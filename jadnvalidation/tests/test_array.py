@@ -310,8 +310,8 @@ def test_array_continued():
     # except Exception as err:
     #     print(err)    
     
-    try :
-        model.model_validate(valid_data_list)
-    except Exception as err:
-        print(err)       
+    # try :
+    #     model.model_validate(valid_data_list)
+    # except Exception as err:
+    #     print(err)       
         

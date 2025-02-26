@@ -2,6 +2,8 @@ from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jad
 from jadnvalidation.utils.general_utils import get_data_by_name, get_schema_types
 
 array_rules = {
+    "type": "check_type",
+    "order": "check_order",
     "/": "check_format",
     "{": "check_minv",
     "}": "check_maxv"
@@ -29,8 +31,9 @@ class ArrayValidation:
         # TODO: IPV formats...
         test = ""         
         
-    def check_type(data: any = None):
-        test = ""
+    def check_type(self, j_type_obj: Jadn_Type, data: list = None):
+        if not isinstance(data, list):
+            raise ValueError(f"Data must be a list. Received: {type(data)}")
         
     def validate(self):
         j_types = self.j_schema.get('types')

@@ -12,7 +12,8 @@ def test_arrary_validation():
         ]
     }
     
-    valid_data_list = [
+    data_list = [
+            { "Array-Test": "test" },
             { "Array-Test": ["test", True, 123] },
             { "Array-Test": [123, "test", True] },
             { "Array-Test": ["test", "test", "test"] },
@@ -20,7 +21,7 @@ def test_arrary_validation():
         ]    
     
     try :
-        custom_validation(j_schema, valid_data_list[0])
+        custom_validation(j_schema, data_list[0])
     except Exception as err:
         print(err)       
     
