@@ -19,9 +19,11 @@ class ArrayValidation:
         self.data = data  
         
     def check_order(self, j_type_obj: Jadn_Type, data: list = None):
+        # TODO: Kevin's logic goes here...
         test = ""
         
     def check_minv(self, j_type_obj: Jadn_Type, data: list = None):
+        # TODO: Leftoff here, need function to get minv from jadn_type_obj
         test = ""
         
     def check_maxv(self, j_type_obj: Jadn_Type, data: list = None):
