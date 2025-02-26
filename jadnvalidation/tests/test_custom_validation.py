@@ -1,4 +1,4 @@
-from jadnvalidation.jadn_custom_validation import arrary_validation
+from jadnvalidation.jadn_custom_validation import custom_validation
 
 
 def test_arrary_validation():
@@ -20,7 +20,7 @@ def test_arrary_validation():
         ]    
     
     try :
-        arrary_validation(j_schema, valid_data_list[0])
+        custom_validation(j_schema, valid_data_list[0])
     except Exception as err:
         print(err)       
     

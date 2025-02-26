@@ -57,6 +57,9 @@ def convert_list_to_dict(lst):
 def create_dynamic_union(*types):
     return Union[types]
 
+def get_data_by_name(data: dict, name: str):
+    return data.get(name)
+
 def get_global_configs(p_model):
     global_configs = None
     if p_model.model_fields:
@@ -70,6 +73,9 @@ def get_global_configs(p_model):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+def get_schema_types(j_types: list, base_type: str):
+    return [j_type for j_type in j_types if j_type[1] == base_type]
 
 def get_type_opts(p_model) -> Pyd_Field_Mapper:
     opts = None
