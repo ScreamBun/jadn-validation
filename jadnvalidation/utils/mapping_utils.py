@@ -9,7 +9,7 @@ from jadnvalidation.utils import general_utils
 
 def convert_to_pyd_type(type_str: str) -> type:
     """
-    Converts a jadn type to its corresponding Python type.
+    Converts a jadn type to its corresponding Pydantic type.
     """
     type_mapping = {
         Base_Type.STRING.value: StrictStr,
@@ -25,6 +25,22 @@ def convert_to_pyd_type(type_str: str) -> type:
         # Add more mappings as needed
     }
     return type_mapping.get(type_str, str)  # Default to string if type is unknown
+
+
+def convert_to_python_type(type_str: str) -> type:
+    """
+    Converts a jadn type to its corresponding Python type.
+    """
+    type_mapping = {
+        Base_Type.STRING.value: str,
+        Base_Type.BINARY.value: bytes,
+        Base_Type.BOOLEAN.value: bool,
+        Base_Type.INTEGER.value: int,
+        Base_Type.NUMBER.value: float,
+        Base_Type.ARRAY.value: list,
+        Base_Type.RECORD.value: dict
+    }
+    return type_mapping.get(type_str, str)  
 
 def use_field_id(j_type_opts: List[str]) -> bool:
     use_id = False
@@ -79,7 +95,16 @@ def get_min_length(j_type_opts: List[str]) -> int:
                 print("Invalid option: requires integer value: " + e)
             break   
     
-    return min_length              
+    return min_length  
+
+def is_optional(j_type_opts: List[str]) -> bool:
+    is_optional = False
+    
+    min = get_min_length(j_type_opts)
+    if min and min == 0:
+        is_optional = True
+    
+    return is_optional
             
 def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     # Custom limits

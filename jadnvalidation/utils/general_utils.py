@@ -71,6 +71,11 @@ def get_global_configs(p_model):
                 
     return global_configs
 
+def get_item_safe_check(my_list, index):
+    if 0 <= index < len(my_list):
+        return my_list[index]
+    return None  # Or any other default value
+
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
 
