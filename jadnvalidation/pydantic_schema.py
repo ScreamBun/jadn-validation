@@ -239,14 +239,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     p_fields[ARRAY_TYPE_OPTS_KEY] = (dict, Field(default=j_type_obj, exclude=True, evaluate=False))            
                     
                 else:
-                    raise ValueError("Unknown JADN Structure")                    
-                    
-                # p_structure_fields[GLOBAL_CONFIG_KEY] = global_config_field
-                                    
-                # base_cls = eval(j_type_obj.base_type)                                    
-                # p_model, p_field = convert_model_to_field(j_type_obj, base_cls, p_structure_fields)
-                # p_fields[j_type_obj.type_name] = p_field        
-                # globals()[j_type_obj.type_name] = p_model
+                    raise ValueError("Unknown JADN Structure")
                     
             elif is_primitive(j_type_obj.base_type):
                 p_field = build_pyd_field(j_type_obj)

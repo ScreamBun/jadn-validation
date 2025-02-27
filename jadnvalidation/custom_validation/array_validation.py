@@ -1,4 +1,5 @@
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj
+from jadnvalidation.pydantic_schema import build_custom_model
 from jadnvalidation.utils.general_utils import get_data_by_name, get_item_safe_check, get_schema_types
 from jadnvalidation.utils.mapping_utils import convert_to_python_type, get_max_length, get_min_length, is_optional
 
@@ -53,6 +54,16 @@ class ArrayValidation:
             p_type = convert_to_python_type(j_field_obj.base_type)
             if not isinstance(field_data, p_type):
                 raise ValueError(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})") 
+    
+    def check_with_pydantic(self, j_type_obj: Jadn_Type, data: any = None):
+        # Left off here... need to:
+        # - convert the field into a type
+        # - reesolve the type if it's not a primitive, run with it if it is a primitive
+        # - send the type to pydantic to create a model
+        # - use the model to validate the data
+        # - capture any errors and store them in a list
+        # - if the list is not empty, raise an exception with the list of errors
+        return None
         
     def validate(self):
         j_types = self.j_schema.get('types')
@@ -67,3 +78,9 @@ class ArrayValidation:
                 
             # Check field types
             self.check_field_types(j_type_obj, array_data)
+            
+            # Use pydantic to validate fields
+            try:
+                p_model = build_custom_model(j_type_obj, {})
+            except Exception as err:
+                raise ValueError(f"Error validating array data: {err}")
