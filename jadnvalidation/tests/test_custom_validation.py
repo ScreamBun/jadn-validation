@@ -4,7 +4,7 @@ from jadnvalidation.jadn_custom_validation import custom_validation
 def test_arrary_validation():
     j_schema = {
         "types": [
-            ["Array-Test", "Array", [], "", [
+            ["Array-Test", "Array", ["{10"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""],
                 [3, "field_value_3", "Integer", [], ""]
@@ -13,8 +13,8 @@ def test_arrary_validation():
     }
     
     data_list = [
-            { "Array-Test": "test" },
             { "Array-Test": ["test", True, 123] },
+            { "Array-Test": "test" },
             { "Array-Test": [123, "test", True] },
             { "Array-Test": ["test", "test", "test"] },
             { "Array-Test": ["test", "test", "test", 123, "test", "test", False] }

@@ -37,6 +37,20 @@ def use_field_id(j_type_opts: List[str]) -> bool:
                 break   
     
     return use_id
+
+def get_max_length(j_type_opts: List[str]) -> int:
+    max_length = None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+        if opt_char_id == "}":
+            try:
+                max_length = int(opt_val)
+            except ValueError as e:
+                print("Invalid option: requires integer value: " + e)
+            break
+        
+    return max_length
     
 def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
@@ -52,6 +66,20 @@ def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
             p_field_mapper.le = maxv
         except TypeError as e:
             print("Invalid option: requires integer value: " + e)
+            
+def get_min_length(j_type_opts: List[str]) -> int:
+    min_length = None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+        if opt_char_id == "{":
+            try:
+                min_length = int(opt_val)
+            except ValueError as e:
+                print("Invalid option: requires integer value: " + e)
+            break   
+    
+    return min_length              
             
 def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     # Custom limits

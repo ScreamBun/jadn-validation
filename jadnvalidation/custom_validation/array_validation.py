@@ -1,5 +1,6 @@
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj
 from jadnvalidation.utils.general_utils import get_data_by_name, get_schema_types
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length
 
 array_rules = {
     "type": "check_type",
@@ -23,11 +24,14 @@ class ArrayValidation:
         test = ""
         
     def check_minv(self, j_type_obj: Jadn_Type, data: list = None):
-        # TODO: Leftoff here, need function to get minv from jadn_type_obj
-        test = ""
+        min_length = get_min_length(j_type_obj.type_options)
+        if min_length is not None and len(data) < min_length:
+            raise ValueError(f"Array length must be greater than or equal to {min_length}. Received: {len(data)}")
         
     def check_maxv(self, j_type_obj: Jadn_Type, data: list = None):
-        test = ""
+        max_length = get_max_length(j_type_obj.type_options)
+        if max_length is not None and len(data) > max_length:
+            raise ValueError(f"Array length must be less than or equal to {max_length}. Received: {len(data)}")
         
     def check_format(self, j_type_obj: Jadn_Type, data: list = None):
         # TODO: IPV formats...
