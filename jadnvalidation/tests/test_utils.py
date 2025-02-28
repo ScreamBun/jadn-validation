@@ -1,7 +1,7 @@
 from typing import Literal
 from pydantic import BaseModel
 
-from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.pydantic_schema import create_pyd_model, pyd_data_validation
 
 
 def create_testing_model(j_schema: dict) -> tuple[type[BaseModel] | dict, Literal[0, 1]]:
@@ -18,7 +18,7 @@ def validate_valid_data(schema: type[BaseModel], data_list: list) -> int:
     err_count = 0
     for data in data_list:
         try :
-            data_validation(schema, data)
+            pyd_data_validation(schema, data)
         except Exception as err:
             err_count = err_count + 1
             print(err)
@@ -28,7 +28,7 @@ def validate_invalid_data(schema: type[BaseModel], data_list: list) -> int:
     err_count = 0
     for data in data_list:
         try :
-            data_validation(schema, data)
+            pyd_data_validation(schema, data)
         except Exception as err:
             err_count = err_count + 1
             print(err)

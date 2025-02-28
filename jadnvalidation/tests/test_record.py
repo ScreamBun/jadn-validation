@@ -2,7 +2,7 @@ from __future__ import annotations
 import time
 from pydantic import Field, create_model
 from jadnvalidation.models.pyd.structures import Record
-from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.pydantic_schema import create_pyd_model, pyd_data_validation
 from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
 
 

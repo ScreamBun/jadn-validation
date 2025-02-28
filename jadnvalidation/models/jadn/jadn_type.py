@@ -57,25 +57,25 @@ class Jadn_Type():
         self.fields = fields
         
 def is_primitive(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Primitive:
+    if jadn_type.base_type in Primitive:
         return True
     else:
         return False
     
 def is_enumeration(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Enumeration:
+    if jadn_type.base_type in Enumeration:
         return True
     else:
         return False 
     
 def is_specialization(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Specilization:
+    if jadn_type.base_type in Specilization:
         return True
     else:
         return False       
     
 def is_structure(jadn_type: Jadn_Type) -> bool:
-    if jadn_type in Structure:
+    if jadn_type.base_type in Structure:
         return True
     else:
         return False
@@ -92,6 +92,7 @@ def is_record_or_map(jadn_type: Jadn_Type) -> bool:
     else:
         return False    
     
+# TODO: Deprecate this function    
 def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
     
     jadn_type_obj = None
@@ -116,5 +117,21 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None
                 type_description=j_type[4])     
     else:
         print("unknown jadn item")
+    
+    return jadn_type_obj
+
+def build_j_type(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
+    jadn_type_obj = None
+    
+    if is_type(j_type):
+        jadn_type_obj = Jadn_Type(
+                config=j_config,
+                type_name=j_type[0], 
+                base_type=j_type[1], 
+                type_options=j_type[2], 
+                type_description=j_type[3],
+                fields=safe_get(j_type, 4, []))   
+    else:
+        raise ValueError("Invalid jadn type")
     
     return jadn_type_obj

@@ -3,7 +3,7 @@ from typing import List, Union
 
 from pydantic import Field, create_model
 from jadnvalidation.models.pyd.primitives import String
-from jadnvalidation.pydantic_schema import create_pyd_model, data_validation
+from jadnvalidation.pydantic_schema import create_pyd_model, pyd_data_validation
 from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.general_utils import create_derived_class, create_dynamic_union
 
@@ -51,25 +51,25 @@ def test_forward_ref():
         print(err)    
     
     try :
-        data_validation(custom_schema, valid_data_1)
+        pyd_data_validation(custom_schema, valid_data_1)
     except Exception as err:
         err_count = err_count + 1
         print(err)
         
     try :
-        data_validation(custom_schema, invalid_data_1)
+        pyd_data_validation(custom_schema, invalid_data_1)
     except Exception as err:
         err_count = err_count + 1
         print(err)
         
     try :
-        data_validation(custom_schema, invalid_data_2)
+        pyd_data_validation(custom_schema, invalid_data_2)
     except Exception as err:
         err_count = err_count + 1
         print(err)
         
     try :
-        data_validation(custom_schema, invalid_data_3)        
+        pyd_data_validation(custom_schema, invalid_data_3)        
     except Exception as err:
         err_count = err_count + 1
         print(err)                    

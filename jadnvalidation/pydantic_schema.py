@@ -2,13 +2,11 @@
 from __future__ import annotations
 import re
 from typing import List, Union
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, Field, create_model 
 
-from jadnvalidation.jadn_custom_validation import custom_validation
 from jadnvalidation.models.jadn.jadn_config import ARRAY_TYPE_OPTS_KEY, GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY, Jadn_Config, build_jadn_config_obj
 from jadnvalidation.models.jadn.jadn_enum import Jadn_Enum, build_jadn_enum_field_obj
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_jadn_type_obj, is_array, is_enumeration, is_primitive, is_record_or_map, is_specialization, is_structure
-from jadnvalidation.models.pyd.primitives import String
 from jadnvalidation.models.pyd.pyd_field_array import build_pyd_array_field
 from jadnvalidation.models.pyd.pyd_field_binary import build_pyd_binary_field
 from jadnvalidation.models.pyd.pyd_field_choice import build_pyd_choice_field
@@ -19,11 +17,9 @@ from jadnvalidation.models.pyd.pyd_field_int import build_pyd_int_field
 from jadnvalidation.models.pyd.pyd_field_num import build_pyd_num_field
 from jadnvalidation.models.pyd.pyd_field_record import build_pyd_record_field
 from jadnvalidation.models.pyd.pyd_field_bool import build_pyd_bool_field
-from jadnvalidation.models.pyd.specializations import Choice
-from jadnvalidation.models.pyd.structures import Map, Record, Array
+from jadnvalidation.models.pyd.structures import Record
 from jadnvalidation.utils import mapping_utils
-from jadnvalidation.utils.general_utils import create_dynamic_union, safe_get
-
+from jadnvalidation.utils.general_utils import create_dynamic_union
 
 ValidName = re.compile(r"^[A-Za-z_][A-Za-z0-9_]_")
 SysAlias = re.compile(r"[:$?&|!{}\[\]()^~*\"'+\-\s]")
@@ -266,15 +262,10 @@ def create_pyd_model(j_schema: dict) -> type[BaseModel]:
     
     return custom_model
 
-def data_validation(pyd_model = None, jadn_schema = None, data = {}):
+def pyd_data_validation(pyd_model = None, data = {}):
     if pyd_model:
         try :
             pyd_model.model_validate(data)
         except Exception as err:
-            raise ValueError(err)
-    if jadn_schema:
-        try :
-            custom_validation(jadn_schema, data)
-        except Exception as err:
-            raise ValueError(err)        
+            raise ValueError(err)  
 

@@ -42,18 +42,6 @@ def convert_to_python_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)  
 
-def use_field_id(j_type_opts: List[str]) -> bool:
-    use_id = False
-    
-    if j_type_opts:
-        for type_opt in j_type_opts:
-            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-            if opt_char_id == "=":
-                use_id = True
-                break   
-    
-    return use_id
-
 def get_max_length(j_type_opts: List[str]) -> int:
     max_length = None
     
@@ -67,21 +55,6 @@ def get_max_length(j_type_opts: List[str]) -> int:
             break
         
     return max_length
-    
-def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
-    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
-        # Custom limits
-        try:
-            maxv = int(opt_val)
-            p_field_mapper.max_length = maxv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
-    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
-        try:
-            maxv = int(opt_val)
-            p_field_mapper.le = maxv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
             
 def get_min_length(j_type_opts: List[str]) -> int:
     min_length = None
@@ -97,6 +70,25 @@ def get_min_length(j_type_opts: List[str]) -> int:
     
     return min_length  
 
+def get_min_max(global_configs, type_opts):
+    min_elements = None
+    max_elements = None
+    
+    if global_configs and global_configs.MaxElements:
+        max_elements = global_configs.MaxElements
+    
+    if type_opts and type_opts.max_length:
+        max_elements = type_opts.max_length
+    elif type_opts and type_opts.le:
+        max_elements = type_opts.le
+            
+    if type_opts and type_opts.min_length:
+        min_elements = type_opts.min_length
+    elif type_opts and type_opts.ge:
+        min_elements = type_opts.ge
+        
+    return min_elements, max_elements 
+
 def is_optional(j_type_opts: List[str]) -> bool:
     is_optional = False
     
@@ -105,21 +97,6 @@ def is_optional(j_type_opts: List[str]) -> bool:
         is_optional = True
     
     return is_optional
-            
-def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
-    # Custom limits
-    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
-        try:
-            minv = int(opt_val)
-            p_field_mapper.min_length = minv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
-    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
-        try:
-            minv = int(opt_val)
-            p_field_mapper.ge = minv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
 
 def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
@@ -246,22 +223,45 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 py_field = ""
                 
     return pyd_field_mapper
-
-def get_min_max(global_configs, type_opts):
-    min_elements = None
-    max_elements = None
-    
-    if global_configs and global_configs.MaxElements:
-        max_elements = global_configs.MaxElements
-    
-    if type_opts and type_opts.max_length:
-        max_elements = type_opts.max_length
-    elif type_opts and type_opts.le:
-        max_elements = type_opts.le
             
-    if type_opts and type_opts.min_length:
-        min_elements = type_opts.min_length
-    elif type_opts and type_opts.ge:
-        min_elements = type_opts.ge
-        
-    return min_elements, max_elements
+def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
+    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
+        # Custom limits
+        try:
+            maxv = int(opt_val)
+            p_field_mapper.max_length = maxv
+        except TypeError as e:
+            print("Invalid option: requires integer value: " + e)
+    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
+        try:
+            maxv = int(opt_val)
+            p_field_mapper.le = maxv
+        except TypeError as e:
+            print("Invalid option: requires integer value: " + e)            
+            
+def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
+    # Custom limits
+    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
+        try:
+            minv = int(opt_val)
+            p_field_mapper.min_length = minv
+        except TypeError as e:
+            print("Invalid option: requires integer value: " + e)
+    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
+        try:
+            minv = int(opt_val)
+            p_field_mapper.ge = minv
+        except TypeError as e:
+            print("Invalid option: requires integer value: " + e)           
+
+def use_field_id(j_type_opts: List[str]) -> bool:
+    use_id = False
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "=":
+                use_id = True
+                break   
+    
+    return use_id

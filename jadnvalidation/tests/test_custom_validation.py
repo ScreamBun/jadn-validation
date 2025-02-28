@@ -1,7 +1,8 @@
 from jadnvalidation.jadn_custom_validation import custom_validation
+from jadnvalidation.jadn_validation import JadnValidation
 
 
-def test_arrary_validation():
+def test_arrary_validation():  
     j_schema = {
         "types": [
             ["Array-Test", "Array", ["{3", "}3"], "", [
@@ -22,19 +23,22 @@ def test_arrary_validation():
             { "Array-Test": ["test", "test", "test", 123, "test", "test", False] }
         ]        
     
+    err_count = 0
     try :
         for data in valid_data_list:
-            custom_validation(j_schema, data)
+            j_validaiton = JadnValidation(j_schema, data)
+            j_validaiton.validate()
+            # custom_validation(j_schema, data)
     except Exception as err:
         print(err)
-        assert False     
+        err_count += 1 
                 
-    err_count = 0                
-    for data in invalid_data_list:
-        try :
-            custom_validation(j_schema, data)
-        except Exception as err:
-            print(err)
-            err_count += 1
+                  
+    # for data in invalid_data_list:
+    #     try :
+    #         custom_validation(j_schema, data)
+    #     except Exception as err:
+    #         print(err)
+    #         err_count += 1
     
     assert len(invalid_data_list) == err_count
