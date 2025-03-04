@@ -28,17 +28,16 @@ def test_arrary_validation():
         for data in valid_data_list:
             j_validaiton = JadnValidation(j_schema, data)
             j_validaiton.validate()
-            # custom_validation(j_schema, data)
     except Exception as err:
         print(err)
         err_count += 1 
                 
                   
-    # for data in invalid_data_list:
-    #     try :
-    #         custom_validation(j_schema, data)
-    #     except Exception as err:
-    #         print(err)
-    #         err_count += 1
+    for data in invalid_data_list:
+        try :
+            custom_validation(j_schema, data)
+        except Exception as err:
+            print(err)
+            err_count += 1
     
     assert len(invalid_data_list) == err_count

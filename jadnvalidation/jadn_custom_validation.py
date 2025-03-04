@@ -1,4 +1,4 @@
-from jadnvalidation.custom_validation.array_validation import ArrayValidation
+from jadnvalidation.custom_validation.array import Array
 
 
 def custom_validation(j_schema: dict, data: dict):
@@ -8,7 +8,7 @@ def custom_validation(j_schema: dict, data: dict):
     """
     
     # TODO: check if schema contains and array and if data contains the array name. 
-    av = ArrayValidation(j_schema, data)
+    av = Array(j_schema, data)
     av.validate()
     
     # TODO: Add more custom validations here...

@@ -1,6 +1,6 @@
 import sys
 from typing import Callable, Union
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, create_model
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper

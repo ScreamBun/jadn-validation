@@ -1,9 +1,8 @@
 from typing import Any
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
-from jadnvalidation.models.pyd.specializations import Choice
 from jadnvalidation.utils.enum_utils import BaseEnum
-from jadnvalidation.utils.general_utils import is_field, is_type, safe_get   
+from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
 
 class Primitive(BaseEnum):  
     BINARY = 'Binary'
@@ -16,7 +15,7 @@ class Enumeration(BaseEnum):
     ENUMERATED = 'Enumerated'
     
 class Specilization(BaseEnum):
-    CHOICE = 'Choice'    
+    CHOICE = 'Choice'
     
 class Structure(BaseEnum):
     ARRAY = 'Array'
@@ -56,8 +55,8 @@ class Jadn_Type():
         self.type_description = type_description
         self.fields = fields
         
-def is_primitive(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Primitive:
+def is_primitive(type: str) -> bool:
+    if type in Primitive:
         return True
     else:
         return False
@@ -120,8 +119,11 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None
     
     return jadn_type_obj
 
-def build_j_type(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
+def build_j_type(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type | None:
     jadn_type_obj = None
+    
+    if not j_config:
+        j_config = Jadn_Config()    
     
     if is_type(j_type):
         jadn_type_obj = Jadn_Type(

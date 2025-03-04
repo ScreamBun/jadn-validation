@@ -75,25 +75,7 @@ def test_forward_ref():
         print(err)                    
         
     assert err_count == 3
-
-class TestClass:
-    def __init__(self, name):
-        self.name = name
-
-    def display_name(self):
-        return f"Name: {self.name}"
-
-    
-def test_derived_classes():
-    
-    # Example usage
-    NewClass = create_derived_class(TestClass, "NewClass", {"greet": lambda self: f"Hello, {self.name}!"})
-    
-    # Instantiate and use the new class
-    instance = NewClass("Alice")
-    print(instance.display_name())
-    print(instance.greet())
-    
+     
 def test_dynamic_union():
     
     fields1 = {

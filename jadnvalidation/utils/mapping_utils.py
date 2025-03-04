@@ -1,8 +1,9 @@
-from typing import List
+from typing import List, Union
 from math import pow
 from pydantic import StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
 
-from jadnvalidation.models.jadn.jadn_type import Base_Type
+from jadnvalidation.models.jadn.jadn_field import Jadn_Field
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 from jadnvalidation.utils import general_utils
 
@@ -88,6 +89,24 @@ def get_min_max(global_configs, type_opts):
         min_elements = type_opts.ge
         
     return min_elements, max_elements 
+
+def get_opts(j_obj: Union[Jadn_Type, Jadn_Field]):
+    opts = None
+    if isinstance(j_obj, Jadn_Type):
+        opts = j_obj.type_options
+    elif isinstance(j_obj, Jadn_Field):
+        opts = j_obj.options
+        
+    return opts
+
+def get_type(j_obj: Union[Jadn_Type, Jadn_Field]):
+    type = None
+    if isinstance(j_obj, Jadn_Type):
+        opts = j_obj.type_name
+    elif isinstance(j_obj, Jadn_Field):
+        opts = j_obj.type
+        
+    return opts
 
 def is_optional(j_type_opts: List[str]) -> bool:
     is_optional = False
