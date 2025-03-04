@@ -156,6 +156,9 @@ def validate_field_name(name: str, j_config: Jadn_Config):
     if not re.search(j_config.FieldName, name):
         raise ValueError(f"Invalid Field Name {name} per the Schema / info / config / $FieldName regex")
 
+def build_small_model(j_type: Jadn_Type, j_config: Jadn_Config):
+    p_fields = {}
+    
 def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
     """Creates a Pydantic model dynamically based on a list of JADN Types and JADN Configurations."""
 

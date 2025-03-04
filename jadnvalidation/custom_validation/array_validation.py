@@ -1,5 +1,7 @@
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, build_jadn_config_obj
 from jadnvalidation.models.jadn.jadn_field import build_j_field, convert_j_field_to_j_type
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.pyd_model_builder import PydModelBuilder
 from jadnvalidation.pydantic_schema import create_pyd_model 
 from jadnvalidation.utils.general_utils import get_data_by_name, get_item_safe_check, get_schema_types
 from jadnvalidation.utils.mapping_utils import convert_to_python_type, get_max_length, get_min_length, is_optional
@@ -58,23 +60,31 @@ class ArrayValidation:
                 self.errors.append(ValueError(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})"))
     
     def check_with_pydantic(self, j_type_obj: Jadn_Type, data: any = None):
-        # Left off here... need to:
-        # x convert the field into a type
-        # x resolve the type if it's not a primitive, run with it if it is a primitive
-        # x send the type to pydantic to create a model
-        # x use the model to validate the data
-        # x capture any errors and store them in a list
-        # x if the list is not empty, raise an exception with the list of errors
+        # - convert the field into a type
+        # - resolve the type if it's not a primitive, run with it if it is a primitive
+        # - send the type to pydantic to create a model
+        # - use the model to validate the data
+        # - capture any errors and store them in a list
+        # - if the list is not empty, raise an exception with the list of errors
         
-        for j_field_list in j_type_obj.fields:
-            j_field_obj = build_j_field(j_field_list, {})
+        for j_index, j_field_list in enumerate(j_type_obj.fields):
+            
+            field_data = get_item_safe_check(data, j_index)
+            if field_data is None:
+                if is_optional(j_field_list):
+                    continue
+                else:
+                    self.errors.append(ValueError(f"Field '{j_field_list[1]}' is missing from array data"))                    
+            
+            j_field_obj = build_j_field(j_field_list)
             j_ftype_obj = convert_j_field_to_j_type(j_field_obj)
             
             if is_primitive(j_ftype_obj):
                 # TODO: Leftoff here... data type issue... may need to move building logic into smaller callable methods
-                pyd_model = create_pyd_model(j_ftype_obj) 
+                pyd_model_builder = PydModelBuilder()
+                pyd_model = pyd_model_builder.build_model_from_j_type(j_ftype_obj)
                 try :
-                    pyd_model.model_validate(data)
+                    pyd_model.model_validate(field_data)
                 except Exception as err:
                     self.errors.append(ValueError(err))
         

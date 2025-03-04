@@ -18,11 +18,11 @@ class Jadn_Field():
         self.options = options    
         self.description = description
 
-def build_j_field(j_type: list, j_config: Jadn_Config) -> Jadn_Field | None:
+def build_j_field(j_type: list, j_config: Jadn_Config = None) -> Jadn_Field | None:
     j_field = None
     if is_field(j_type):
         j_field = Jadn_Field(
-                config=j_config,
+                config=j_config or Jadn_Field.config,
                 id=j_type[0],
                 name=j_type[1], 
                 type=j_type[2], 
