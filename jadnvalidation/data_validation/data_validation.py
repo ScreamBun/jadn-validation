@@ -24,13 +24,13 @@ class DataValidation:
         try:
             j_types = self.j_schema.get('types')
             root_type = get_schema_type_by_name(j_types, self.root)[0]   
-            root_name = root_type[0]
+            # root_name = root_type[0]
             root_base_type = root_type[1]
-            root_data = get_data_by_name(self.data, root_name)
+            # root_data = get_data_by_name(self.data, root_name)
         
             # Reflection
             validation_clz = getattr(sys.modules[__name__], root_base_type)
-            validation_clz = validation_clz(j_schema=self.j_schema, j_type=root_type, data=root_data)
+            validation_clz = validation_clz(j_schema=self.j_schema, j_type=root_type, data=self.data)
             validation_clz.validate()
             
         except Exception as err:           

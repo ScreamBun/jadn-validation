@@ -1,221 +1,192 @@
 import datetime
 
+from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
 
 
 def test_string_regex():
+    root = "Root-Test"
   
     j_schema = {
       "types": [
-        ["String-Regex", "String", ["/regex"], ""]
+        ["Root-Test", "String", ["/regex"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Regex': '.*ABA.?'},
-        {'String-Regex': 'A(BB){1,4}'}]
-    invalid_data_list = [{'String-Regex': '['},
-        {'String-Regex': '\\'}]
+    valid_data_list = ['.*ABA.?', 'A(BB){1,4}']
+    invalid_data_list = ['[', '\\']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_relative_json_pointer():
   
+    root = "Root-Test"
+  
     j_schema = {
       "types": [
-        ["String-Relative-Json-Pointer", "String", ["/relative-json-pointer"], ""]
+        ["Root-Test", "String", ["/relative-json-pointer"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Relative-Json-Pointer': '0/foo'},
-        {'String-Relative-Json-Pointer': '1/sin-city'}]
-    invalid_data_list = [{'String-Relative-Json-Pointer': '/foo/0'},
-        {'String-Relative-Json-Pointer': '-1/sin-city'}]
+    valid_data_list = ['0/foo', '1/sin-city']
+    invalid_data_list = ['/foo/0', '-1/sin-city']
         
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_json_pointer():
+    root = "Root-Test"
   
     j_schema = {
       "types": [
-        ["String-Json-Pointer", "String", ["/json-pointer"], ""]
+        ["Root-Test", "String", ["/json-pointer"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Json-Pointer': '/foo'},
-        {'String-Json-Pointer': '/foo/0'}]
-    invalid_data_list = [{'String-Json-Pointer': 'zzzz'},
-        {'String-Json-Pointer': ':///items.starfox'}]
+    valid_data_list = ['/foo', '/foo/0', '/foo/1/sin-city']
+    invalid_data_list = ['zzzz', ':///items.starfox', '/foo/0/']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_iri_ref():
+    root = "Root-Test"
   
     j_schema = {
       "types": [
-        ["String-Iri-Reference", "String", ["/iri-reference"], ""]
+        ["Root-Test", "String", ["/iri-reference"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Iri-Reference': 'mailto:info@example.com'},
-        {'String-Iri-Reference': 'file://localhost/absolute/path/to/file'},
-        {'String-Iri-Reference': 'https://www.example.珠宝/'}]
-    invalid_data_list = [{'String-Iri-Reference': 'zzzz'},
-        {'String-Iri-Reference': ':///items.starfox'}]
+    valid_data_list = ['mailto:info@example.com', 'file://localhost/absolute/path/to/file', 'https://www.example.珠宝/']
+    invalid_data_list = ['zzzz', ':///items.starfox']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
-
+    
 def test_string_iri():
+    root = "Root-Test"  
   
     j_schema = {
       "types": [
-        ["String-Iri", "String", ["/iri"], ""]
+        ["Root-Test", "String", ["/iri"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Iri': 'http://puny£code.com'},
-        {'String-Iri': 'https://www.аррӏе.com/'},
-        {'String-Iri': 'https://www.example.珠宝/'}]
-    invalid_data_list = [{'String-Iri': 'zzzz'},
-        {'String-Iri': ':///items.starfox'}]
+    valid_data_list = ['http://puny£code.com', 'https://www.аррӏе.com/', 'https://www.example.珠宝/']
+    invalid_data_list = ['zzzz', ':///items.starfox']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_uri_template():
+    root = "Root-Test" 
   
     j_schema = {
       "types": [
-        ["String-Uri-Template", "String", ["/uri-template"], ""]
+        ["Root-Test", "String", ["/uri-template"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Uri-Template': 'https://www.example.com/api/v1/items/{/item_id}'}]
-    invalid_data_list = [{'String-Uri-Template': 'zzzz'},
-        {'String-Uri-Template': '/items/{}'},
-        {'String-Uri-Template': 'https://www.example.com/api/v1/items/'}]
+    valid_data_list = ['https://www.example.com/api/v1/items/{/item_id}']
+    invalid_data_list = ['zzzz', '/items/{}', 'https://www.example.com/api/v1/items/']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
 
 def test_string_uri_ref():
+    root = "Root-Test" 
   
     j_schema = {
       "types": [
-        ["String-Uri-Ref", "String", ["/uri-reference"], ""]
+        ["Root-Test", "String", ["/uri-reference"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Uri-Ref': 'http://www.example.com/questions/3456/my-document'},
-        {'String-Uri-Ref': 'mailto:info@example.com'},
-        {'String-Uri-Ref': 'file://localhost/absolute/path/to/file'}]
-    invalid_data_list = [{'String-Uri-Ref': 'zzzz'},
-        {'String-Uri-Ref': '//./file_at_current_dir'}]
+    valid_data_list = ['http://www.example.com/questions/3456/my-document', 'mailto:info@example.com', 'file://localhost/absolute/path/to/file']
+    invalid_data_list = ['zzzz', '//./file_at_current_dir']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
 
 def test_string_uri():
+    root = "Root-Test"   
   
     j_schema = {
       "types": [
-        ["String-Uri", "String", ["/uri"], ""]
+        ["Root-Test", "String", ["/uri"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Uri': 'http://www.example.com/questions/3456/my-document'},
-        {'String-Uri': 'mailto:info@example.com'},
-        {'String-Uri': 'foo://example.com:8042/over/there?name=ferret#nose'}]
-    invalid_data_list = [{'String-Uri': 'zzzz'}]
+    valid_data_list = ['http://www.example.com/questions/3456/my-document', 'mailto:info@example.com', 'foo://example.com:8042/over/there?name=ferret#nose']
+    invalid_data_list = ['zzzz']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_ipv6():
+    root = "Root-Test"  
   
     j_schema = {
       "types": [
-        ["String-Ipv6", "String", ["/ipv6"], ""]
+        ["Root-Test", "String", ["/ipv6"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Ipv6': '2001:0db8:85a3:0000:0000:8a2e:0370:7334'},
-        {'String-Ipv6': '2001:db8::'},
-        {'String-Ipv6': 42540766411282592856903984951653826560}]
-    invalid_data_list = [{'String-Ipv6': 'zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz'}]
+    valid_data_list = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:db8::', 42540766411282592856903984951653826560]
+    invalid_data_list = ['zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
 
 def test_string_ipv4():
+    root = "Root-Test" 
   
     j_schema = {
       "types": [
-        ["String-Ipv4", "String", ["/ipv4"], ""]
+        ["Root-Test", "String", ["/ipv4"], ""]
       ]
     }
     
-    valid_data_list = [{'String-Ipv4': '127.0.0.1'},
-        {'String-Ipv4': 2130706433}]
-    invalid_data_list = [{'String-Ipv4': 'zzzz127.0.0.1zzzz'}]
+    valid_data_list = ['127.0.0.1', 2130706433]
+    invalid_data_list = ['zzzz127.0.0.1zzzz']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
 
 def test_string_idn_hostname():
+    root = "Root-Test" 
   
     j_schema = {
       "types": [
@@ -223,194 +194,178 @@ def test_string_idn_hostname():
       ]
     }
     
-    valid_data_list = [{'String-Idn-Hostname': 'example.com'},
-        {'String-Idn-Hostname': 'xn----gtbspbbmkef.xn--p1ai'}]
-    invalid_data_list = [{'String-Idn-Hostname': 'qwerasdf'}]
-    
-    custom_schema, err_count = create_testing_model(j_schema)
+    valid_data_list = ['example.com', 'xn----gtbspbbmkef.xn--p1ai']
+    invalid_data_list = ['qwerasdf']
         
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)          
     
 def test_string_hostname():
+    root = "Root-Test"  
   
     j_schema = {
       "types": [
-        ["String-Hostname", "String", ["/hostname"], ""]
+        ["Root-Test", "String", ["/hostname"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Hostname': 'example.com'},
-        {'String-Hostname': '192.168.123.132'}]
-    invalid_data_list = [{'String-Hostname': 'http://exam_ple.com'},
-        {'String-Hostname': 'http://example.com'},
-        {'String-Hostname': 'qwerasdf'}]
+    valid_data_list = ['example.com', '192.168.123.132']
+    invalid_data_list = ['http://exam_ple.com','http://example.com', 'qwerasdf']
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_idn_email():
+    root = "Root-Test"   
   
     j_schema = {
       "types": [
-        ["String-Idn-Email", "String", ["/idn-email"], ""]
+        ["Root-Test", "String", ["/idn-email"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Idn-Email': 'test@ツ.life'}]
-    invalid_data_list = [{'String-Idn-Email': '@jarvis@stark.com'}]
-  
-    custom_schema, err_count = create_testing_model(j_schema)
+    valid_data_list = ['test@ツ.life']
+    invalid_data_list = ['@jarvis@stark.com']
         
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_email():
+    root = "Root-Test"  
   
     j_schema = {
       "types": [
-        ["String-Email", "String", ["/email"], ""]
+        ["Root-Test", "String", ["/email"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Email': 'jarvis@stark.com'},
-        {'String-Email': 'jarvis@stark.eng.com'},
-        {'String-Email': 'jarvis@stark-eng.com'},
-        {'String-Email': '1jarvis@stark-eng.com'}]
-    invalid_data_list = [{'String-Email': '@jarvis@stark.com'},
-        {'String-Email': 'zzjarviszz'},
-        {'String-Email': 'jarvis@stark-eng.com1'}]
+    valid_data_list = ['jarvis@stark.com',
+        'jarvis@stark.eng.com',
+        'jarvis@stark-eng.com',
+        '1jarvis@stark-eng.com']
+    invalid_data_list = ['@jarvis@stark.com',
+        'zzjarviszz',
+        'jarvis@stark-eng.com1']
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_string_pattern():
+    root = "Root-Test"  
   
     j_schema = {
       "types": [
-        ["String-Pattern", "String", ["%^jarvis$"], ""]
+        ["Root-Test", "String", ["%^jarvis$"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Pattern': 'jarvis'}]
-    invalid_data_list = [{'String-Pattern': 'JARVIS'},
-        {'String-Pattern': 'zzjarviszz'}]
-  
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
-    assert err_count == 0
+    valid_data_list = ['jarvis']
+    invalid_data_list = ['JARVIS','zzjarviszz']
     
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_time():
-  
+    root = "Root-Test" 
+      
     j_schema = {
       "types": [
-        ["String-Time", "String", ["/time"], ""]
+        ["Root-Test", "String", ["/time"], ""]
       ]
     }
 
     now = datetime.datetime.now()
     current_time = now.time()
 
-    valid_data_list = [{'String-Time': current_time}]
-    invalid_data_list = [{'String-Time': 'hfdkjlajfdkl'},
-        {'String-Time': 1596542285000}]
+    valid_data_list = [current_time]
+    invalid_data_list = ['hfdkjlajfdkl', 1596542285000]
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-    
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_date():
+    root = "Root-Test"   
   
     j_schema = {
       "types": [
-        ["String-Date", "String", ["/date"], ""]
+        ["Root-Test", "String", ["/date"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Date': '2024-01-01'}]
-    invalid_data_list = [{'String-Date': 'hfdkjlajfdkl'},
-        {'String-Date': 'yy2024-01-01zz'},
-        {'String-Date': datetime.datetime.now()},
-        {'String-Date': 1596542285000}]
+    valid_data_list = ['2024-01-01']
+    invalid_data_list = ['hfdkjlajfdkl',
+        'yy2024-01-01zz',
+        datetime.datetime.now(),
+        1596542285000]
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-    
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_string_datetime():
+    root = "Root-Test"   
   
     j_schema = {
       "types": [
-        ["String-Datetime", "String", ["/date-time"], ""]
+        ["Root-Test", "String", ["/date-time"], ""]
       ]
     }
 
     valid_data_list = [
-            {'String-Datetime': '2024-01-01'},
-            {'String-Datetime': datetime.datetime.now()},
-            {'String-Datetime': 1596542285000}
+            '2024-01-01',
+            datetime.datetime.now(),
+            1596542285000
         ]
     
     invalid_data_list = [
-            {'String-Datetime': 'hfdkjlajfdkl'},
-            {'String-Datetime': 'yy2024-01-01zz'}
+            'hfdkjlajfdkl',
+            'yy2024-01-01zz'
         ]
-  
-    custom_schema, err_count = create_testing_model(j_schema)
         
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-    
-    err_count = validate_valid_data(custom_schema, invalid_data_list)    
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
   
 def test_jadn_str():
+    root = "Root-Test"
   
     j_schema = {
       "types": [
-        ["String-Type", "String", ["{4", "}12"], ""]
+        ["Root-Test", "String", ["{4", "}12"], ""]
       ]
     }
 
-    valid_data_list = [{'String-Type': 'test string'}]
+    valid_data_list = ['test string']
     invalid_data_list = [
-                    {'String-Type': 4323 },
-                    {'String-Type': 'zz' },
-                    {'String-Type': 'testing string' }
+                    4323,
+                    'zz',
+                    'testing string'
                 ]
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
