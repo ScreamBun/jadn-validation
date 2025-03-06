@@ -14,7 +14,7 @@ class String:
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
-    data: str = None # The string's data only
+    data: any = None # The string's data only
     errors = []   
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
@@ -32,19 +32,19 @@ class String:
         
     def check_type(self):
         if not isinstance(self.data, str):
-            self.errors.append(ValueError(f"Data must be a string. Received: {type(self.data)}"))
+            self.errors.append(f"Data must be a string. Received: {type(self.data)}")
                         
     def check_minv(self):
         opts = get_opts(self.j_type)
         min_length = get_min_length(opts)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(ValueError(f"String length must be greater than or equal to {min_length}. Received: {len(self.data)}"))
+            self.errors.append(f"String length must be greater than or equal to {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
         opts = get_opts(self.j_type)     
         max_length = get_max_length(opts)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(ValueError(f"String length must be less than or equal to {max_length}. Received: {len(self.data)}"))
+            self.errors.append(f"String length must be less than or equal to {max_length}. Received: {len(self.data)}")
             
     def validate(self):
         

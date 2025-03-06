@@ -33,6 +33,5 @@ class DataValidation:
             validation_clz = validation_clz(j_schema=self.j_schema, j_type=root_type, data=root_data)
             validation_clz.validate()
             
-        except Exception as err:
-            # TODO: Add logic to collect errors and make them human readable            
+        except Exception as err:           
             raise ValueError(err)

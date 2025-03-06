@@ -20,7 +20,7 @@ class Array:
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
-    data: list = [] # The array's data only
+    data: any = None # The array's data only
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
@@ -34,7 +34,7 @@ class Array:
         
     def check_array_type(self):
         if not isinstance(self.data, list):
-            self.errors.append(ValueError(f"Data must be a list. Received: {type(self.data)}"))        
+            self.errors.append(f"Data must be a list. Received: {type(self.data)}")
         
     def check_order(self):
         # TODO: Kevin's logic goes here...
@@ -43,12 +43,12 @@ class Array:
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(ValueError(f"Array length must be greater than or equal to {min_length}. Received: {len(self.data)}"))
+            self.errors.append(f"Array length must be greater than or equal to {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
         max_length = get_max_length(self.j_type.type_options)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(ValueError(f"Array length must be less than or equal to {max_length}. Received: {len(self.data)}"))
+            self.errors.append(f"Array length must be less than or equal to {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
         # TODO: IPV formats...
@@ -59,16 +59,16 @@ class Array:
             field_data = get_item_safe_check(self.data, j_index)
             
             if field_data is None:
-                if is_optional(j_field):
+                if is_optional(j_field[3]):
                     continue
                 else:
-                    self.errors.append(ValueError(f"Field '{j_field[1]}' is missing from array data"))
+                    self.errors.append(f"Field '{j_field[1]}' is missing from array data")
                     
             j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             p_type = convert_to_python_type(j_field_obj.base_type)
             
             if not isinstance(field_data, p_type):
-                self.errors.append(ValueError(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})"))
+                self.errors.append(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})")
                 
             # TODO: Remove is_primitive check once compond types are implemented                
             if is_primitive(j_field_obj.base_type):
