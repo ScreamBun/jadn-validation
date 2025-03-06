@@ -1,52 +1,20 @@
-from pydantic import ValidationError
-from pydantic_schema import create_pyd_model 
+from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_type_num():
+    root = "Root-Test"    
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["NumberInstance", "Number", [], ""]
+        ["Root-Test", "Number", [], ""]
       ]
     }
       
-    number_instance_data_1b = { 'root_model' : {
-                                    'NumberInstance': 1.5
-                                }
-                            }
-    number_instance_data_1 = {'NumberInstance': 1.5}
-    number_instance_data_invalid_1 = {'NumberInstance': "1.7zz5"}
-    number_instance_data_invalid_2 = {'NumberInstance': "0.0.0.0.0.0.0.0.1.2"}  
-    number_instance_data_invalid_3 = {'NumberInstance': 5+3j}  
+    valid_data_list = [1.5]      
+    invalid_data_list = ["1.7z5", "0.0.0.0.0.0.0.0.1.2", "555,", "  555  "]  
   
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    try:
-        pyd_model.model_validate(number_instance_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)        
-        
-    assert error_count == 0  
-    
-    try:
-        pyd_model.model_validate(number_instance_data_invalid_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(number_instance_data_invalid_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)  
-
-    try:
-        pyd_model.model_validate(number_instance_data_invalid_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)  
-
-    assert error_count == 3
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)

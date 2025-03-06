@@ -5,6 +5,7 @@ from jadnvalidation.data_validation.array import Array
 from jadnvalidation.data_validation.string import String
 from jadnvalidation.data_validation.boolean import Boolean
 from jadnvalidation.data_validation.integer import Integer
+from jadnvalidation.data_validation.number import Number
 
 from jadnvalidation.utils.general_utils import get_data_by_name, get_schema_type_by_name
 
