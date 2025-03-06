@@ -32,7 +32,8 @@ def test_data_validation():
         except Exception as err:
             print(err)
             err_count += 1
-                
+            
+    assert err_count == 0            
                   
     for data in invalid_data_list:
         try :

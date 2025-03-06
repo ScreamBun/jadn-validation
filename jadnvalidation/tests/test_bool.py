@@ -1,52 +1,43 @@
 from pydantic import ValidationError
-from jadnvalidation.pydantic_schema import create_pyd_model
+from jadnvalidation.data_validation.data_validation import DataValidation
 
 
 def test_boolean():
-  
-    jadn_schema = {
+    root = "Boolean-Test"
+    
+    j_schema = {
       "types": [
         ["Boolean-Test", "Boolean", [], ""]
       ]
     }
     
-    valid_data_1 = {'Boolean-Test': True}
-    invalid_data_1 = {'Boolean-Test': 'True'}
-    invalid_data_2 = {'Boolean-Test': 'zzz'}
-    invalid_data_3 = {'Boolean-Test': '__false__'}
+    valid_data_list = [
+        {'Boolean-Test': True}
+    ]
     
-    error_count = 0
-    try:
-        pyd_model = create_pyd_model(jadn_schema)    
-        print(pyd_model)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)
+    invalid_data_list = [
+        {'Boolean-Test': 'True'},
+        {'Boolean-Test': 'zzz'},
+        {'Boolean-Test': '__false__'}
+    ]
+    
+    err_count = 0
+    for data in valid_data_list:
+        try:
+            j_validation = DataValidation(j_schema, root, data)
+            j_validation.validate()
+        except ValidationError as e:
+            error_count = error_count + 1
+            print(e)
         
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)              
-        
-    assert error_count == 0    
+    assert err_count == 0 
             
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)    
+    for data in invalid_data_list:
+        try :
+            j_validation = DataValidation(j_schema, root, data)
+            j_validation.validate()
+        except Exception as err:
+            print(err)
+            err_count += 1      
         
-    try:
-        pyd_model.model_validate(invalid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)            
-        
-    assert error_count == 3
+    assert err_count == 3
