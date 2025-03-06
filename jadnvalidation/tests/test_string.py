@@ -358,11 +358,7 @@ def test_jadn_str():
     }
 
     valid_data_list = ['test string']
-    invalid_data_list = [
-                    4323,
-                    'zz',
-                    'testing string'
-                ]
+    invalid_data_list = [4323, 'zz', 'testing string']
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

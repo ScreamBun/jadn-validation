@@ -37,15 +37,15 @@ class Integer:
                         
     def check_minv(self):
         opts = get_opts(self.j_type)
-        min_length = get_min_length(opts)
-        if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"String length must be greater than or equal to {min_length}. Received: {len(self.data)}")
+        min_val = get_min_length(opts)
+        if min_val is not None and self.data < min_val:
+            self.errors.append(f"String length must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_maxv(self):
         opts = get_opts(self.j_type)     
         max_length = get_max_length(opts)
-        if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"String length must be less than or equal to {max_length}. Received: {len(self.data)}")
+        if max_length is not None and self.data > max_length:
+            self.errors.append(f"String length must be less than {max_length}. Received: {len(self.data)}")
         
     def validate(self):
         
