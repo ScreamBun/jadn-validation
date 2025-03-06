@@ -58,6 +58,7 @@ def create_dynamic_union(*types):
     return Union[types]
 
 def get_data_by_name(data: dict, name: str):
+    # TODO: If not found, perhaps return data as-is?
     return data.get(name)
 
 def get_global_configs(p_model):
@@ -78,6 +79,9 @@ def get_item_safe_check(my_list, index):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+def get_schema_type_by_name(j_types: list, name: str):
+    return [j_type for j_type in j_types if j_type[0] == name]
 
 def get_schema_types(j_types: list, base_type: str):
     return [j_type for j_type in j_types if j_type[1] == base_type]

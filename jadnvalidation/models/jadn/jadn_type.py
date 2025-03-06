@@ -91,7 +91,7 @@ def is_record_or_map(jadn_type: Jadn_Type) -> bool:
     else:
         return False    
     
-# TODO: Deprecate this function    
+# Careful, this one combines types and fields
 def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
     
     jadn_type_obj = None

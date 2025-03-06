@@ -12,16 +12,22 @@ rules = {
 class Boolean:
     
     j_schema: dict = {}
-    data: bool = None
-    errors = []   
+    j_type: Union[list, Jadn_Type] = None
+    data: bool = None # The boolean's data only
+    errors = [] 
     
-    def __init__(self, j_schema: dict = {}, data: bool = None):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
         self.j_schema = j_schema
+        
+        if isinstance(j_type, list):
+            j_type = build_j_type(j_type)
+        
+        self.j_type = j_type
         self.data = data         
         
-    def check_type(self, j_obj: Union[Jadn_Type, Jadn_Field], data: bool = None):
-        if not isinstance(data, bool):
-            self.errors.append(ValueError(f"Data must be a boolean. Received: {type(data)}"))
+    def check_type(self):
+        if not isinstance(self.data, bool):
+            self.errors.append(ValueError(f"Data must be a boolean. Received: {type(self.data)}"))
             
     def validate(self):
         j_types = self.j_schema.get('types')
@@ -42,12 +48,15 @@ class Boolean:
         
         return True
     
-    def validate_by_j_field(self, j_field_obj: Jadn_Field):
+    def validate(self):
         
         # Check data against rules
         for key, function_name in rules.items():
-            getattr(self, function_name)(j_field_obj, self.data)
+            getattr(self, function_name)()
         
-        # Check.....?
-    
+        # Other Checks.....?
+            
+        if len(self.errors) > 0:
+            raise ValueError(self.errors)  
+        
         return True
