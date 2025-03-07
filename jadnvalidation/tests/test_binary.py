@@ -1,329 +1,126 @@
-from pydantic import ValidationError
-from jadnvalidation.pydantic_schema import create_pyd_model
+from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_binary():
+    root = "Root-Test"    
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", [], ""]
+        ["Root-Test", "Binary", [], ""]
       ]
     }
     
-    bytes_1 = b"this is a test"
-    bytes_valid_2 = b'\x80\x81\x82'
-    bytes_invalid_2 = bytearray("hello", "utf-16")
+    valid_bytes_1 = b"this is a test"
+    valid_bytes_2 = b'\x80\x81\x82'
+    invalid_bytes_1 = bytearray("hello", "utf-16")
     
-    valid_data_1 = {'Binary-Test': bytes_1}
-    valid_data_2 = {'Binary-Test': bytes_valid_2}
-    invalid_data_2 = {'Binary-Test': bytes_invalid_2}
-    
-    error_count = 0
-    try:
-        pyd_model = create_pyd_model(jadn_schema)    
-        print(pyd_model)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)
+    valid_data_list = [valid_bytes_1, valid_bytes_2]
+    invalid_data_list = [invalid_bytes_1]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                                         
-        
-    try:
-        pyd_model.model_validate(valid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    assert error_count == 0         
-        
-    try:
-        pyd_model.model_validate(invalid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    assert error_count == 1
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_binary_min():
+    root = "Root-Test"    
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", ["{2"], ""]
+        ["Root-Test", "Binary", ["{2"], ""]
       ]
     }
     
-    bytes_1 = b"this is a test"
+    bytes_valid_1 = b"this is a test"
     bytes_valid_2 = b'\x80\x81\x82'
     bytes_invalid_1 = b"x"
     bytes_invalid_2 = bytearray("hello", "utf-16")
     bytes_invalid_3 = b'\x80'
     
-    valid_data_1 = {'Binary-Test': bytes_1}
-    valid_data_2 = {'Binary-Test': bytes_valid_2}
-    invalid_data_1 = {'Binary-Test': bytes_invalid_1}
-    invalid_data_2 = {'Binary-Test': bytes_invalid_2}
-    invalid_data_3 = {'Binary-Test': bytes_invalid_3}
+    valid_data_list = [bytes_valid_1, bytes_valid_2]
+    invalid_data_list = [bytes_invalid_1, bytes_invalid_2, bytes_invalid_3]    
     
-    error_count = 0
-    try:
-        pyd_model = create_pyd_model(jadn_schema)    
-        print(pyd_model)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)              
-        
-    try:
-        pyd_model.model_validate(valid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                      
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                
-        
-    assert error_count == 3
-    
-def test_binary_max():
-  
-    jadn_schema = {
-      "types": [
-        ["Binary-Test", "Binary", ["}4"], ""]
-      ]
-    }
-    
-    bytes_1 = b"test"
-    bytes_valid_2 = b'\x80\x81\x82'
-    bytes_invalid_1 = b"zzzzzz"
-    bytes_invalid_2 = bytearray("hello", "utf-16")
-    bytes_invalid_3 = b'\x80\x80\x80\x80\x80\x80'
-    
-    valid_data_1 = {'Binary-Test': bytes_1}
-    valid_data_2 = {'Binary-Test': bytes_valid_2}
-    invalid_data_1 = {'Binary-Test': bytes_invalid_1}
-    invalid_data_2 = {'Binary-Test': bytes_invalid_2}
-    invalid_data_3 = {'Binary-Test': bytes_invalid_3}
-    
-    error_count = 0
-    try:
-        pyd_model = create_pyd_model(jadn_schema)    
-        print(pyd_model)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)              
-        
-    try:
-        pyd_model.model_validate(valid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                      
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                
-        
-    assert error_count == 3
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_binary_min_max():
+    root = "Root-Test"
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", ["{4","}8"], ""]
+        ["Root-Test", "Binary", ["{4","}8"], ""]
       ]
     }
     
-    bytes_1 = b"test"
+    bytes_valid_1 = b"test"
     bytes_valid_2 = b'\x80\x81\x82\x82'
     bytes_invalid_1 = b"zzzzzzzzzzz"
     bytes_invalid_2 = bytearray("hello", "utf-16")
     bytes_invalid_3 = b'\x80\x80\x80\x80\x80\x80\x80\x80\x80'
     
-    valid_data_1 = {'Binary-Test': bytes_1}
-    valid_data_2 = {'Binary-Test': bytes_valid_2}
-    invalid_data_1 = {'Binary-Test': bytes_invalid_1}
-    invalid_data_2 = {'Binary-Test': bytes_invalid_2}
-    invalid_data_3 = {'Binary-Test': bytes_invalid_3}
+    valid_data_list = [bytes_valid_1, bytes_valid_2]
+    invalid_data_list = [bytes_invalid_1, bytes_invalid_2, bytes_invalid_3]
     
-    error_count = 0
-    pyd_model = {}
-    try:
-        pyd_model = create_pyd_model(jadn_schema)    
-        print(pyd_model)
-    except Exception as e:
-        error_count = error_count + 1
-        print(e)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)              
-        
-    try:
-        pyd_model.model_validate(valid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                      
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_2)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)
-        
-    try:
-        pyd_model.model_validate(invalid_data_3)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                
-        
-    assert error_count == 3
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
-def test_binary_eui(): 
+def test_binary_eui():
+    root = "Root-Test"
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", ["/eui"], ""]
+        ["Root-Test", "Binary", ["/eui"], ""]
       ]
-    }  
+    }
     
-    valid_data_1 = {'Binary-Test': "00:00:5e:00:53:01"}
-    invalid_data_1 = {'Binary-Test': "zzzz"}
+    valid_data_list = ["00:00:5e:00:53:01"]
+    invalid_data_list = ["zzzz"]
     
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                                        
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)               
-        
-    assert error_count == 1
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_binary_ipv4_addr(): 
+    root = "Root-Test"
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", ["/ipv4-addr"], ""]
+        ["Root-Test", "Binary", ["/ipv4-addr"], ""]
       ]
     }  
     
-    valid_data_1 = {'Binary-Test': "127.0.0.1"}
-    invalid_data_1 = {'Binary-Test': "zz127.0.0.1zz"}
-    
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
-        
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                                        
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)               
-        
-    assert error_count == 1
+    valid_data_list = ["127.0.0.1"]
+    invalid_data_list = ["zz127.0.0.1zz"]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_binary_ipv6_addr(): 
+    root = "Root-Test"
   
-    jadn_schema = {
+    j_schema = {
       "types": [
-        ["Binary-Test", "Binary", ["/ipv6-addr"], ""]
+        ["Root-Test", "Binary", ["/ipv6-addr"], ""]
       ]
     }  
     
-    valid_data_1 = {'Binary-Test': "2001:db8:3333:4444:5555:6666:1.2.3.4"}
-    invalid_data_1 = {'Binary-Test': "http://www.example.com"}
-    
-    error_count = 0
-    pyd_model = create_pyd_model(jadn_schema)    
-    print(pyd_model)
-        
-    try:
-        pyd_model.model_validate(valid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)                                        
-        
-    assert error_count == 0        
-        
-    try:
-        pyd_model.model_validate(invalid_data_1)
-    except ValidationError as e:
-        error_count = error_count + 1
-        print(e)               
-        
-    assert error_count == 1     
+    valid_data_list = ["2001:db8:3333:4444:5555:6666:1.2.3.4"]
+    invalid_data_list = ["http://www.example.com"]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)

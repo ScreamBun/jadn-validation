@@ -1,8 +1,12 @@
 import sys
 from typing import Union
+
+# Keep these, used by reflection
 from jadnvalidation.data_validation.string import String
 from jadnvalidation.data_validation.boolean import Boolean
 from jadnvalidation.data_validation.integer import Integer
+from jadnvalidation.data_validation.binary import Binary
+
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import get_item_safe_check
 from jadnvalidation.utils.mapping_utils import convert_to_python_type, get_max_length, get_min_length, is_optional
