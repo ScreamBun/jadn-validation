@@ -1,10 +1,11 @@
 import sys
+import importlib
+
 from typing import Callable, Union
 from pydantic import BaseModel, create_model
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
-
 
 def addKey(d: dict, k: str = None) -> Callable:
     """
@@ -42,6 +43,11 @@ def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
         model_name,
         **fields
     )
+    
+def create_data_validation_instance(module_name, class_name, *args, **kwargs):
+    module = importlib.import_module(module_name)
+    cls = getattr(module, class_name)
+    return cls(*args, **kwargs)
 
 def convert_binary_to_hex(binary_string):
     """Converts a binary string to its hexadecimal representation."""

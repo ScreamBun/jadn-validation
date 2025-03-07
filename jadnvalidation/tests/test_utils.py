@@ -2,7 +2,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.pydantic_schema import create_pyd_model, pyd_data_validation
+from jadnvalidation.pydantic_schema import create_pyd_model
 
 
 def create_testing_model(j_schema: dict) -> tuple[type[BaseModel] | dict, Literal[0, 1]]:

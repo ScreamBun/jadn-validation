@@ -1,70 +1,5 @@
-from __future__ import annotations
-import time
-from pydantic import Field, create_model
-from jadnvalidation.models.pyd.structures import Record
-from jadnvalidation.pydantic_schema import create_pyd_model, pyd_data_validation
 from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
-
-
-def test_nested_static_models():
-
-    Person = create_model(
-        "Person",
-        name=(str, ...),  # Required field
-        age=(int, ...),
-        address=('Address', ...),  # Nested model field
-        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
-        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
-        __base__=Record
-    ) 
-    
-    Address = create_model(
-        "Address",
-        house_number=(str, ...),
-        street_name=(str, ...),
-        city=(str, ...),
-        zip_code=(str, ...),
-        model_opts=(str, Field(default="testing model opts", exclude=True, evaluate=False)),
-        global_opts=(str, Field(default="testing global opts", exclude=True, evaluate=False)),
-        __base__=Record
-    )
-    
-    valid_data = {
-        "name" : "roberts",
-        "age" : 100,
-        "address" : {
-            "house_number" : "8888",
-            "street_name" : "bats lane",
-            "city" : "gotham",
-            "zip_code" : "22222",
-        }
-    }
-    
-    invalid_data = {
-        "name" : "roberts",
-        "age" : 100,
-        "address" : {
-            "house_number" : True,
-            "street_name" : "bats lane",
-            "city" : "gotham",
-            "zip_code" : "22222",
-        }
-    }     
-    
-    err_count = 0
-    try :
-        Person.model_validate(valid_data)    
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)
-        
-    try :
-        Person.model_validate(invalid_data)    
-    except Exception as err:
-        err_count = err_count + 1
-        print(err)        
-               
-    assert err_count == 1 
+from jadnvalidation.utils.general_utils import create_data_validation_instance
 
 
 def test_forward_ref():
@@ -226,47 +161,61 @@ def test_records_min_max():
     err_count = validate_invalid_data(custom_schema, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
-def test_records():
+def test_record():
+    root = "Root-Test"
     
     j_schema = {
         "types": [
-            ["Record-Name1", "Record", ["{1", "}2"], "", [
+            ["Root-Test", "Record", ["{1", "}2"], "", [
                 [1, "field_value_1a", "String", [], ""],
                 [2, "field_value_2a", "String", [], ""]
-            ]],
-            ["Record-Name2", "Record", ["{1", "}2"], "", [
-                [1, "field_value_1b", "String", [], ""],
-                [2, "field_value_2b", "String", [], ""]
-            ]]            
+            ]]          
         ]
     }  
     
-    valid_data_list = [{
-        'Record-Name1': {
+    valid_data_list = [
+        {
             'field_value_1a': "test field",
             'field_value_2a': 'Anytown'
         },
-        'Record-Name2': {
+        {
             'field_value_1b': "test field",
             'field_value_2b': 'Anytown'
         }        
-    }]
+    ]
     
-    invalid_data_list = [{
-        'Record-Name1': {
+    invalid_data_list = [
+        {
             'field_value_1a': True,
             'field_value_2a': 'Anytown'
         },
-        'Record-Name2': {
+        {
             'field_value_1b': "test field",
             'field_value_2b': False
         }        
-    }]
-    
-    custom_schema, err_count = create_testing_model(j_schema)
+    ]
         
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_invalid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_instance():
+    
+    root = "Root-Test"
+    j_list = []
+    data = "test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1a", "String", [], ""],
+                [2, "field_value_2a", "String", [], ""]
+            ]]          
+        ]
+    }     
+    
+    # TODO: Leftoff here... need to add this to the flection logic to hopefully remove circular dependencis with imports
+    instance = create_data_validation_instance("jadnvalidation.data_validation.string", "String", j_schema, j_list, data)
+    instance.validate()

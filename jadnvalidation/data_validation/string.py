@@ -17,7 +17,7 @@ class String:
     data: any = None # The string's data only
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):

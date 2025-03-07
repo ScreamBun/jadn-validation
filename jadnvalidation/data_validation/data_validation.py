@@ -8,7 +8,7 @@ from jadnvalidation.data_validation.integer import Integer
 from jadnvalidation.data_validation.number import Number
 from jadnvalidation.data_validation.binary import Binary
 
-from jadnvalidation.utils.general_utils import get_data_by_name, get_schema_type_by_name
+from jadnvalidation.utils.general_utils import get_schema_type_by_name
 
 
 class DataValidation:

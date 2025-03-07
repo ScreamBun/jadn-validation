@@ -6,7 +6,7 @@ from jadnvalidation.data_validation.string import String
 from jadnvalidation.data_validation.boolean import Boolean
 from jadnvalidation.data_validation.integer import Integer
 from jadnvalidation.data_validation.binary import Binary
-# from jadnvalidation.data_validation.record import Record
+from jadnvalidation.data_validation.array import Array
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import get_item_safe_check
@@ -14,18 +14,16 @@ from jadnvalidation.utils.mapping_utils import convert_to_python_type, get_max_l
 
 rules = {
     "type": "check_type",
-    "order": "check_order",
     "fields": "check_fields",
-    "/": "check_format",
     "{": "check_minv",
     "}": "check_maxv"
 }
 
-class Array:
+class Record:
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
-    data: any = None # The array's data only
+    data: any = None # The record data only
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
@@ -38,26 +36,24 @@ class Array:
         self.data = data  
         
     def check_type(self):
-        if not isinstance(self.data, list):
-            self.errors.append(f"Data must be a list. Received: {type(self.data)}")
+        if not isinstance(self.data, dict):
+            self.errors.append(f"Data must be a record / dict. Received: {type(self.data)}")
         
     def check_order(self):
         # TODO: Kevin's logic goes here...
         tbd = ""
         
     def check_minv(self):
+        # TODO: Check record props length
         min_length = get_min_length(self.j_type.type_options)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"Array length must be greater than {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
+        # TODO: Check record props length
         max_length = get_max_length(self.j_type.type_options)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"Array length must be less than {max_length}. Received: {len(self.data)}")
-        
-    def check_format(self):
-        # TODO: IPV formats...
-        tbd = ""
+            self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
         for j_index, j_field in enumerate(self.j_type.fields):
