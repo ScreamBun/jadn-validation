@@ -233,17 +233,15 @@ def test_record_in_record():
     
     invalid_data_list = [
         {
-            'field_value_1a': True,
-            'field_value_2a': 'Anytown'
+            'field_value_1b': True
         },
         {
-            'field_value_1b': "test field",
-            'field_value_2b': False
+            'field_value_1b': 123
         }        
     ]
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)    
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)    
