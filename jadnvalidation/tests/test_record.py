@@ -204,3 +204,46 @@ def test_record():
             
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_record_in_record():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Record-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1", "Record2-Test", [], ""]
+            ]],
+            ["Record2-Test", "Record", ["{1", "}2"], "", [
+                [1, "field_value_1b", "String", ["{0", "[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        {
+            "field_value_1": {
+                "field_value_1b": "molestias,"
+            }
+        }       
+    ]
+    
+    invalid_data_list = [
+        {
+            'field_value_1a': True,
+            'field_value_2a': 'Anytown'
+        },
+        {
+            'field_value_1b': "test field",
+            'field_value_2b': False
+        }        
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    # assert err_count == len(invalid_data_list)    

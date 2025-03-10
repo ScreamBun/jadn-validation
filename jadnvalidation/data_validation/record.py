@@ -1,7 +1,7 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_schema_type_by_name
 from jadnvalidation.utils.mapping_utils import convert_to_python_type, get_max_length, get_min_length, is_optional
 
 rules = {
@@ -56,13 +56,23 @@ class Record:
                     self.errors.append(f"Field '{j_field[1]}' is missing from array data")
                     
             j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
-            p_type = convert_to_python_type(j_field_obj.base_type)
+            if is_primitive(j_field_obj.base_type):
+                p_type = convert_to_python_type(j_field_obj.base_type)
             
-            if not isinstance(field_data, p_type):
-                self.errors.append(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})")
+                if not isinstance(field_data, p_type):
+                    self.errors.append(f"Field '{j_field_obj.type_name}' must be of type '{j_field_obj.base_type}'. Received: {type(field_data)})")
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
-            clz_instance.validate()
+                clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
+                clz_instance.validate()
+            else:
+                # TODO: Consolidate
+                j_types = self.j_schema.get('types')
+                ref_type = get_schema_type_by_name(j_types, j_field_obj.base_type)[0]   
+                ref_base_type = ref_type[1]
+                # root_data = get_data_by_name(self.data, root_name)
+                
+                clz_instance = create_clz_instance(ref_base_type, self.j_schema, ref_type, field_data)
+                clz_instance.validate()  
         
     def validate(self):
         

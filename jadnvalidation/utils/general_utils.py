@@ -75,7 +75,22 @@ def create_dynamic_union(*types):
 
 def get_data_by_name(data: dict, name: str):
     # TODO: If not found, perhaps return data as-is?
+    
+    # if isinstance(data, dict):
+    #     if target_key in data:
+    #         return data[target_key]
+    #     for value in data.values():
+    #         result = get_data_by_name(value, target_key)
+    #         if result is not None:
+    #             return result
+    # elif isinstance(data, list):
+    #     for item in data:
+    #         result = get_data_by_name(item, target_key)
+    #         if result is not None:
+    #             return result
+    
     return data.get(name)
+    # return None
 
 def get_global_configs(p_model):
     global_configs = None
