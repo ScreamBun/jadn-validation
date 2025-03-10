@@ -44,9 +44,19 @@ def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
         **fields
     )
     
-def create_data_validation_instance(module_name, class_name, *args, **kwargs):
-    module = importlib.import_module(module_name)
+def create_clz_instance(class_name, *args, **kwargs):
+    modules = {
+        "Array" : "jadnvalidation.data_validation.array",
+        "Binary" : "jadnvalidation.data_validation.binary",
+        "Boolean" : "jadnvalidation.data_validation.boolean",
+        "Integer" : "jadnvalidation.data_validation.integer",
+        "Record" : "jadnvalidation.data_validation.record",
+        "String" : "jadnvalidation.data_validation.string"
+    }
+
+    module = importlib.import_module(modules.get(class_name))
     cls = getattr(module, class_name)
+    
     return cls(*args, **kwargs)
 
 def convert_binary_to_hex(binary_string):

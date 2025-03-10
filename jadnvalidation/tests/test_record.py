@@ -1,5 +1,5 @@
 from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
-from jadnvalidation.utils.general_utils import create_data_validation_instance
+from jadnvalidation.utils.general_utils import create_clz_instance
 
 
 def test_forward_ref():
@@ -175,12 +175,16 @@ def test_record():
     
     valid_data_list = [
         {
-            'field_value_1a': "test field",
-            'field_value_2a': 'Anytown'
+            "field_value_1a": "test field",
+            "field_value_2a": "Anytown"
         },
         {
-            'field_value_1b': "test field",
-            'field_value_2b': 'Anytown'
+            "field_value_1a": "testing more",
+            "field_value_2a": "z"
+        },
+        {
+            "field_value_1a": "testing more 123",
+            "field_value_2a": "321"
         }        
     ]
     
@@ -200,22 +204,3 @@ def test_record():
             
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
-
-def test_instance():
-    
-    root = "Root-Test"
-    j_list = []
-    data = "test"
-    
-    j_schema = {
-        "types": [
-            ["Root-Test", "Record", ["{1", "}2"], "", [
-                [1, "field_value_1a", "String", [], ""],
-                [2, "field_value_2a", "String", [], ""]
-            ]]          
-        ]
-    }     
-    
-    # TODO: Leftoff here... need to add this to the flection logic to hopefully remove circular dependencis with imports
-    instance = create_data_validation_instance("jadnvalidation.data_validation.string", "String", j_schema, j_list, data)
-    instance.validate()
