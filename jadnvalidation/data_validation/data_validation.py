@@ -1,13 +1,3 @@
-import sys
-
-# Keep these, used by reflection
-# from jadnvalidation.data_validation.array import Array
-# from jadnvalidation.data_validation.string import String
-# from jadnvalidation.data_validation.boolean import Boolean
-# from jadnvalidation.data_validation.integer import Integer
-# from jadnvalidation.data_validation.number import Number
-# from jadnvalidation.data_validation.binary import Binary
-
 from jadnvalidation.utils.general_utils import create_clz_instance, get_schema_type_by_name
 
 
@@ -29,11 +19,6 @@ class DataValidation:
             # root_name = root_type[0]
             root_base_type = root_type[1]
             # root_data = get_data_by_name(self.data, root_name)
-        
-            # Reflection
-            # validation_clz = getattr(sys.modules[__name__], root_base_type)
-            # validation_clz = validation_clz(j_schema=self.j_schema, j_type=root_type, data=self.data)
-            # validation_clz.validate()
             
             clz_instance = create_clz_instance(root_base_type, self.j_schema, root_type, self.data)
             clz_instance.validate()            
