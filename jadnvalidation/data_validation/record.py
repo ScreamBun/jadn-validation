@@ -65,11 +65,9 @@ class Record:
                 clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
                 clz_instance.validate()
             else:
-                # TODO: Consolidate
                 j_types = self.j_schema.get('types')
                 ref_type = get_schema_type_by_name(j_types, j_field_obj.base_type)[0]   
                 ref_base_type = ref_type[1]
-                # root_data = get_data_by_name(self.data, root_name)
                 
                 clz_instance = create_clz_instance(ref_base_type, self.j_schema, ref_type, field_data)
                 clz_instance.validate()  
