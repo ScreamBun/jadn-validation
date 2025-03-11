@@ -29,7 +29,9 @@ class Record:
         
     def check_type(self):
         if not isinstance(self.data, dict):
-            self.errors.append(f"Data must be a record / dict. Received: {type(self.data)}")
+            # Note: If the data isn't a list, there's no point to continue with other checks
+            # Just raise the error to kill the thread rather than collecting and continuing. 
+            raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
         
     def check_order(self):
         # TODO: Kevin's logic goes here...
