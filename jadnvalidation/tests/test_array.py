@@ -195,10 +195,11 @@ def test_dynamic_union():
     
 
 def test_array():
+    root = "Root-Test"    
     
     j_schema = {
         "types": [
-            ["Array-Test", "Array", [], "", [
+            ["Root-Test", "Array", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""],
                 [3, "field_value_3", "Integer", [], ""]
@@ -207,30 +208,20 @@ def test_array():
     }
     
     valid_data_list = [
-            { "Array-Test": ["test", True, 123] },
-            { "Array-Test": [123, "test", True] },
-            { "Array-Test": ["test", "test", "test"] },
-            { "Array-Test": ["test", "test", "test", 123, "test", "test", False] }
+            ["test", True, 123],
+            ["", False, 0]
         ]
     
-    # invalid_data_1 = {
-    #     'Array-Name-1': {
-    #         'field_value_1a': True,
-    #         'field_value_2a': 'Anytown'
-    #     },
-    #     'Array-Name-2': {
-    #         'field_value_1b': "test field",
-    #         'field_value_2b': False
-    #     }        
-    # }
-    
-    custom_schema, err_count = create_testing_model(j_schema)
+    invalid_data_list = [
+            [True, "Test", 123],
+            ["test"]
+        ]
         
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    # err_count = validate_invalid_data(custom_schema, invalid_data_list)
-    # assert err_count == len(invalid_data_list)   
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == 2
     
 def test_array_continued():
     
