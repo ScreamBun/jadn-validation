@@ -113,11 +113,12 @@ def get_item_safe_check(my_list, index):
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
 
-def get_reference_base_type(jschema, type_name):
+def get_reference_type(jschema, type_name):
     j_types = jschema.get('types')
-    ref_type = get_schema_type_by_name(j_types, type_name)[0]   
-    ref_base_type = ref_type[1]
-    return ref_type, ref_base_type
+    ref_type = get_schema_type_by_name(j_types, type_name)[0]
+    if not ref_type:
+        raise ValueError(f"Unknown type {type_name} referenced" )
+    return ref_type
 
 def get_schema_type_by_name(j_types: list, name: str):
     return [j_type for j_type in j_types if j_type[0] == name]

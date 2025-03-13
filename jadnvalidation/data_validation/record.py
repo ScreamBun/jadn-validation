@@ -68,10 +68,10 @@ class Record:
                 clz_instance.validate()
             else:
                 j_types = self.j_schema.get('types')
-                ref_type = get_schema_type_by_name(j_types, j_field_obj.base_type)[0]   
-                ref_base_type = ref_type[1]
+                ref_type = get_schema_type_by_name(j_types, j_field_obj.base_type)[0]
+                ref_type_obj = build_jadn_type_obj(ref_type, self.config)
                 
-                clz_instance = create_clz_instance(ref_base_type, self.j_schema, ref_type, field_data)
+                clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type, field_data)
                 clz_instance.validate()  
         
     def validate(self):
