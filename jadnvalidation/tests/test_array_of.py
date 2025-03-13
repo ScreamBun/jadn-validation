@@ -87,4 +87,33 @@ def test_array_of_strs():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2    
+    assert err_count == 2
+    
+def test_array_of_booleans():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Boolean", "{1", "}3"], ""]
+        ]
+    }
+    
+    valid_data_list = [
+            [True, False],
+            [False, False, True]
+        ]
+    
+    invalid_data_list = [
+            ["True", "False", 1],
+            ["true", True, False],
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == 2      
