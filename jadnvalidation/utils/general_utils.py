@@ -44,9 +44,11 @@ def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
         **fields
     )
     
-def create_clz_instance(class_name, *args, **kwargs):
+# (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
+def create_clz_instance(class_name: str, *args, **kwargs):
     modules = {
         "Array" : "jadnvalidation.data_validation.array",
+        "ArrayOf" : "jadnvalidation.data_validation.array_of",
         "Binary" : "jadnvalidation.data_validation.binary",
         "Boolean" : "jadnvalidation.data_validation.boolean",
         "Integer" : "jadnvalidation.data_validation.integer",
@@ -110,6 +112,12 @@ def get_item_safe_check(my_list, index):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+def get_reference_base_type(jschema, type_name):
+    j_types = jschema.get('types')
+    ref_type = get_schema_type_by_name(j_types, type_name)[0]   
+    ref_base_type = ref_type[1]
+    return ref_type, ref_base_type
 
 def get_schema_type_by_name(j_types: list, name: str):
     return [j_type for j_type in j_types if j_type[0] == name]

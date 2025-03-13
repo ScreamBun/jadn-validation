@@ -33,7 +33,7 @@ class Integer:
     def check_type(self):
         if self.data:
             if not isinstance(self.data, int):
-                self.errors.append(f"Data must be an integer. Received: {type(self.data)}")
+                self.errors.append(f"Data must be of type integer. Received: {type(self.data)}")
                         
     def check_minv(self):
         opts = get_opts(self.j_type)
