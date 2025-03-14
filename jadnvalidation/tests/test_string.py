@@ -1,7 +1,6 @@
 import datetime
 
-from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
+from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_string_regex():
