@@ -1,6 +1,9 @@
-from jadnvalidation.tests.test_utils import create_testing_model, validate_invalid_data, validate_valid_data
+
+from jadnvalidation.tests.test_utils import validate_valid_data
+
 
 def test_enum():
+    root = "Root-Test"    
   
     j_schema = {
         "types": [
@@ -16,15 +19,14 @@ def test_enum():
     valid_data_list = [{'SuitEnum': 'clubs'}, {'SuitEnum': 'spades'}]
     invalid_data_list = [{'SuitEnum': 'asdfghjklasdfghjkl'}, {'SuitEnum': 'Aces'}, {'SuitEnum': 10}]
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
     
 def test_enum_ids():
+    root = "Root-Test"    
   
     j_schema = {
         "types": [
@@ -40,10 +42,8 @@ def test_enum_ids():
     valid_data_list = [{'SuitEnum': 10}, {'SuitEnum': 40}]
     invalid_data_list = [{'SuitEnum': 'asdfghjklasdfghjkl'}, {'SuitEnum': 'Aces'}, {'SuitEnum': 'clubs'}]
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_invalid_data(custom_schema, invalid_data_list)
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)    

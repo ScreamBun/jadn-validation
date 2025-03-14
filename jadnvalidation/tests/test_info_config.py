@@ -1,13 +1,14 @@
-from jadnvalidation.tests.test_utils import create_testing_model, validate_valid_data
+from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_max_string():
-  
+    root = "Root-Test"
+      
     j_schema = {
         "info": {
         "package": "http://test/v1.0",
         "title": "Test Title",
-        "exports": ["String-Name"],
+        "exports": ["Root-Test"],
         "config": {
             "$MaxBinary": 255,
             "$MaxString": 10,
@@ -19,28 +20,27 @@ def test_max_string():
         }
         },
         "types": [
-            ["String-Name", "String", [], ""]
+            ["Root-Test", "String", [], ""]
         ]
     }
     
-    valid_data_list = [{'String-Name': 'asdfghjk'}]
-    invalid_data_list = [{'String-Name': 'asdfghjklasdfghjkl'}]
+    valid_data_list = ['asdfghjk']
+    invalid_data_list = ['asdfghjklasdfghjkl']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
     
 def test_max_string_order_of_precedence():
+    root = "Root-Test"    
   
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["String-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -52,22 +52,21 @@ def test_max_string_order_of_precedence():
             }
         },
         "types": [
-            ["String-Name", "String", ["}5"], ""]
+            ["Root-Test", "String", ["}5"], ""]
         ]
     }
     
-    valid_data_list = [{'String-Name': 'asdf'}]
-    invalid_data_list = [{'String-Name': 'asdfghjklasdfghjkl'}]
+    valid_data_list = ['asdfg']
+    invalid_data_list = ['asdfghjklasdfghjkl']
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
     
 def test_max_binary():
+    root = "Root-Test"    
   
     j_schema = {
         "info": {
@@ -82,25 +81,24 @@ def test_max_binary():
             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
             },
-            "exports": ["Binary-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["Binary-Name", "Binary", [], ""]
+            ["Root-Test", "Binary", [], ""]
         ]
     }
     
-    valid_data_list = [{"Binary-Name": b"test"}]
-    invalid_data_list = [{"Binary-Name": b"testing"}]
+    valid_data_list = [b"test"]
+    invalid_data_list = [b"testing"]
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_max_binary_order_of_precedence():
+    root = "Root-Test"     
   
     j_schema = {
         "info": {
@@ -115,31 +113,30 @@ def test_max_binary_order_of_precedence():
             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
             },
-            "exports": ["Binary-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["Binary-Name", "Binary", ["}2"], ""]
+            ["Root-Test", "Binary", ["}2"], ""]
         ]
     }
     
-    valid_data_list = [{"Binary-Name": b"zz"}]
-    invalid_data_list = [{"Binary-Name": b"testing"}]
+    valid_data_list = [ b"zz"]
+    invalid_data_list = [b"testing"]
     
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
     
 def test_max_elements_record():
+    root = "Root-Test"
   
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -151,44 +148,43 @@ def test_max_elements_record():
             }
         },
         "types": [
-            ["Record-Name", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", ["[0"], ""]
+                [3, "field_value_3", "String", ["{0"], ""]
             ]]
         ]
     }
     
-    valid_data_list = [{ 
-                        "Record-Name": {
-                            "field_value_1" : "test",
-                            "field_value_2" : "test"
-                        }
-                    }]
+    valid_data_list =   [
+                            {
+                                "field_value_1" : "test",
+                                "field_value_2" : "test"
+                            }
+                        ]
     
-    invalid_data_list = [{
-                        "Record-Name": {
-                            "field_value_1" : "test",
-                            "field_value_2" : "test",
-                            "field_value_3" : "test"
-                        }
-                    }]
+    invalid_data_list = [
+                            {
+                                "field_value_1" : "test",
+                                "field_value_2" : "test",
+                                "field_value_3" : "test"
+                            }
+                        ]
   
-    custom_schema, err_count = create_testing_model(j_schema)
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-        
-    err_count = validate_valid_data(custom_schema, invalid_data_list)
+    
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
     
 def test_sys_indicator():
+    root = "Root-Test"    
   
-    invalid_j_schema_1 = {
+    invalid_j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -200,7 +196,7 @@ def test_sys_indicator():
             }
         },
         "types": [
-            ["$Record-Name", "Record", [], "", [
+            ["$Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", ["[0"], ""]
@@ -208,11 +204,11 @@ def test_sys_indicator():
         ]
     }
     
-    invalid_j_schema_2 = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -224,31 +220,7 @@ def test_sys_indicator():
             }
         },
         "types": [
-            ["Record-Name", "Record", [], "", [
-                [1, "field_value_1", "$String", [], ""],
-                [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", ["[0"], ""]
-            ]]
-        ]
-    }
-    
-    invalid_j_schema_3 = {
-        "info": {
-            "package": "http://test/v1.0",
-            "title": "Test Title",
-            "exports": ["Record-Name"],
-            "config": {
-            "$MaxBinary": 255,
-            "$MaxString": 255,
-            "$MaxElements": 100,
-            "$Sys": "%",
-            "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
-            "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
-            "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-            }
-        },
-        "types": [
-            ["%Record-Name", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", ["[0"], ""]
@@ -256,59 +228,28 @@ def test_sys_indicator():
         ]
     }
     
-    valid_j_schema_1 = {
-        "info": {
-            "package": "http://test/v1.0",
-            "title": "Test Title",
-            "exports": ["Record-Name"],
-            "config": {
-            "$MaxBinary": 255,
-            "$MaxString": 255,
-            "$MaxElements": 100,
-            "$Sys": "&",
-            "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
-            "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
-            "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-            }
-        },
-        "types": [
-            ["Record-Name", "Record", [], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", ["[0"], ""]
-            ]]
-        ]
-    }
-    
-    valid_data_list = [{ 
-                        "Record-Name": {
-                            "field_value_1" : "test",
-                            "field_value_2" : "test"
-                        }
-                    }]    
+    valid_data_list =   [
+                            {
+                                "field_value_1" : "test",
+                                "field_value_2" : "test"
+                            }
+                        ]    
   
-    total_errs = 0
-    custom_schema, err_count = create_testing_model(invalid_j_schema_1)
-    total_errs = total_errs + err_count
-    custom_schema, err_count = create_testing_model(invalid_j_schema_2)
-    total_errs = total_errs + err_count
-    custom_schema, err_count = create_testing_model(invalid_j_schema_3)
-    total_errs = total_errs + err_count
-    custom_schema, err_count = create_testing_model(valid_j_schema_1)
-    total_errs = total_errs + err_count
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
-    total_errs = total_errs + err_count
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
     
-    assert total_errs == 3
+    err_count = validate_valid_data(invalid_j_schema, root, valid_data_list)    
+    assert err_count == 1
     
 def test_type_name_regex():
+    invalid_root = "root-test"
+    root = "Root-Test"
   
     invalid_j_schema_1 = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["root-test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -320,7 +261,7 @@ def test_type_name_regex():
             }
         },
         "types": [
-            ["record-Name", "Record", [], "", [
+            ["record-test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", ["[0"], ""]
@@ -328,11 +269,11 @@ def test_type_name_regex():
         ]
     }
     
-    valid_j_schema_1 = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -344,7 +285,7 @@ def test_type_name_regex():
             }
         },
         "types": [
-            ["Record-Name", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", [], ""]
@@ -352,32 +293,28 @@ def test_type_name_regex():
         ]
     }
     
-    valid_data_list = [{ 
-                        "Record-Name": {
-                            "field_value_1" : "test",
-                            "field_value_2" : "test",
-                            "field_value_3" : "test"
-                        }
-                    }]    
+    valid_data_list =   [
+                            {
+                                "field_value_1" : "test",
+                                "field_value_2" : "test",
+                                "field_value_3" : "test"
+                            }
+                        ]    
   
-    total_errs = 0
-    custom_schema, err_count = create_testing_model(invalid_j_schema_1)
-    total_errs = total_errs + err_count
-    custom_schema, err_count = create_testing_model(valid_j_schema_1)
-    total_errs = total_errs + err_count
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
-    total_errs = total_errs + err_count
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
     
-    assert total_errs == 1
+    err_count = validate_valid_data(invalid_j_schema_1, invalid_root, valid_data_list)    
+    assert err_count == 1
     
 def test_field_name_regex():
+    root = "Root-Test"    
   
     invalid_j_schema_1 = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -389,7 +326,7 @@ def test_field_name_regex():
             }
         },
         "types": [
-            ["Record-Name", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "FIELD_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", ["[0"], ""]
@@ -397,11 +334,11 @@ def test_field_name_regex():
         ]
     }
     
-    valid_j_schema_1 = {
+    j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Record-Name"],
+            "exports": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -413,7 +350,7 @@ def test_field_name_regex():
             }
         },
         "types": [
-            ["Record-Name", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
                 [3, "field_value_3", "String", [], ""]
@@ -421,92 +358,16 @@ def test_field_name_regex():
         ]
     }
     
-    valid_data_list = [{ 
-                        "Record-Name": {
-                            "field_value_1" : "test",
-                            "field_value_2" : "test",
-                            "field_value_3" : "test"
-                        }
-                    }]    
+    valid_data_list =   [
+                            {
+                                "field_value_1" : "test",
+                                "field_value_2" : "test",
+                                "field_value_3" : "test"
+                            }
+                        ]    
   
-    total_errs = 0
-    custom_schema, err_count = create_testing_model(invalid_j_schema_1)
-    total_errs = total_errs + err_count
-    custom_schema, err_count = create_testing_model(valid_j_schema_1)
-    total_errs = total_errs + err_count
-        
-    err_count = validate_valid_data(custom_schema, valid_data_list)    
-    total_errs = total_errs + err_count
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
     
-    assert total_errs == 1
-  
-# TODO: Waiting for namespace logic    
-# def test_nsid_regex():
-  
-#     invalid_j_schema_1 = {
-#         "info": {
-#             "package": "http://test/v1.0",
-#             "title": "Test Title",
-#             "exports": ["Record-Name"],
-#             "config": {
-#             "$MaxBinary": 255,
-#             "$MaxString": 255,
-#             "$MaxElements": 100,
-#             "$Sys": "$",
-#             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
-#             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
-#             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-#             }
-#         },
-#         "types": [
-#             ["Record-Name", "Record", [], "", [
-#                 [1, "FIELD_value_1", "String", [], ""],
-#                 [2, "field_value_2", "String", [], ""],
-#                 [3, "field_value_3", "String", ["[0"], ""]
-#             ]]
-#         ]
-#     }
-    
-#     valid_j_schema_1 = {
-#         "info": {
-#             "package": "http://test/v1.0",
-#             "title": "Test Title",
-#             "exports": ["Record-Name"],
-#             "config": {
-#             "$MaxBinary": 255,
-#             "$MaxString": 255,
-#             "$MaxElements": 100,
-#             "$Sys": "&",
-#             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
-#             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
-#             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-#             }
-#         },
-#         "types": [
-#             ["Record-Name", "Record", [], "", [
-#                 [1, "field_value_1", "String", [], ""],
-#                 [2, "field_value_2", "String", [], ""],
-#                 [3, "field_value_3", "String", [], ""]
-#             ]]
-#         ]
-#     }
-    
-#     valid_data_list = [{ 
-#                         "Record-Name": {
-#                             "field_value_1" : "test",
-#                             "field_value_2" : "test",
-#                             "field_value_3" : "test"
-#                         }
-#                     }]    
-  
-#     total_errs = 0
-#     custom_schema, err_count = create_testing_model(invalid_j_schema_1)
-#     total_errs = total_errs + err_count
-#     custom_schema, err_count = create_testing_model(valid_j_schema_1)
-#     total_errs = total_errs + err_count
-        
-#     err_count = validate_data(custom_schema, valid_data_list)    
-#     total_errs = total_errs + err_count
-    
-#     assert total_errs == 1     
-    
+    err_count = validate_valid_data(invalid_j_schema_1, root, valid_data_list)    
+    assert err_count == 1   
