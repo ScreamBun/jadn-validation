@@ -3,6 +3,7 @@ from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_map():
+    # TODO: Leftoff here.....
     root = "Root-Test"
     
     j_schema = {
@@ -21,36 +22,26 @@ def test_map():
     
     valid_data_list = [
             {
-                "Map-Name": {
-                    "field_value_1": "placeat repellendus sit",
-                    "field_value_2": "molestias, sit elit. sit"
-                }
+                "field_value_1": "placeat repellendus sit",
+                "field_value_2": "molestias, sit elit. sit"
             }, 
             {
-                "Map-Name": {
-                    "field_value_1": "molestias, amet nobis",
-                    "field_value_2": "repellendus architecto"
-                }
+                "field_value_1": "molestias, amet nobis",
+                "field_value_2": "repellendus architecto"
             }
     ]
     
     invalid_data_list = [
         {
-            "Map-Name": {
-                "field_value_1": "placeat repellendus sit",
-                "field_value_2": "molestias, sit elit. sit",
-                "field_value_3": "test extra field validation"
-            }
+            "field_value_1": "placeat repellendus sit",
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
         }, 
         {
-            "Map-Name": {
-                "field_value_x": "test incorrect field name"
-            }
+            "field_value_x": "test incorrect field name"
         },
         {
-            "Map-Name": {
-                "field_value_1": 123
-            }
+            "field_value_1": 123
         }        
     ]
     
