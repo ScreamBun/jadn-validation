@@ -124,7 +124,7 @@ def is_optional(j_type_opts: List[str]) -> bool:
     is_optional = False
     
     min = get_min_length(j_type_opts)
-    if min and min == 0:
+    if min is not None and min == 0:
         is_optional = True
     
     return is_optional
