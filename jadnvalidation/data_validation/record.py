@@ -43,6 +43,7 @@ class Record:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
+        # TODO: Add logic to verify the # of data fields does not exceed the # of schema fields
         max_length = get_max_length(self.j_type.type_options)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
@@ -55,7 +56,7 @@ class Record:
                 if is_optional(j_field[3]):
                     continue
                 else:
-                    self.errors.append(f"Field '{j_field[1]}' is missing from array data")
+                    raise ValueError(f"Field '{j_field[1]}' is missing from array data")
 
             j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if not is_primitive(j_field_obj.base_type):

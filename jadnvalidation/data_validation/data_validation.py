@@ -1,4 +1,4 @@
-from jadnvalidation.utils.general_utils import create_clz_instance, get_schema_type_by_name
+from jadnvalidation.utils.general_utils import create_clz_instance, get_item_safe_check, get_schema_type_by_name
 
 
 class DataValidation:
@@ -15,12 +15,15 @@ class DataValidation:
         
         try:
             j_types = self.j_schema.get('types')
-            root_type = get_schema_type_by_name(j_types, self.root)[0]   
-            # root_name = root_type[0]
-            root_base_type = root_type[1]
-            # root_data = get_data_by_name(self.data, root_name)
+            if j_types == None or j_types == []:
+                raise ValueError(f"No Types defined")
+                       
+            # TODO: Loop for multiple roots
+            root_type = get_schema_type_by_name(j_types, self.root)
+            if root_type == None:
+                raise ValueError(f"Root Type not found {self.root}")
             
-            clz_instance = create_clz_instance(root_base_type, self.j_schema, root_type, self.data)
+            clz_instance = create_clz_instance(root_type[1], self.j_schema, root_type, self.data)
             clz_instance.validate()            
             
         except Exception as err:           
