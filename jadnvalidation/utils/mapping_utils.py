@@ -71,6 +71,34 @@ def get_min_length(j_type_opts: List[str]) -> int:
     
     return min_length  
 
+def get_min_occurs(j_type_opts: List[str]) -> int:
+    min_occurs = None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+        if opt_char_id == "[":
+            try:
+                min_occurs = int(opt_val)
+            except ValueError as e:
+                print("Invalid option: requires integer value: " + e)
+            break   
+    
+    return min_occurs  
+
+def get_max_occurs(j_type_opts: List[str]) -> int:
+    max_occurs = None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+        if opt_char_id == "]":
+            try:
+                max_occurs = int(opt_val)
+            except ValueError as e:
+                print("Invalid option: requires integer value: " + e)
+            break   
+    
+    return max_occurs  
+
 def get_min_max(global_configs, type_opts):
     min_elements = None
     max_elements = None
@@ -119,11 +147,10 @@ def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
         
     return val
 
-
 def is_optional(j_type_opts: List[str]) -> bool:
-    is_optional = False
     
-    min = get_min_length(j_type_opts)
+    is_optional = False
+    min = get_min_occurs(j_type_opts)
     if min and min == 0:
         is_optional = True
     
@@ -228,18 +255,18 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 
                 if opt_val:
                     if int(opt_val) == 0:
-                        pyd_field_mapper.is_required = False
+                        pyd_field_mapper.is_optional = True
                 
             case "}": 
                 set_max_length(opt_val, j_type, pyd_field_mapper)
             case "[": 
-                set_min_length(opt_val, j_type, pyd_field_mapper)
+                set_min_occurs(opt_val, j_type, pyd_field_mapper)
                 
                 if opt_val:
                     if int(opt_val) == 0:
-                        pyd_field_mapper.is_required = False
+                        pyd_field_mapper.is_optional = False
             case "]": 
-                set_max_length(opt_val, j_type, pyd_field_mapper)                                   
+                set_max_occurs(opt_val, j_type, pyd_field_mapper)                                   
             case "q":           # unique - ArrayOf instance must not contain duplicate values (Section 3.2.1.8)
                 py_field = ""
             case "s":           # set - ArrayOf instance is unordered and unique (Section 3.2.1.9)
@@ -255,35 +282,38 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 
     return pyd_field_mapper
             
-def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
-    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:   
+def set_max_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper): # kevin is updating 
         # Custom limits
-        try:
-            maxv = int(opt_val)
-            p_field_mapper.max_length = maxv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
-    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
-        try:
-            maxv = int(opt_val)
-            p_field_mapper.le = maxv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)            
+    try:
+        maxv = int(opt_val)
+        p_field_mapper.max_length = maxv
+    except TypeError as e:
+            print("Invalid option: requires integer value: " + e)        
             
-def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
+def set_min_length(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper): # kevin is updating
     # Custom limits
-    if j_type in [Base_Type.STRING.value, Base_Type.BINARY.value, Base_Type.RECORD.value]:
-        try:
-            minv = int(opt_val)
-            p_field_mapper.min_length = minv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)
-    elif j_type == Base_Type.INTEGER.value or j_type == Base_Type.NUMBER.value:
-        try:
-            minv = int(opt_val)
-            p_field_mapper.ge = minv
-        except TypeError as e:
-            print("Invalid option: requires integer value: " + e)           
+    try:
+        minv = int(opt_val)
+        p_field_mapper.min_length = minv
+    except TypeError as e:
+        print("Invalid option: requires integer value: " + e)    
+
+def set_min_occurs(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper): # kevin is updating 
+    try:
+        minc = int(opt_val)
+        p_field_mapper.min_occurs = minc
+        if minc == 0:
+            p_field_mapper.is_optional = True
+    except TypeError as e:
+        print("Invalid option: requires integer value: " + e) 
+
+
+def set_max_occurs(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper): # kevin is updating 
+    try:
+        maxc = int(opt_val)
+        p_field_mapper.max_occurs = maxc
+    except TypeError as e:
+        print("Invalid option: requires integer value: " + e)    
 
 def use_field_id(j_type_opts: List[str]) -> bool:
     use_id = False

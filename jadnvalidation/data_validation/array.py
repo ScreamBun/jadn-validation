@@ -10,7 +10,9 @@ rules = {
     "fields": "check_fields",
     "/": "check_format",
     "{": "check_minv",
-    "}": "check_maxv"
+    "}": "check_maxv",
+    "[": "check_minc",
+    "]": "chack_maxc"
 }
 
 class Array:
@@ -35,9 +37,6 @@ class Array:
             # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a list. Received: {type(self.data)}")
         
-    def check_order(self):
-        # TODO: Kevin's logic goes here...
-        tbd = ""
         
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
@@ -57,11 +56,15 @@ class Array:
         for j_index, j_field in enumerate(self.j_type.fields):
             field_data = get_item_safe_check(self.data, j_index)
             
-            if field_data is None:
-                if is_optional(j_field[3]):
-                    continue
-                else:
-                    self.errors.append(f"Field '{j_field[1]}' is missing from array data")
+            if field_data: 
+                if field_data is None:
+                    if is_optional(j_field[3]):
+                        continue
+                    else:
+                        self.errors.append(f"Missinf required field '{j_field[1]}' from array data")
+                else: continue
+            elif is_optional(j_field[3]): continue
+            else: self.errors.append(f"Field '{j_field[1]}' is missing from array data")
                     
             j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if not is_primitive(j_field_obj.base_type):

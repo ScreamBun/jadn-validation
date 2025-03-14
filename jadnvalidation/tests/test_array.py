@@ -59,3 +59,61 @@ def test_array():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == 2
+
+def test_array_optional_first():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", ["[0"], ""],
+                [2, "field_value_2", "Boolean", [], ""],
+                [3, "field_value_3", "Integer", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            [None, True, 123],
+            ["", False, 0]
+        ]
+    
+    invalid_data_list = [
+            [True, "Test", 123],
+            ["test"]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == 2
+
+def test_array_optional_last():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Boolean", [], ""],
+                [3, "field_value_3", "Integer", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["test", True],
+            ["", False, 0]
+        ]
+    
+    invalid_data_list = [
+            [True, "Test", 123],
+            ["test"]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == 2

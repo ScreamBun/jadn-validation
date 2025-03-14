@@ -2,7 +2,7 @@ import sys
 import importlib
 
 from typing import Callable, Union
-from pydantic import BaseModel, create_model
+#from pydantic import BaseModel, create_model
 from consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
@@ -38,11 +38,13 @@ def create_derived_class(base_class, class_name, extra_methods=None):
         extra_methods = {}
     return type(class_name, (base_class,), extra_methods)
 
+""" - removing in the shift from pydantic KC
 def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
     return create_model(
         model_name,
         **fields
     )
+    """
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):
