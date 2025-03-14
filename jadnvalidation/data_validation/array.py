@@ -6,13 +6,13 @@ from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, i
 
 rules = {
     "type": "check_type",
-    "order": "check_order",
+   # "order": "check_order",
     "fields": "check_fields",
     "/": "check_format",
     "{": "check_minv",
     "}": "check_maxv",
     "[": "check_minc",
-    "]": "chack_maxc"
+    "]": "check_maxc"
 }
 
 class Array:
