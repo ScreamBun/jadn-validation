@@ -149,12 +149,19 @@ def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
 
 def is_optional(j_type_opts: List[str]) -> bool:
     
-    is_optional = False
+    is_optional = Pyd_Field_Mapper.is_optional or None
+    if is_optional is not None:
+        return is_optional
     min = get_min_occurs(j_type_opts)
-    if min and min == 0:
+    if min is not None and min == 0:
+        Pyd_Field_Mapper.is_optional = True
         is_optional = True
+        return is_optional
+    elif min and min>0:
+        Pyd_Field_Mapper.is_optional = False
+        return is_optional
+    else: return False 
     
-    return is_optional
 
 def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
@@ -223,16 +230,16 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 # Integer  
                 elif opt_val == "duration":
                     pyd_field_mapper.is_duration = True
-                    pyd_field_mapper.ge = 0
+                    pyd_field_mapper.min_length = 0
                 elif opt_val == "i8":
-                    pyd_field_mapper.ge = -128
-                    pyd_field_mapper.le = 127
+                    pyd_field_mapper.min_length = -128
+                    pyd_field_mapper.max_length = 127
                 elif opt_val == "i16":
-                    pyd_field_mapper.ge = -32768
-                    pyd_field_mapper.le = 32767
+                    pyd_field_mapper.min_length = -32768
+                    pyd_field_mapper.max_length = 32767
                 elif opt_val == "i32":
-                    pyd_field_mapper.ge = -2147483648
-                    pyd_field_mapper.le = 2147483647
+                    pyd_field_mapper.min_length = -2147483648
+                    pyd_field_mapper.max_length = 2147483647
                 elif j_type == "Integer":
                     format_designator, possible_unsigned = general_utils.split_on_first_char(opt_val) 
                     if format_designator == "u":
