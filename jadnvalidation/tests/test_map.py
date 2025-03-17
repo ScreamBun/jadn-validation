@@ -3,17 +3,15 @@ from jadnvalidation.tests.test_utils import validate_valid_data
 
 
 def test_map():
-    # TODO: Leftoff here.....
     root = "Root-Test"
     
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
-            "exports": ["Map-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["String-Name", "String", ["{0"], ""],
-            ["Map-Name", "Map", [], "", [
+            ["Root-Test", "Map", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
@@ -57,10 +55,10 @@ def test_map_min_max():
     j_schema = {
             "info": {
                 "package": "http://test/v1.0",
-                "exports": ["Map-Name"]
+                "exports": ["Root-Test"]
             },
             "types": [
-                ["Map-Name", "Map", ["{1", "}3"], "", [
+                ["Root-Test", "Map", ["{2", "}2"], "", [
                     [1, "field_value_1", "String", [], ""],
                     [2, "field_value_2", "String", [], ""]
                 ]]
@@ -69,16 +67,12 @@ def test_map_min_max():
     
     valid_data_list = [
             {
-                "Map-Name": {
-                    "field_value_1": "placeat repellendus sit",
-                    "field_value_2": "molestias, sit elit. sit"
-                }
+                "field_value_1": "placeat repellendus sit",
+                "field_value_2": "molestias, sit elit. sit"
             }, 
             {
-                "Map-Name": {
-                    "field_value_1": "molestias, amet nobis",
-                    "field_value_2": "repellendus architecto"
-                }
+                "field_value_1": "molestias, amet nobis",
+                "field_value_2": "repellendus architecto"
             }
     ]
     
@@ -92,7 +86,7 @@ def test_map_min_max():
         }, 
         {
             "Map-Name": {
-                "field_value_x": "test incorrect field name"
+                "field_value_1": "test incorrect field name"
             }
         },
         {
@@ -114,10 +108,10 @@ def test_map_id():
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
-            "exports": ["Map-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["Map-Name", "Map", ["="], "", [
+            ["Root-Test", "Map", ["="], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""]
             ]]
@@ -126,36 +120,26 @@ def test_map_id():
     
     valid_data_list = [
             {
-                "Map-Name": {
-                    "1": "placeat repellendus sit",
-                    "2": "molestias, sit elit. sit"
-                }
+                "1": "placeat repellendus sit",
+                "2": "molestias, sit elit. sit"
             }, 
             {
-                "Map-Name": {
-                    "1": "molestias, amet nobis",
-                    "2": "repellendus architecto"
-                }
+                "1": "molestias, amet nobis",
+                "2": "repellendus architecto"
             }
     ]
     
     invalid_data_list = [
         {
-            "Map-Name": {
-                "field_value_1": "placeat repellendus sit",
-                "field_value_2": "molestias, sit elit. sit"
-            }
+            "field_value_1": "placeat repellendus sit",
+            "field_value_2": "molestias, sit elit. sit"
         }, 
         {
-            "Map-Name": {
-                    "1": True,
-                    "2": "repellendus architecto"
-            }
+            "1": True,
+            "2": "repellendus architecto"
         },
         {
-            "Map-Name": {
-                    "1": "molestias, amet nobis"
-            }
+            "1": "molestias, amet nobis"
         }        
     ]
     
@@ -171,53 +155,40 @@ def test_map_ref_field():
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
-            "exports": ["Map-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
             ["IntegerTest", "Integer", ["{0"], ""],
             ["StringTest", "String", ["{0"], ""],
-            ["Map-Name", "Map", [], "", [
+            ["Root-Test", "Map", [], "", [
                 [1, "field_value_1", "IntegerTest", [], ""],
                 [2, "field_value_2", "StringTest", [], ""]
-            ]],
-            ["RecordTest", "Record", ["{0"], "", [
-                [1, "field_value_1", "String", [], ""]
             ]]
         ]
     }
     
     valid_data_list = [
             {
-                "Map-Name": {
-                    "field_value_1": 123,
-                    "field_value_2": "molestias, sit elit. sit"
-                }
+                "field_value_1": 123,
+                "field_value_2": "molestias, sit elit. sit"
             }, 
             {
-                "Map-Name": {
-                    "field_value_1": 321,
-                    "field_value_2": "repellendus architecto"
-                }
+                "field_value_1": 321,
+                "field_value_2": "repellendus architecto"
             }
     ]
     
     invalid_data_list = [
         {
-            "Map-Name": {
-                "field_value_1": 123,
-                "field_value_2": "molestias, sit elit. sit",
-                "field_value_3": "test extra field validation"
-            }
+            "field_value_1": 123,
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
         }, 
         {
-            "Map-Name": {
-                "field_value_x": "test incorrect field name"
-            }
+            "field_value_1": "test incorrect field name"
         },
         {
-            "Map-Name": {
-                "field_value_1": True
-            }
+            "field_value_1": True
         }        
     ]
     

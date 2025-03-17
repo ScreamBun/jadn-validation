@@ -1,15 +1,16 @@
 from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_reference_type
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional, use_field_id
 
 # id, extend, minv, maxv
 rules = {
     "type": "check_type",
     "{": "check_minv",
     "}": "check_maxv",
-    "fields": "check_fields"
+    "fields": "check_fields",
+    "extra_fields": "check_extra_fields",
 }
 
 class Map:
@@ -29,10 +30,8 @@ class Map:
         self.data = data  
         
     def check_type(self):
-        if not isinstance(self.data, set):
-            # Note: If the data isn't a list, there's no point to continue with other checks
-            # Just raise the error to kill the thread rather than collecting and continuing. 
-            raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
+        if not isinstance(self.data, dict):
+            raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
@@ -40,20 +39,26 @@ class Map:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
-        # TODO: Add logic to verify the # of data fields does not exceed the # of schema fields
+        # TODO: Add in config max length check
         max_length = get_max_length(self.j_type.type_options)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
+        use_ids = use_field_id(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
-            field_data = get_data_by_name(self.data, j_field[1])
+            
+            field_data = None
+            if use_ids:
+                field_data = get_data_by_id(self.data, j_field[0])
+            else:
+                field_data = get_data_by_name(self.data, j_field[1])
             
             if field_data is None:
                 if is_optional(j_field[3]):
                     continue
                 else:
-                    raise ValueError(f"Field '{j_field[1]}' is missing from array data")
+                    raise ValueError(f"Field '{j_field[1]}' is missing from data")
 
             j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if not is_primitive(j_field_obj.base_type):
@@ -63,6 +68,12 @@ class Map:
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
             clz_instance.validate()
+            
+    def check_extra_fields(self):
+        # Check if data has more fields than schema
+        # TODO: Add logic to check if extra fields are allowed
+        if len(self.data) > len(self.j_type.fields):
+            raise ValueError(f"Data has more fields ({len(self.data)}) than allowed ({len(self.j_type.fields)})")
         
     def validate(self):
         
