@@ -16,8 +16,8 @@ def test_enum():
         ]
     }
     
-    valid_data_list = [{'SuitEnum': 'clubs'}, {'SuitEnum': 'spades'}]
-    invalid_data_list = [{'SuitEnum': 'asdfghjklasdfghjkl'}, {'SuitEnum': 'Aces'}, {'SuitEnum': 10}]
+    valid_data_list = ['clubs','spades']
+    invalid_data_list = [{'SuitEnum': 'asdfghjklasdfghjkl'}, {'SuitEnum': 'Aces'}, {'SuitEnum': 10},'asdfghjklasdfghjkl', 'Aces', 10]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

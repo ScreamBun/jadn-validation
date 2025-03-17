@@ -44,7 +44,7 @@ def convert_to_python_type(type_str: str) -> type:
     return type_mapping.get(type_str, str)  
 
 def get_max_length(j_type_opts: List[str]) -> int:
-    max_length = None
+    max_length = None # make sure this dosn't bomb set optional values
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
@@ -231,15 +231,22 @@ def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
                 elif opt_val == "duration":
                     pyd_field_mapper.is_duration = True
                     pyd_field_mapper.min_length = 0
+                    set_min_length(0, j_type, pyd_field_mapper)
                 elif opt_val == "i8":
                     pyd_field_mapper.min_length = -128
+                    set_min_length(-128, j_type, pyd_field_mapper)
                     pyd_field_mapper.max_length = 127
+                    set_max_length(127, j_type, pyd_field_mapper)
                 elif opt_val == "i16":
                     pyd_field_mapper.min_length = -32768
+                    set_min_length(-32768, j_type, pyd_field_mapper)
                     pyd_field_mapper.max_length = 32767
+                    set_max_length(32767, j_type, pyd_field_mapper)
                 elif opt_val == "i32":
                     pyd_field_mapper.min_length = -2147483648
+                    set_min_length(-2147483648, j_type, pyd_field_mapper)
                     pyd_field_mapper.max_length = 2147483647
+                    set_max_length(2147483647, j_type, pyd_field_mapper)
                 elif j_type == "Integer":
                     format_designator, possible_unsigned = general_utils.split_on_first_char(opt_val) 
                     if format_designator == "u":
