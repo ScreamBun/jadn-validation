@@ -12,7 +12,7 @@ def test_boolean():
     }
     
     valid_data_list = [
-        {'Boolean-Test': True}
+        True
     ]
     
     invalid_data_list = [

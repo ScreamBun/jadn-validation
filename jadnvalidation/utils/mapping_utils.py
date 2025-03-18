@@ -136,6 +136,17 @@ def get_type(j_obj: Union[Jadn_Type, Jadn_Field]):
         
     return opts
 
+def get_ktype(j_obj: Union[Jadn_Type, Jadn_Field]):
+    val = None
+    opts = get_opts(j_obj)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "+" == opt_key:
+            val = opt_val
+            break
+        
+    return val
+
 def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
     val = None
     opts = get_opts(j_obj)

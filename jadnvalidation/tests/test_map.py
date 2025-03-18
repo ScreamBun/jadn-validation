@@ -196,4 +196,50 @@ def test_map_ref_field():
     assert err_count == 0
             
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)     
+    assert err_count == len(invalid_data_list)
+    
+def test_map_ref_record():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "rec_value_1", "Record-Name", [], ""]
+            ]],
+            ["Record-Name", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {
+                "rec_value_1": {
+                    "field_value_1": "test"
+                }
+            }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_1": 123,
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_1": "test incorrect field name"
+        },
+        {
+            "field_value_1": True
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)         

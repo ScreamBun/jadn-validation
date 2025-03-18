@@ -55,6 +55,7 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "Boolean" : "jadnvalidation.data_validation.boolean",
         "Integer" : "jadnvalidation.data_validation.integer",
         "Map" : "jadnvalidation.data_validation.map",
+        "MapOf" : "jadnvalidation.data_validation.map_of",
         "Record" : "jadnvalidation.data_validation.record",
         "String" : "jadnvalidation.data_validation.string"
     }
@@ -106,6 +107,23 @@ def get_item_safe_check(my_list, index):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+def get_map_of_data_content(data: dict):
+    '''
+    MapOf Data Example:
+        {
+            "Root-Test": [1, "asdf", 2, "fdsaf"]
+        }
+    '''
+    return_val = None
+    if isinstance(data, dict):        
+        first_key = next(iter(data))
+        if first_key:
+            data_content = data.get(first_key)
+            if isinstance(data_content, list):
+                return_val = data_content
+                
+    return return_val
 
 def get_reference_type(jschema, type_name):
     j_types = jschema.get('types')
