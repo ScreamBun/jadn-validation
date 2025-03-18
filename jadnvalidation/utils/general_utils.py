@@ -155,6 +155,12 @@ def get_type_opts(p_model) -> Pyd_Field_Mapper:
                 
     return opts
 
+def is_even(n):
+    return n % 2 == 0
+
+def is_odd(n):
+    return n % 2 != 0
+
 def is_type(jadn_type: list[any]):
     if len(jadn_type) > 0:
         if isinstance(jadn_type[0], str):

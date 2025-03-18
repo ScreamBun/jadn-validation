@@ -1,7 +1,7 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
-from jadnvalidation.utils.general_utils import create_clz_instance, get_map_of_data_content, get_reference_type
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.utils.general_utils import create_clz_instance, get_map_of_data_content, get_reference_type, is_even
 from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional
 
 # id, extend, minv, maxv
@@ -61,24 +61,34 @@ class MapOf:
         test = ""
         
     def check_key_values(self):
-        vtype = get_vtype(self.j_type)
         ktype = get_ktype(self.j_type)
+        vtype = get_vtype(self.j_type)
         
         if self.data is None:
-
             if not is_optional(self.j_type.type_options):
                 self.errors.append(f"Map of '{self.j_type.type_name}' missing data")
         
-        for data_item in self.inner_data:
-            if is_primitive(vtype):
-                of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype, self.j_type.config)
-                clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item)
-                clz_instance.validate()
-            else:                
-                ref_type = get_reference_type(self.j_schema, vtype)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
-                clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
-                clz_instance.validate()
+        # If ktype is int, then the data is a list of key-value pairs, as follows:
+        #  [key1, value1, key2, value2, ...].
+        if ktype == Base_Type.INTEGER.value:
+        
+            for i, data_item in enumerate(self.inner_data):
+                
+                kv_type = None
+                if is_even(i):
+                    kv_type = ktype
+                else:
+                    kv_type = vtype
+                
+                if is_primitive(kv_type):
+                    of_jtype = Jadn_Type("of_" + self.j_type.type_name, kv_type, self.j_type.config)
+                    clz_instance = create_clz_instance(kv_type, self.j_schema, of_jtype, data_item)
+                    clz_instance.validate()
+                else:                
+                    ref_type = get_reference_type(self.j_schema, kv_type)
+                    ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                    clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
+                    clz_instance.validate()
         
     def validate(self):
         
