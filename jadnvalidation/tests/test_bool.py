@@ -1,5 +1,4 @@
-from pydantic import ValidationError
-from jadnvalidation.data_validation.data_validation import DataValidation
+from jadnvalidation.tests.test_utils import validate_valid_data, validate_invalid_data
 
 
 def test_boolean():
@@ -10,34 +9,14 @@ def test_boolean():
         ["Boolean-Test", "Boolean", [], ""]
       ]
     }
+    # remove and move into a record test {'Boolean-Test': True}
+    valid_data_list = [True, False]
     
-    valid_data_list = [
-        True
-    ]
-    
-    invalid_data_list = [
-        {'Boolean-Test': 'True'},
-        {'Boolean-Test': 'zzz'},
-        {'Boolean-Test': '__false__'}
-    ]
-    
-    err_count = 0
-    for data in valid_data_list:
-        try:
-            j_validation = DataValidation(j_schema, root, data)
-            j_validation.validate()
-        except ValidationError as e:
-            error_count = error_count + 1
-            print(e)
+    invalid_data_list = [{'Boolean-Test': True},'True', 'zzz', '__false__']
+      
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
-    assert err_count == 0 
-            
-    for data in invalid_data_list:
-        try :
-            j_validation = DataValidation(j_schema, root, data)
-            j_validation.validate()
-        except Exception as err:
-            print(err)
-            err_count += 1      
-        
-    assert err_count == 3
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    

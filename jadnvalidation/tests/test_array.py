@@ -21,7 +21,7 @@ def test_forward_ref():
     
     invalid_data_list = [
             [[123, 'Any String']],
-            'test'
+            [True, False]
         ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

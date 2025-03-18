@@ -1,6 +1,4 @@
-from pydantic import ValidationError
-from jadnvalidation.tests.test_utils import validate_valid_data
-from pydantic_schema import create_pyd_model
+from jadnvalidation.tests.test_utils import validate_valid_data, validate_invalid_data
 
 
 def test_type_int():
@@ -18,7 +16,7 @@ def test_type_int():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 # TODO: Add duration formatting?
@@ -37,7 +35,7 @@ def test_type_int_duration():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_type_int_min():
@@ -55,7 +53,7 @@ def test_type_int_min():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_type_int_max():
@@ -73,7 +71,7 @@ def test_type_int_max():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_type_int_i8():
@@ -91,7 +89,7 @@ def test_type_int_i8():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_type_int_i16():
@@ -109,7 +107,7 @@ def test_type_int_i16():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_type_int_i32():
@@ -127,5 +125,5 @@ def test_type_int_i32():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)

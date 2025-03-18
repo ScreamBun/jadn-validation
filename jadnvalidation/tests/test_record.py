@@ -1,4 +1,4 @@
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
 def test_forward_ref():
@@ -84,21 +84,22 @@ def test_records_min_max():
     ]
 
     # TODO: Need to test too many fields...    
-    invalid_data_list = [{
-        'Record-Name1': {
-            'field_value_1': "test field"
-        },
-        'Record-Name2': {
+    invalid_data_list = [
+        {
             'field_value_1': "test field",
-            'field_value_2': False,
-            'field_value_5': "test field"
+            'field_value_2': "t",
+            'field_value_3': "1234567"
+        },
+        {
+            'field_value_1': "123456789",
+            'field_value_2': "1"
         }        
-    }]
+    ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
 def test_record():

@@ -1,6 +1,7 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts, map_type_opts
+from jadnvalidation.utils.general_utils import split_on_first_char, split_on_second_char
 
 
 rules = {
@@ -28,7 +29,19 @@ class Integer:
         
     def check_format(self):
         # TODO: formats...
-        tbd = ""        
+
+        opts = get_opts(self.j_type)
+        map_type_opts(self.j_type, opts)        
+        min_val = get_min_length(opts)
+        if min_val is not None and self.data < min_val:
+            self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
+        max_val = get_max_length(opts)
+        if max_val is not None and self.data > max_val:
+            self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
+        
+            #opt_val = self.j_schema[]
+
+    
         
     def check_type(self):
         if self.data:
@@ -39,13 +52,13 @@ class Integer:
         opts = get_opts(self.j_type)
         min_val = get_min_length(opts)
         if min_val is not None and self.data < min_val:
-            self.errors.append(f"String length must be greater than {min_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_maxv(self):
         opts = get_opts(self.j_type)     
-        max_length = get_max_length(opts)
-        if max_length is not None and self.data > max_length:
-            self.errors.append(f"String length must be less than {max_length}. Received: {len(self.data)}")
+        max_val = get_max_length(opts)
+        if max_val is not None and self.data > max_val:
+            self.errors.append(f"String length must be less than {max_val}. Received: {len(self.data)}")
         
     def validate(self):
         

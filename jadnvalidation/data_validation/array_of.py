@@ -47,7 +47,7 @@ class ArrayOf:
         vtype = get_vtype(self.j_type)
         
         if self.data is None:
-            if not is_optional(self.j_type.options):
+            if not is_optional(self.j_type.type_options):
                 self.errors.append(f"Array '{self.j_type.type_name}' missing data")        
         
         for data_item in self.data:

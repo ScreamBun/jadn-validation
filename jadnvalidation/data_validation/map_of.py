@@ -1,8 +1,8 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_map_of_data_content, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional, use_field_id
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.utils.general_utils import create_clz_instance, get_map_of_data_content, get_reference_type
+from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional
 
 # id, extend, minv, maxv
 rules = {
@@ -65,7 +65,8 @@ class MapOf:
         ktype = get_ktype(self.j_type)
         
         if self.data is None:
-            if not is_optional(self.j_type.options):
+
+            if not is_optional(self.j_type.type_options):
                 self.errors.append(f"Map of '{self.j_type.type_name}' missing data")
         
         for data_item in self.inner_data:
