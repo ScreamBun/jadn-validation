@@ -1,6 +1,5 @@
 from jadnvalidation.tests.test_utils import validate_valid_data, validate_invalid_data
 
-
 def test_forward_ref():
     root = "Root-Test"
     
@@ -82,42 +81,55 @@ def test_records_min_max():
             'field_value_3': 'Sigma'
         }        
     ]
+  
+    invalid_data_list = [
+        {
+            'field_value_1': "test field",
+            'field_value_2': "t",
+            'field_value_3': "1234567"
+        },
+        {
+            'field_value_1': "123456789",
+            'field_value_2': "1"
+        }        
+    ]
     
     invalid_data_list = [{
-        'Record-Name1': {
+        'Record-Name1': { #too few fields
             'field_value_1': "test"
         },
-        'Record-Name2': {
+        'Record-Name2': { #incorrect typing
             'field_value_1': "test",
             'field_value_2': False,
             'field_value_3': "test"
         },
-        'Record-Name3': {
+        'Record-Name3': { #too long field data
             'field_value_1': "long test string",
             'field_value_2': "test",
             'field_value_3': "test"
         },
-        'Record-Name': {
+        'Record-Name': { #too short field data
             'field_value_1': "Z",
             'field_value_2': "test",
             'field_value_3': "test"
         },
-        'Record-Name': {
+        'Record-Name': { #incorrect field in data
             'field_value_1': "test",
             'field_value_2': "test",
             'field_value_5': "five?"
         },
-        'Record-Name': {
+        'Record-Name': { #too many of a field
             'field_value_1': "test",
             'field_value_2': "test",
             'field_value_3': "test",
-            'field_value_5': "five?"
+            'field_value_3': "3x2"
         }             
     }]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 

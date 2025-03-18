@@ -1,21 +1,23 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
-from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_vtype, is_optional
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_map_of_data_content, get_reference_type
+from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional, use_field_id
 
+# id, extend, minv, maxv
 rules = {
     "type": "check_type",
-    "fields": "check_vtype",
     "{": "check_minv",
-    "}": "check_maxv"
+    "}": "check_maxv",
+    "key_values": "check_key_values",
 }
 
-class ArrayOf:
+class MapOf:
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
-    data: any = None # The array of's data only
+    data: any = None # The map of data only
+    inner_data: any = None # The inner iterable data of the map
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
@@ -27,30 +29,46 @@ class ArrayOf:
         self.j_type = j_type
         self.data = data  
         
+        if self.data:
+            self.inner_data = get_map_of_data_content(self.data)
+        
     def check_type(self):
-        if not isinstance(self.data, list):
-            # Note: If the data isn't a list, there's no point to continue with other checks
-            # Just raise the error to kill the thread rather than collecting and continuing. 
-            raise ValueError(f"Data must be a list. Received: {type(self.data)}")
+        if self.inner_data:
+            if not isinstance(self.inner_data, list):
+                raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
         
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"Array length must be greater than {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
+        # TODO: Add in config max length check
         max_length = get_max_length(self.j_type.type_options)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"Array length must be less than {max_length}. Received: {len(self.data)}")
+            self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
+
+    def check_keys(self):
+        # for k, v in val.items():
+        #     try:
+        #         k_cls.validate(k) 
+        #     except:
+        #         raise ValueError(f"`{k}` is not a valid ktype`{ktype}`")     
+        #     try:
+        #         v_cls.validate(v)
+        #     except:
+        #         raise ValueError(f"`{v}` is not a valid vtype `{vtype}`")
+        test = ""
         
-    def check_vtype(self):
+    def check_key_values(self):
         vtype = get_vtype(self.j_type)
+        ktype = get_ktype(self.j_type)
         
         if self.data is None:
             if not is_optional(self.j_type.type_options):
-                self.errors.append(f"Array '{self.j_type.type_name}' missing data")        
+                self.errors.append(f"Map of '{self.j_type.type_name}' missing data")
         
-        for data_item in self.data:
+        for data_item in self.inner_data:
             if is_primitive(vtype):
                 of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype, self.j_type.config)
                 clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item)
