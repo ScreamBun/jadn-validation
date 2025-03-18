@@ -33,9 +33,6 @@ class Record:
             # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
         
-    def check_order(self):
-        # TODO: Kevin's logic goes here...
-        tbd = ""
         
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
