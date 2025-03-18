@@ -34,7 +34,9 @@ class MapOf:
         
     def check_type(self):
         if self.inner_data:
-            if not isinstance(self.inner_data, list):
+            if isinstance(self.inner_data, list) or isinstance(self.inner_data, dict):
+                return
+            else:
                 raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
         
     def check_minv(self):
@@ -48,17 +50,17 @@ class MapOf:
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
 
-    def check_keys(self):
-        # for k, v in val.items():
-        #     try:
-        #         k_cls.validate(k) 
-        #     except:
-        #         raise ValueError(f"`{k}` is not a valid ktype`{ktype}`")     
-        #     try:
-        #         v_cls.validate(v)
-        #     except:
-        #         raise ValueError(f"`{v}` is not a valid vtype `{vtype}`")
-        test = ""
+    def validate_type(self, kv_type, data_item):
+        if is_primitive(kv_type):
+            of_jtype = Jadn_Type("of_" + self.j_type.type_name, kv_type, self.j_type.config)
+            clz_instance = create_clz_instance(kv_type, self.j_schema, of_jtype, data_item)
+            clz_instance.validate()
+        else:                
+            ref_type = get_reference_type(self.j_schema, kv_type)
+            ref_type_obj = build_j_type(ref_type, self.j_type.config)
+            clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
+            clz_instance.validate()        
+
         
     def check_key_values(self):
         ktype = get_ktype(self.j_type)
@@ -71,6 +73,7 @@ class MapOf:
         # If ktype is int, then the data is a list of key-value pairs, as follows:
         #  [key1, value1, key2, value2, ...].
         if ktype == Base_Type.INTEGER.value:
+            # TODO: Expand this to handle more than just integers
         
             for i, data_item in enumerate(self.inner_data):
                 
@@ -80,15 +83,18 @@ class MapOf:
                 else:
                     kv_type = vtype
                 
-                if is_primitive(kv_type):
-                    of_jtype = Jadn_Type("of_" + self.j_type.type_name, kv_type, self.j_type.config)
-                    clz_instance = create_clz_instance(kv_type, self.j_schema, of_jtype, data_item)
-                    clz_instance.validate()
-                else:                
-                    ref_type = get_reference_type(self.j_schema, kv_type)
-                    ref_type_obj = build_j_type(ref_type, self.j_type.config)
-                    clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
-                    clz_instance.validate()
+                self.validate_type(kv_type, data_item)
+                    
+        # If ktype is string, then the data is a dict of key-value pairs, as follows:
+        #  {"key1": value1, "key2": value2, ...}.
+        elif ktype == Base_Type.STRING.value:
+            
+            for key, val in self.inner_data.items():
+                self.validate_type(ktype, key)
+                self.validate_type(vtype, val)
+                
+        else:
+            raise ValueError(f"Unknown mapof ktype: {ktype}")
         
     def validate(self):
         

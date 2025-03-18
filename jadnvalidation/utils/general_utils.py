@@ -122,6 +122,8 @@ def get_map_of_data_content(data: dict):
             data_content = data.get(first_key)
             if isinstance(data_content, list):
                 return_val = data_content
+            elif isinstance(data_content, dict):
+                return_val = data_content
                 
     return return_val
 
