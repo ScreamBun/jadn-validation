@@ -43,7 +43,6 @@ class Jadn_Type():
     type_options: list[str] = None
     type_description: str = None
     fields: list[Any] = None
-    options: Any = None
     required: bool = False
     
     def __init__(self, type_name, base_type, config, id = None, type_options = [], type_description = "", fields = []):
