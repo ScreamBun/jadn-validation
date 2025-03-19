@@ -158,21 +158,6 @@ def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
         
     return val
 
-# def is_optional(j_type_opts: List[str]) -> bool:
-    
-#     is_optional = Pyd_Field_Mapper.is_optional or None
-#     if is_optional is not None:
-#         return is_optional
-#     min = get_min_occurs(j_type_opts)
-#     if min is not None and min == 0:
-#         Pyd_Field_Mapper.is_optional = True
-#         is_optional = True
-#         return is_optional
-#     elif min and min>0:
-#         Pyd_Field_Mapper.is_optional = False
-#         return is_optional
-#     else: return False 
-
 def is_optional(j_type_opts: List[str]) -> bool:
     is_optional = False
     
@@ -349,7 +334,7 @@ def set_max_occurs(opt_val: str, j_type: str, p_field_mapper: Pyd_Field_Mapper):
     except TypeError as e:
         print("Invalid option: requires integer value: " + e)    
 
-def use_field_id(j_type_opts: List[str]) -> bool:
+def use_field_ids(j_type_opts: List[str]) -> bool:
     use_id = False
     
     if j_type_opts:

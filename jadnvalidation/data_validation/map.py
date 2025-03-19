@@ -2,7 +2,7 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional, use_field_id
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional, use_field_ids
 
 # id, extend, minv, maxv
 rules = {
@@ -45,7 +45,7 @@ class Map:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
-        use_ids = use_field_id(self.j_type.type_options)
+        use_ids = use_field_ids(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
             
             field_data = None

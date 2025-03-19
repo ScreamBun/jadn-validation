@@ -173,7 +173,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
         if j_type_obj:
 
             if is_enumeration(j_type_obj.base_type):
-                use_id = mapping_utils.use_field_id(j_type_obj.type_options)
+                use_id = mapping_utils.use_field_ids(j_type_obj.type_options)
                 j_field_obj = build_jadn_enum_field_obj(j_type_obj, use_id)
                 p_field = build_pyd_field(j_field_obj)
                 p_fields[j_type_obj.type_name] = p_field
@@ -185,7 +185,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                     validate_field_name(j_field_obj.type_name, j_config_obj)
                     p_field = build_pyd_field(j_field_obj, True)
                     
-                    use_id = mapping_utils.use_field_id(j_type_obj.type_options)
+                    use_id = mapping_utils.use_field_ids(j_type_obj.type_options)
                     if use_id:
                         p_structure_fields[str(j_field_obj.id)] = p_field
                     else:
@@ -203,7 +203,7 @@ def build_custom_model(j_types: list, j_config_data = {}) -> type[BaseModel]:
                 p_structure_fields = {}
                 
                 if is_record_or_map(j_type_obj):
-                    use_id = mapping_utils.use_field_id(j_type_obj.type_options)
+                    use_id = mapping_utils.use_field_ids(j_type_obj.type_options)
                     
                     for j_field in j_type_obj.fields: 
                         j_field_obj = build_jadn_type_obj(j_field, j_config_obj)

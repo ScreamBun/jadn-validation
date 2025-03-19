@@ -1,5 +1,5 @@
 
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
 def test_choice():
@@ -8,10 +8,10 @@ def test_choice():
     j_schema = {
         "info": {
             "package": "http://test.com",
-            "exports": ["Choice-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["Choice-Name", "Choice", [], "", [
+            ["Root-Test", "Choice", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -20,13 +20,12 @@ def test_choice():
     
     valid_data_list = [
         {
-            "Choice-Name": {
-                "field_value_1": "illum repellendus nobis",
-                "field_value_2": True
+            "Root-Test": {
+                "field_value_1": "illum repellendus nobis"
             }
         }, 
             {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_2": False
             }
         }
@@ -34,19 +33,19 @@ def test_choice():
     
     invalid_data_list = [
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_1": "illum repellendus nobis",
                 "field_value_2": True,
                 "field_value_3": "test extra field validation"
             }
         }, 
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_x": "test incorrect field name"
             }
         },
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_1": 123
             }
         }        
@@ -55,7 +54,7 @@ def test_choice():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
     
 
@@ -65,10 +64,10 @@ def test_choice_id():
     j_schema = {
         "info": {
             "package": "http://test.com",
-            "exports": ["Choice-Name"]
+            "exports": ["Root-Test"]
         },
         "types": [
-            ["Choice-Name", "Choice", ["="], "", [
+            ["Root-Test", "Choice", ["="], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -77,13 +76,13 @@ def test_choice_id():
     
     valid_data_list = [
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "1": "illum repellendus nobis",
                 "2": True
             }
         }, 
             {
-            "Choice-Name": {
+            "Root-Test": {
                 "2": False
             }
         }
@@ -91,14 +90,14 @@ def test_choice_id():
     
     invalid_data_list = [
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_1": "illum repellendus nobis",
                 "field_value_2": True,
                 "field_value_3": "test extra field validation"
             }
         }, 
         {
-            "Choice-Name": {
+            "Root-Test": {
                 "field_value_x": "test incorrect field name"
             }
         }       

@@ -17,7 +17,6 @@ class MapOf:
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The map of data only
-    inner_data: any = None # The inner iterable data of the map
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
@@ -29,15 +28,11 @@ class MapOf:
         self.j_type = j_type
         self.data = data  
         
-        if self.data:
-            self.inner_data = get_map_of_data_content(self.data)
-        
     def check_type(self):
-        if self.inner_data:
-            if isinstance(self.inner_data, list) or isinstance(self.inner_data, dict):
-                return
-            else:
-                raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
+        if isinstance(self.data, list) or isinstance(self.data, dict):
+            return
+        else:
+            raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
         
     def check_minv(self):
         min_length = get_min_length(self.j_type.type_options)
@@ -75,7 +70,7 @@ class MapOf:
         if ktype == Base_Type.INTEGER.value:
             # TODO: Expand this to handle more than just integers
         
-            for i, data_item in enumerate(self.inner_data):
+            for i, data_item in enumerate(self.data):
                 
                 kv_type = None
                 if is_even(i):
@@ -89,7 +84,7 @@ class MapOf:
         #  {"key1": value1, "key2": value2, ...}.
         elif ktype == Base_Type.STRING.value:
             
-            for key, val in self.inner_data.items():
+            for key, val in self.data.items():
                 self.validate_type(ktype, key)
                 self.validate_type(vtype, val)
                 

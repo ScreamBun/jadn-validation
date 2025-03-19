@@ -17,15 +17,11 @@ def test_map_of_int_string():
     }
     
     valid_data_list = [
-            {
-                "Root-Test": [1, "asdf", 2, "fdsaf"]
-            }
+         [1, "asdf", 2, "fdsaf"]
     ]
     
     invalid_data_list = [
-            {
-                "Root-Test": [1, True, 2, False]
-            }
+         [1, True, 2, False]
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -43,31 +39,24 @@ def test_map_of_string_string():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["String-Name", "String", [], ""],
             ["Root-Test", "MapOf", ["+String", "*String"], ""]
         ]
     }
     
     valid_data_list = [
-            {
-                "Root-Test": 
-                {
-                    "key1" : "val1",
-                    "key2" : "val2",
-                    "key3" : "val3"
-                }       
-            }
+        {
+            "key1" : "val1",
+            "key2" : "val2",
+            "key3" : "val3"
+        }
     ]
     
     invalid_data_list = [
-            {
-                "Root-Test": 
-                {
-                    1 : "val1",
-                    "key2" : 2,
-                    "key3" : True
-                }
-            }
+        {
+            1 : "val1",
+            "key2" : 2,
+            "key3" : True
+        }
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

@@ -53,6 +53,7 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "ArrayOf" : "jadnvalidation.data_validation.array_of",
         "Binary" : "jadnvalidation.data_validation.binary",
         "Boolean" : "jadnvalidation.data_validation.boolean",
+        "Choice" : "jadnvalidation.data_validation.choice",
         "Integer" : "jadnvalidation.data_validation.integer",
         "Map" : "jadnvalidation.data_validation.map",
         "MapOf" : "jadnvalidation.data_validation.map_of",
@@ -107,6 +108,25 @@ def get_item_safe_check(my_list, index):
 
 def get_jadn_type_opts(jadn_type_name: str) -> tuple:
     return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
+
+# TODO: We might be able to generalize this function
+def get_choice_data_content(data: dict):
+    '''
+    Choice Data Example:
+        "Choice-Name": {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True
+        }
+    '''
+    return_val = None
+    if isinstance(data, dict):        
+        first_key = next(iter(data))
+        if first_key:
+            data_content = data.get(first_key)
+            if isinstance(data_content, dict):
+                return_val = data_content
+                
+    return return_val
 
 def get_map_of_data_content(data: dict):
     '''
