@@ -2,7 +2,7 @@ from typing import Any
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
 from jadnvalidation.utils.enum_utils import BaseEnum
-from jadnvalidation.utils.general_utils import is_field, is_type, safe_get
+from jadnvalidation.utils.general_utils import is_enumerated, is_field, is_type, safe_get
 
 class Primitive(BaseEnum):  
     BINARY = 'Binary'
@@ -94,9 +94,16 @@ def is_record_or_map(jadn_type: Jadn_Type) -> bool:
 def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None:
     
     jadn_type_obj = None
-    
-    if is_type(j_type):
-        # type
+
+    if is_enumerated(j_type):
+        jadn_type_obj = Jadn_Type(
+                config=j_config,
+                id=j_type[0],
+                type_name=j_type[1], 
+                base_type=None, 
+                type_options=[], 
+                type_description=j_type[2])
+    elif is_type(j_type):
         jadn_type_obj = Jadn_Type(
                 config=j_config,
                 type_name=j_type[0], 
@@ -105,14 +112,14 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config) -> Jadn_Type | None
                 type_description=j_type[3],
                 fields=safe_get(j_type, 4, []))
     elif is_field(j_type):
-        # field
         jadn_type_obj = Jadn_Type(
                 config=j_config,
                 id=j_type[0],
                 type_name=j_type[1], 
                 base_type=j_type[2], 
                 type_options=j_type[3], 
-                type_description=j_type[4])     
+                type_description=j_type[4])
+
     else:
         print("unknown jadn item")
     

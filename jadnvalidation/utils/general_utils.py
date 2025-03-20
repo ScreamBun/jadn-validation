@@ -54,6 +54,7 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "Binary" : "jadnvalidation.data_validation.binary",
         "Boolean" : "jadnvalidation.data_validation.boolean",
         "Choice" : "jadnvalidation.data_validation.choice",
+        "Enumerated" : "jadnvalidation.data_validation.enumerated",
         "Integer" : "jadnvalidation.data_validation.integer",
         "Map" : "jadnvalidation.data_validation.map",
         "MapOf" : "jadnvalidation.data_validation.map_of",
@@ -199,15 +200,20 @@ def is_even(n):
 def is_odd(n):
     return n % 2 != 0
 
-def is_type(jadn_type: list[any]):
-    if len(jadn_type) > 0:
-        if isinstance(jadn_type[0], str):
+def is_enumerated(jadn_type: list[any]):
+    if len(jadn_type) == 3:
             return True
     return False
 
 def is_field(jadn_type: list[any]):
     if len(jadn_type) > 0:
         if isinstance(jadn_type[0], int):
+            return True
+    return False
+
+def is_type(jadn_type: list[any]):
+    if len(jadn_type) > 0:
+        if isinstance(jadn_type[0], str):
             return True
     return False
 

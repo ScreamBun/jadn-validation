@@ -1,0 +1,75 @@
+from typing import Union
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type
+from jadnvalidation.utils.general_utils import create_clz_instance
+from jadnvalidation.utils.mapping_utils import use_field_ids
+
+rules = {
+    "type": "check_type",
+    "choice": "check_enumeration",
+}
+
+class Enumerated:
+    
+    j_schema: dict = {}
+    j_type: Union[list, Jadn_Type] = None
+    data: any = None # The choice data only
+    errors = []   
+    
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
+        self.j_schema = j_schema
+        
+        if isinstance(j_type, list):
+            j_type = build_j_type(j_type)
+        
+        self.j_type = j_type
+        self.data = data      
+        
+    def check_type(self):
+        use_ids = use_field_ids(self.j_type.type_options)
+        if use_ids:
+            if not isinstance(self.data, int):
+                raise ValueError(f"Data must be an integer. Received: {type(self.data)}")
+        else:
+            if not isinstance(self.data, str):
+                raise ValueError(f"Data must be a string. Received: {type(self.data)}")
+            
+    def check_enumeration(self):
+        use_ids = use_field_ids(self.j_type.type_options)
+        
+        j_field_match = None
+        for j_key, j_field in enumerate(self.j_type.fields):
+            
+            if use_ids:
+                if j_field[0] == self.data:
+                    j_field_match = j_field
+            else:
+                if j_field[1] == self.data:
+                    j_field_match = j_field
+                
+            if j_field_match is not None:
+                break
+        
+        if j_field_match is None:
+            raise ValueError(f"Data {self.data} not valid for Enumeration type '{self.j_type.type_name}'. ")
+        
+        enum_base_type = Base_Type.STRING.value
+        if use_ids:
+            enum_base_type = Base_Type.INTEGER.value
+            
+        enum_jtype = Jadn_Type(self.j_type.type_name, enum_base_type, self.j_type.config)
+        clz_instance = create_clz_instance(enum_base_type, self.j_schema, enum_jtype, self.data)
+        clz_instance.validate()
+
+                                
+    def validate(self):
+        
+        # Check data against rules
+        for key, function_name in rules.items():
+            getattr(self, function_name)()
+        
+        # Other Checks.....?
+            
+        if len(self.errors) > 0:
+            raise ValueError(self.errors)  
+        
+        return True

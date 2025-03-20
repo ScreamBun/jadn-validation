@@ -4,18 +4,12 @@ from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field,
 from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
 from jadnvalidation.utils.consts import Choice_Consts
 
-# id, extend
 rules = {
     "type": "check_type",
     "choice": "check_choice",
 }
 
 class Choice:
-    
-    # CHOICE_ONE_OF = "oneOf"
-    # CHOICE_ANY_OF = "anyOf"
-    # CHOICE_ALL_OF = "allOf"
-    # CHOICE_NOT = "not"    
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
