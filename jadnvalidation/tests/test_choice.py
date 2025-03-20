@@ -20,34 +20,24 @@ def test_choice():
     
     valid_data_list = [
         {
-            "Root-Test": {
-                "field_value_1": "illum repellendus nobis"
-            }
+            "field_value_1": "illum repellendus nobis"
         }, 
-            {
-            "Root-Test": {
-                "field_value_2": False
-            }
+        {
+            "field_value_2": False
         }
     ]
     
     invalid_data_list = [
         {
-            "Root-Test": {
-                "field_value_1": "illum repellendus nobis",
-                "field_value_2": True,
-                "field_value_3": "test extra field validation"
-            }
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
         }, 
         {
-            "Root-Test": {
-                "field_value_x": "test incorrect field name"
-            }
+            "field_value_x": "test incorrect field name"
         },
         {
-            "Root-Test": {
-                "field_value_1": 123
-            }
+            "field_value_1": 123
         }        
     ]
     
@@ -76,30 +66,22 @@ def test_choice_id():
     
     valid_data_list = [
         {
-            "Root-Test": {
-                "1": "illum repellendus nobis",
-                "2": True
-            }
+            "1": "illum repellendus nobis",
+            "2": True
         }, 
-            {
-            "Root-Test": {
-                "2": False
-            }
+        {
+            "2": False
         }
     ]
     
     invalid_data_list = [
         {
-            "Root-Test": {
-                "field_value_1": "illum repellendus nobis",
-                "field_value_2": True,
-                "field_value_3": "test extra field validation"
-            }
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
         }, 
         {
-            "Root-Test": {
-                "field_value_x": "test incorrect field name"
-            }
+            "field_value_x": "test incorrect field name"
         }       
     ]
     

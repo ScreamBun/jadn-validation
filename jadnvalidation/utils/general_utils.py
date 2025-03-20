@@ -128,6 +128,22 @@ def get_choice_data_content(data: dict):
                 
     return return_val
 
+def get_j_field(j_field_list, data_key, is_using_ids):
+    j_field_found = None
+    
+    for j_field in j_field_list:
+        if is_using_ids:
+            if j_field[0] == data_key:
+                j_field_found = j_field
+                break
+        else:
+            if j_field[1] == data_key:
+                j_field_found = j_field
+                break
+            
+    return j_field_found             
+        
+
 def get_map_of_data_content(data: dict):
     '''
     MapOf Data Example:
