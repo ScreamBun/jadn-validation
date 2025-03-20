@@ -6,6 +6,7 @@ from jadnvalidation.models.jadn.jadn_field import Jadn_Field
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 from jadnvalidation.utils import general_utils
+from jadnvalidation.utils.consts import Choice_Consts
 
 
 def convert_to_pyd_type(type_str: str) -> type:
@@ -41,7 +42,25 @@ def convert_to_python_type(type_str: str) -> type:
         Base_Type.ARRAY.value: list,
         Base_Type.RECORD.value: dict
     }
-    return type_mapping.get(type_str, str)  
+    return type_mapping.get(type_str, str)
+
+def get_choice_type(j_type_opts: List[str]) -> str:
+    choice_type = Choice_Consts.CHOICE_ONE_OF
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+        if opt_char_id == "A":
+            choice_type = Choice_Consts.CHOICE_ALL_OF
+        elif opt_char_id == "O":
+            choice_type = Choice_Consts.CHOICE_ANY_OF
+        elif opt_char_id == "X":
+            choice_type = Choice_Consts.CHOICE_NOT
+        else:
+            choice_type = Choice_Consts.CHOICE_ONE_OF
+            
+        break
+        
+    return choice_type
 
 def get_max_length(j_type_opts: List[str]) -> int:
     max_length = None # make sure this dosn't bomb set optional values

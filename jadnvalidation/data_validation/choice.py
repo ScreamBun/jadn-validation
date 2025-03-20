@@ -1,16 +1,21 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, get_reference_type
-from jadnvalidation.utils.mapping_utils import use_field_ids
+from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
+from jadnvalidation.utils.consts import Choice_Consts
 
 # id, extend
 rules = {
     "type": "check_type",
-    "multiplicity": "check_multiplicity",
     "choice": "check_choice",
 }
 
 class Choice:
+    
+    # CHOICE_ONE_OF = "oneOf"
+    # CHOICE_ANY_OF = "anyOf"
+    # CHOICE_ALL_OF = "allOf"
+    # CHOICE_NOT = "not"    
     
     j_schema: dict = {}
     j_type: Union[list, Jadn_Type] = None
@@ -29,21 +34,68 @@ class Choice:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
-            
-    def check_multiplicity(self):
-        if self.data is None:
-            # if not is_optional(self.j_type.type_options):
-            raise ValueError(f"Choice '{self.j_type.type_name}' data is required.")
-            
-        # TODO: Add logic to check for anyOf and allOf. 
         
-        # oneOf is the default.
-        if len(self.data) != 1:
-            self.errors.append(f"Choice '{self.j_type.type_name}' must have exactly one choice. Received: {len(self.data)}")                
-                        
+    def process_any_of(self, use_ids):
+        
+        # At least one field must be present
+        num_of_choices = len(self.data)
+        num_of_fields = len(self.j_type.fields)
+        if num_of_choices > num_of_fields:
+            raise ValueError(f"At least one field must be present, but no more {num_of_fields}.  Received: {num_of_choices}.")     
+        
+        for key, choice_data in self.data.items():
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
             
-    def check_choice(self):
-        use_ids = use_field_ids(self.j_type.type_options)
+            if j_field is None:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
+            
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+        
+            if not is_primitive(j_field_obj.base_type):
+                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                j_field_obj = ref_type_obj
+                
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
+            clz_instance.validate()
+        
+    def process_all_of(self, use_ids):
+        
+        # TODO: Needs tests more, may be too simple. 
+        # All fields must be present
+        num_of_choices = len(self.data)
+        num_of_fields = len(self.j_type.fields)
+        if num_of_choices != num_of_fields:
+            raise ValueError(f"Choice '{self.j_type.type_name}' must have exactly {num_of_fields} choices. Received: {num_of_choices}")
+        
+        for key, choice_data in self.data.items():
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            
+            if j_field is None:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
+            
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+        
+            if not is_primitive(j_field_obj.base_type):
+                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                j_field_obj = ref_type_obj
+                
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
+            clz_instance.validate()
+        
+    def process_not(self, use_ids):
+        for key, choice_data in self.data.items():
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            
+            if j_field:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
+        
+    def process_one_of(self, use_ids):
+
+        # only one choice is allowed        
+        if len(self.data) != 1:
+            self.errors.append(f"Choice '{self.j_type.type_name}' must have exactly one choice. Received: {len(self.data)}")
         
         for key, choice_data in self.data.items():
             j_field = get_j_field(self.j_type.fields, key, use_ids)
@@ -61,12 +113,22 @@ class Choice:
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
             clz_instance.validate()
             
-            break # Only one choice is allowed. 
-            # TODO: Update this to handle anyOf and allOf.
+            break # Only one choice is allowed.        
+                        
             
-    def check_extra_fields(self):
-        # TODO: Check if data has fields that are not specified in the schema
-        test = ""
+    def check_choice(self):
+        use_ids = use_field_ids(self.j_type.type_options)
+        choice_type = get_choice_type(self.j_type.type_options)
+        
+        match choice_type:
+            case Choice_Consts.CHOICE_ALL_OF:
+                self.process_all_of(use_ids)
+            case Choice_Consts.CHOICE_ANY_OF:
+                self.process_any_of(use_ids)
+            case Choice_Consts.CHOICE_NOT:
+                self.process_not(use_ids)
+            case _:
+                self.process_one_of(use_ids)
                                 
     def validate(self):
         

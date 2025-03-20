@@ -5,7 +5,7 @@ import netaddr
 from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network
 from typing import Union
 
-from jadnvalidation.consts import HOSTNAME_MAX_LENGTH
+from jadnvalidation.utils.consts import HOSTNAME_MAX_LENGTH
 from jadnvalidation.utils.general_utils import addKey
 
 

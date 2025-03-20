@@ -65,7 +65,7 @@ def test_records_min_max():
             ["Root-Test", "Record", ["{2", "}3"], "", [
                 [1, "field_value_1", "String", ["{2", "}6"], ""],
                 [2, "field_value_2", "String", ["{2", "}6"], ""],
-                [3, "field_value_3", "String", ["[0"], ""]
+                [3, "field_value_3", "String", ["{0"], ""]
             ]]
         ]
     }  
@@ -94,42 +94,41 @@ def test_records_min_max():
         }        
     ]
     
-    invalid_data_list = [{
-        'Record-Name1': { #too few fields
+    invalid_data_list = [
+        { #too few fields
             'field_value_1': "test"
         },
-        'Record-Name2': { #incorrect typing
+        { #incorrect typing
             'field_value_1': "test",
             'field_value_2': False,
             'field_value_3': "test"
         },
-        'Record-Name3': { #too long field data
+        { #too long field data
             'field_value_1': "long test string",
             'field_value_2': "test",
             'field_value_3': "test"
         },
-        'Record-Name': { #too short field data
+        { #too short field data
             'field_value_1': "Z",
             'field_value_2': "test",
             'field_value_3': "test"
         },
-        'Record-Name': { #incorrect field in data
+        { #incorrect field in data
             'field_value_1': "test",
             'field_value_2': "test",
             'field_value_5': "five?"
         },
-        'Record-Name': { #too many of a field
+        { #too many of a field
             'field_value_1': "test",
             'field_value_2': "test",
             'field_value_3': "test",
             'field_value_3': "3x2"
         }             
-    }]
+    ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
@@ -170,8 +169,8 @@ def test_record():
         }        
     ]
         
-    # err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    # assert err_count == 0
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)

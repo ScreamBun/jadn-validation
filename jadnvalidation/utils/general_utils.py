@@ -3,7 +3,7 @@ import importlib
 
 from typing import Callable, Union
 #from pydantic import BaseModel, create_model
-from consts import ALLOWED_TYPE_OPTIONS
+from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
@@ -133,7 +133,7 @@ def get_j_field(j_field_list, data_key, is_using_ids):
     
     for j_field in j_field_list:
         if is_using_ids:
-            if j_field[0] == data_key:
+            if j_field[0] == int(data_key):
                 j_field_found = j_field
                 break
         else:

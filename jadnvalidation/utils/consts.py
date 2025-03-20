@@ -12,12 +12,18 @@ ALLOWED_TYPE_OPTIONS = {
     # Structures
     "Array": ["X", "/", "{", "}"],
     "ArrayOf": ["*", "{", "}", "q", "s", "b"],
-    "Choice": ["=", "X"],
+    "Choice": ["=", "A", "O", "X"],
     "Enumerated": ["=", "#", ">", "X"],
     "Map": ["=", "X", "{", "}"],
     "MapOf": ["+", "*", "{", "}"],
     "Record": ["X", "{", "}"]
 }
+
+class Choice_Consts:
+    CHOICE_ONE_OF = "oneOf"
+    CHOICE_ANY_OF = "anyOf"
+    CHOICE_ALL_OF = "allOf"
+    CHOICE_NOT = "not"
 
 DYNAMIC_MODEL = "DynamicModel"
 HOSTNAME_MAX_LENGTH = 255

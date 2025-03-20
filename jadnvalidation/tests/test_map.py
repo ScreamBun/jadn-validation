@@ -1,5 +1,5 @@
 
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
 def test_map():
@@ -78,28 +78,22 @@ def test_map_min_max():
     
     invalid_data_list = [
         {
-            "Map-Name": {
-                "field_value_1": "placeat repellendus sit",
-                "field_value_2": "molestias, sit elit. sit",
-                "field_value_3": "test extra field validation"
-            }
+            "field_value_1": "placeat repellendus sit",
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
         }, 
         {
-            "Map-Name": {
-                "field_value_1": "test incorrect field name"
-            }
+            "field_value_x": "test incorrect field name"
         },
         {
-            "Map-Name": {
-                "field_value_1": 123
-            }
+            "field_value_1": 123
         }        
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
     
 def test_map_id():
@@ -146,7 +140,7 @@ def test_map_id():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
     
 def test_map_ref_field():
@@ -195,7 +189,7 @@ def test_map_ref_field():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_map_ref_record():
@@ -241,5 +235,5 @@ def test_map_ref_record():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)         

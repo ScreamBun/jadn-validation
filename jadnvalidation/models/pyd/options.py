@@ -2,7 +2,7 @@ import inspect
 from typing import Callable, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from jadnvalidation.consts import ALLOWED_TYPE_OPTIONS, FIELD_OPTION_KEYS, MULTI_CHECK, NULL_ARGS, OPTION_ID, OPTIONS, REQUIRED_TYPE_OPTIONS, TYPE_OPTION_KEYS
+from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS, FIELD_OPTION_KEYS, MULTI_CHECK, NULL_ARGS, OPTION_ID, OPTIONS, REQUIRED_TYPE_OPTIONS, TYPE_OPTION_KEYS
 from jadnvalidation.models.pyd.structures import ValidationFormats
 
 
