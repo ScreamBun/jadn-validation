@@ -62,38 +62,43 @@ def get_choice_type(j_type_opts: List[str]) -> str:
         
     return choice_type
 
-def get_max_length(j_type_opts: List[str]) -> int:
-    max_length = None # make sure this dosn't bomb set optional values
+def get_max_length(j_type: Jadn_Type) -> int:
+    max_length = j_type.config.MaxString
     
-    for type_opt in j_type_opts:
-        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
-        if opt_char_id == "}":
-            try:
-                max_length = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "}" == opt_key:
+            max_length = int(opt_val)
             break
         
     return max_length
             
-def get_min_length(j_type_opts: List[str]) -> int:
+def get_min_length(j_type: Jadn_Type) -> int:
     min_length = None
     
-    for type_opt in j_type_opts:
-        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
-        if opt_char_id == "{":
-            try:
-                min_length = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
-            break   
-        elif opt_char_id == "/":
-            try:
-                format_minv = get_format_min(opt_val)
-                if min_length and min_length < format_minv:
-                    min_length = format_minv
-            except ValueError as e:
-                print("Error getting requirements for {optval} format:" + e)
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "{" == opt_key:
+            min_length = int(opt_val)
+            break
+    
+    # for type_opt in j_type_opts:
+    #     opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+    #     if opt_char_id == "{":
+    #         try:
+    #             min_length = int(opt_val)
+    #         except ValueError as e:
+    #             print("Invalid option: requires integer value: " + e)
+    #         break   
+    #     elif opt_char_id == "/":
+    #         try:
+    #             format_minv = get_format_min(opt_val)
+    #             if min_length and min_length < format_minv:
+    #                 min_length = format_minv
+    #         except ValueError as e:
+    #             print("Error getting requirements for {optval} format:" + e)
     
     return min_length  
 
@@ -145,12 +150,10 @@ def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
         
     return min_elements, max_elements 
 
-def get_opts(j_obj: Union[Jadn_Type, Jadn_Field]):
+def get_opts(j_type: Jadn_Type):
     opts = None
-    if isinstance(j_obj, Jadn_Type):
-        opts = j_obj.type_options
-    elif isinstance(j_obj, Jadn_Field):
-        opts = j_obj.options
+    if isinstance(j_type, Jadn_Type):
+        opts = j_type.type_options
         
     return opts
 
@@ -194,9 +197,9 @@ def is_optional(j_type_opts: List[str]) -> bool:
     
     return is_optional
 
-def get_format(j_obj: Union[Jadn_Type, Jadn_Field]):
+def get_format(j_type: Jadn_Type):
     val = None
-    opts = get_opts(j_obj)
+    opts = get_opts(j_type)
     for opt in opts:
         opt_key, opt_val = general_utils.split_on_first_char(opt)
         if "/" == opt_key:

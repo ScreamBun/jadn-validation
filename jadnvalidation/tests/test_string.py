@@ -1,6 +1,6 @@
 import datetime
 
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
 def test_string_regex():
@@ -331,9 +331,9 @@ def test_string_datetime():
     }
 
     valid_data_list = [
-            '2024-01-01',
-            datetime.datetime.now(),
-            1596542285000
+            '2023-08-13T16:07:54Z',
+            '2023-08-13T16:07:54+02:00',
+            '2023-08-13 16:07:54Z'
         ]
     
     invalid_data_list = [
@@ -344,7 +344,7 @@ def test_string_datetime():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
   
 def test_jadn_str():
