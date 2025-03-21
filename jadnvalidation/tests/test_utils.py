@@ -2,6 +2,7 @@ from jadnvalidation.data_validation.data_validation import DataValidation
 
 
 def validate_valid_data(j_schema: dict, root: str, data_list: list) -> int:
+    
     err_count = 0
     for data in data_list:
         try :
@@ -13,6 +14,7 @@ def validate_valid_data(j_schema: dict, root: str, data_list: list) -> int:
     return err_count
 
 def validate_invalid_data(j_schema: dict, root: str, data_list: list) -> int:
+    
     err_count = 0
     for data in data_list:
         try :
