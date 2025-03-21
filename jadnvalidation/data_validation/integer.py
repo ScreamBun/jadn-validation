@@ -1,7 +1,6 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts, map_type_opts
-from jadnvalidation.utils.general_utils import split_on_first_char, split_on_second_char
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts, get_format_max, get_format_min, get_format
 
 
 rules = {
@@ -30,19 +29,22 @@ class Integer:
     def check_format(self):
         # TODO: formats...
 
-        opts = get_opts(self.j_type)
-        map_type_opts(self.j_type, opts)        
-        min_val = get_min_length(opts)
-        if min_val is not None and self.data < min_val:
-            self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
-        max_val = get_max_length(opts)
-        if max_val is not None and self.data > max_val:
-            self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
+            opts = get_opts(self.j_type)
+            format = get_format(self.j_schema)       
+            min_val = get_min_length(opts)
+            format_min = get_format_min(format)
+            if format_min > min_val:
+                min_val = format_min
+            if min_val is not None and self.data < min_val:
+                self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
+            max_val = get_max_length(opts)
+            format_max = get_format_max(format)
+            if format_max > min_val:
+                min_val = format_max
+            if max_val is not None and self.data > max_val:
+                self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
         
-            #opt_val = self.j_schema[]
 
-    
-        
     def check_type(self):
         if self.data:
             if not isinstance(self.data, int):
@@ -58,7 +60,7 @@ class Integer:
         opts = get_opts(self.j_type)     
         max_val = get_max_length(opts)
         if max_val is not None and self.data > max_val:
-            self.errors.append(f"String length must be less than {max_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
         
     def validate(self):
         

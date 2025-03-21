@@ -331,9 +331,9 @@ def test_string_datetime():
     }
 
     valid_data_list = [
-            '2024-01-01',
-            datetime.datetime.now(),
-            1596542285000
+            '2023-08-13T16:07:54Z',
+            '2023-08-13T16:07:54+02:00',
+            '2023-08-13 16:07:54Z'
         ]
     
     invalid_data_list = [

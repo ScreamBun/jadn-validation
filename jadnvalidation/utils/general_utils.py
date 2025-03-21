@@ -71,6 +71,35 @@ def create_clz_instance(class_name: str, *args, **kwargs):
     
     return cls(*args, **kwargs)
 
+def format_class_name(class_name: str) -> str:
+    """
+    Formats the class name by converting it to camelCase and then to titleCase.
+    Removes '_' and '-' characters in the process.
+    """
+    # Remove '_' and '-' and split into words
+    words = class_name.replace("_", " ").replace("-", " ").split()
+   
+    # Title each word and concatenate them into one word
+    formatted_class_name = ''.join(word.title() for word in words)
+    
+    return formatted_class_name
+
+def create_fmt_clz_instance(class_name: str, *args, **kwargs):
+    
+    modules = {
+        "DateTime" : "jadnvalidation.data_validation.formats.date_time"
+    }
+    
+    formatted_class_name = format_class_name(class_name)
+    module = importlib.import_module(modules.get(formatted_class_name))
+    
+    if module == None:
+        raise ValueError("Unknown format type")
+    
+    cls = getattr(module, formatted_class_name)
+    
+    return cls(*args, **kwargs)
+
 def convert_binary_to_hex(binary_string):
     """Converts a binary string to its hexadecimal representation."""
 

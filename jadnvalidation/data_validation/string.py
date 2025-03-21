@@ -1,6 +1,7 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts
+from jadnvalidation.utils.general_utils import create_fmt_clz_instance
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
 
 
 rules = {
@@ -27,24 +28,25 @@ class String:
         self.data = data   
         
     def check_format(self):
-        # TODO: formats...
-        tbd = ""          
+        format = get_format(self.j_type)
+        if format is not None:
+            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+            fmt_clz_instance.validate()
         
     def check_type(self):
         if not isinstance(self.data, str):
             self.errors.append(f"Data must be a string. Received: {type(self.data)}")
                         
     def check_minv(self):
-        opts = get_opts(self.j_type)
-        min_length = get_min_length(opts)
+        min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"String length must be greater than or equal to {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"String length must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_maxv(self):
-        opts = get_opts(self.j_type)     
-        max_length = get_max_length(opts)
-        if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"String length must be less than or equal to {max_length}. Received: {len(self.data)}")
+    def check_maxv(self):   
+        max_length = get_max_length(self.j_type)
+        if len(self.data) > max_length:
+            self.errors.append(f"String length must be less than {max_length}. Received: {len(self.data)}")
+        pass
             
     def validate(self):
         
