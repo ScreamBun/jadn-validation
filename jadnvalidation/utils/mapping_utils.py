@@ -10,9 +10,9 @@ from jadnvalidation.utils.consts import Choice_Consts
 
 
 def convert_to_pyd_type(type_str: str) -> type:
-    """
-    Converts a jadn type to its corresponding Pydantic type.
-    """
+    
+    # Converts a jadn type to its corresponding Pydantic type.
+    
     type_mapping = {
         Base_Type.STRING.value: StrictStr,
         # Base_Type.BINARY.value: Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
@@ -87,6 +87,13 @@ def get_min_length(j_type_opts: List[str]) -> int:
             except ValueError as e:
                 print("Invalid option: requires integer value: " + e)
             break   
+        elif opt_char_id == "/":
+            try:
+                format_minv = get_format_min(opt_val)
+                if min_length and min_length < format_minv:
+                    min_length = format_minv
+            except ValueError as e:
+                print("Error getting requirements for {optval} format:" + e)
     
     return min_length  
 
@@ -115,10 +122,11 @@ def get_max_occurs(j_type_opts: List[str]) -> int:
             except ValueError as e:
                 print("Invalid option: requires integer value: " + e)
             break   
+
     
     return max_occurs  
 
-def get_min_max(global_configs, type_opts):
+def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
     min_elements = None
     max_elements = None
     
@@ -185,7 +193,52 @@ def is_optional(j_type_opts: List[str]) -> bool:
         is_optional = True
     
     return is_optional
+
+def get_format(j_obj: Union[Jadn_Type, Jadn_Field]):
+    val = None
+    opts = get_opts(j_obj)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "/" == opt_key:
+            val = opt_val
+            break
+        
+    return val
+
+def get_format_min(format: str):
+    format_min = None
+    format_min = give_format_constraint(format, 0)
+    return format_min
+
+def get_format_max(format: str):
+    format_max = None
+    format_max = give_format_constraint(format, 1)
+    return format_max
     
+def give_format_constraint(format: str, option_index: int):
+
+    format_designator, designated_value = general_utils.split_on_first_char(format) 
+    
+    format_constraints = {
+        "i8": [-127, 128],
+        "i16": [-32768, 32767],
+        "i32": [-2147483648, 2147483647],
+        
+        }
+    if format in format_constraints.keys:
+        return format_constraints(format[option_index])
+    
+    elif format_designator == "u":
+        try:
+            unsigned_value = int(designated_value)
+            print("uN value is 2^"+str(unsigned_value))
+            unsig_min = 0
+            unsig_max = pow(2,unsigned_value)
+            struct = [unsig_min, unsig_max]
+            return struct[option_index]
+        except ValueError as e:
+            print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
+    else: return None
 
 def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()

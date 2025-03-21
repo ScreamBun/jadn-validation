@@ -64,6 +64,8 @@ class Record:
             clz_instance.validate()
         
     def validate(self):
+
+        # peel out your formats
         
         # Check data against rules
         for key, function_name in rules.items():
