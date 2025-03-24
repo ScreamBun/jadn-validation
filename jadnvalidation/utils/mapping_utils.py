@@ -63,7 +63,13 @@ def get_choice_type(j_type_opts: List[str]) -> str:
     return choice_type
 
 def get_max_length(j_type: Jadn_Type) -> int:
-    max_length = j_type.config.MaxString
+    
+    if j_type.base_type == Base_Type.STRING.value:
+        max_length = j_type.config.MaxString
+    elif j_type.base_type == Base_Type.BINARY.value:
+        max_length = j_type.config.MaxBinary
+    else:
+        max_length = None
     
     opts = get_opts(j_type)
     for opt in opts:

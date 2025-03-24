@@ -28,7 +28,7 @@ def test_array_of_ints():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
     
 def test_array_of_strs():
     root = "Root-Test"    

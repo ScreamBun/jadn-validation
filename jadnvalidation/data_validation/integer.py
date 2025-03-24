@@ -52,15 +52,13 @@ class Integer:
                 self.errors.append(f"Data must be of type integer. Received: {type(self.data)}")
                         
     def check_minv(self):
-        # opts = get_opts(self.j_type)
         min_val = get_min_length(self.j_type)
         if min_val is not None and self.data < min_val:
             self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_maxv(self):
-        # opts = get_opts(self.j_type)  
         max_val = get_max_length(self.j_type)
-        if self.data > max_val:
+        if max_val is not None and self.data > max_val:
             self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
         
     def validate(self):
