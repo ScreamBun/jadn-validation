@@ -128,7 +128,7 @@ def test_array_of_records():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
     
     
 def test_array_of_arrays():
@@ -173,5 +173,5 @@ def test_array_of_arrays():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    # assert err_count == 2      
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
