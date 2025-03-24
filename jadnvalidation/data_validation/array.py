@@ -45,7 +45,7 @@ class Array:
         
     def check_maxv(self):
         max_length = get_max_length(self.j_type)
-        if max_length is not None and len(self.data) > max_length:
+        if len(self.data) > max_length:
             self.errors.append(f"Array length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_format(self):

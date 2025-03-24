@@ -30,13 +30,13 @@ class Binary:
             self.errors.append(f"Data must be binary. Received: {type(self.data)}")
         
     def check_minv(self):
-        min_length = get_min_length(self.j_type.type_options)
+        min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Binary length must be greater than or equal to {min_length}. Received: {len(self.data)}")
         
     def check_maxv(self):
-        max_length = get_max_length(self.j_type.type_options)
-        if max_length is not None and len(self.data) > max_length:
+        max_length = get_max_length(self.j_type)
+        if len(self.data) > max_length:
             self.errors.append(f"Binary length must be less than or equal to {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
