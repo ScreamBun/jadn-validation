@@ -29,20 +29,21 @@ class Integer:
     def check_format(self):
         # TODO: formats...
 
-            opts = get_opts(self.j_type)
-            format = get_format(self.j_schema)       
-            min_val = get_min_length(opts)
-            format_min = get_format_min(format)
-            if format_min > min_val:
-                min_val = format_min
-            if min_val is not None and self.data < min_val:
-                self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
-            max_val = get_max_length(opts)
-            format_max = get_format_max(format)
-            if format_max > min_val:
-                min_val = format_max
-            if max_val is not None and self.data > max_val:
-                self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
+            # opts = get_opts(self.j_type)
+            # format = get_format(self.j_schema)       
+            # min_val = get_min_length(opts)
+            # format_min = get_format_min(format)
+            # if format_min > min_val:
+            #     min_val = format_min
+            # if min_val is not None and self.data < min_val:
+            #     self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
+            # max_val = get_max_length(opts)
+            # format_max = get_format_max(format)
+            # if format_max > min_val:
+            #     min_val = format_max
+            # if max_val is not None and self.data > max_val:
+            #     self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
+        pass
         
 
     def check_type(self):
@@ -51,15 +52,15 @@ class Integer:
                 self.errors.append(f"Data must be of type integer. Received: {type(self.data)}")
                         
     def check_minv(self):
-        opts = get_opts(self.j_type)
-        min_val = get_min_length(opts)
+        # opts = get_opts(self.j_type)
+        min_val = get_min_length(self.j_type)
         if min_val is not None and self.data < min_val:
             self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_maxv(self):
-        opts = get_opts(self.j_type)     
-        max_val = get_max_length(opts)
-        if max_val is not None and self.data > max_val:
+        # opts = get_opts(self.j_type)  
+        max_val = get_max_length(self.j_type)
+        if self.data > max_val:
             self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
         
     def validate(self):

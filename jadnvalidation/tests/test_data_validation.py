@@ -16,13 +16,13 @@ def test_data_validation():
     }
     
     valid_data_list = [
-            { "Root-Test": ["test", True, 123] },
+            ["test", True, 123],
         ]  
     
     invalid_data_list = [
-            { "Root-Test": ["test", True] },
+            ["test", True] ,
             { "Root-Test": "test" },
-            { "Root-Test": ["t", "test", "test", 123, "test", "test", False] }
+            ["t", "test", "test", 123, "test", "test", False]
         ]        
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -30,3 +30,38 @@ def test_data_validation():
         
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_data_validation_multi_root():  
+    roots = ["Root-Test-1", "Root-Test-2"]
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test-1", "Root-Test-2"]
+        },
+        "types": [
+            ["Root-Test-1", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""]
+            ]],
+            ["Root-Test-2", "Array", [], "", [
+                [1, "field_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            { 'field_value_1': "test" },
+            [True],
+        ]  
+    
+    invalid_data_list = [
+            ["test", True] ,
+            { "Root-Test": "test" },
+            ["t", "test", "test", 123, "test", "test", False]
+        ]        
+    
+    err_count = validate_valid_data(j_schema, roots, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, roots, invalid_data_list)
+    assert err_count == len(invalid_data_list)    

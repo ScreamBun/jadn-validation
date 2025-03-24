@@ -46,7 +46,6 @@ class String:
         max_length = get_max_length(self.j_type)
         if len(self.data) > max_length:
             self.errors.append(f"String length must be less than {max_length}. Received: {len(self.data)}")
-        pass
             
     def validate(self):
         

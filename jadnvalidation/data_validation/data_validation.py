@@ -1,12 +1,13 @@
+from typing import Union
 from jadnvalidation.utils.general_utils import create_clz_instance, get_item_safe_check, get_schema_type_by_name
 
 
 class DataValidation:
     j_schema: dict = {}
-    root: str = None
+    root: Union[str, list] = None
     data: dict = {}
     
-    def __init__(self, j_schema: dict, root: str, data: dict):
+    def __init__(self, j_schema: dict, root: Union[str, list], data: dict):
         self.j_schema = j_schema
         self.root = root
         self.data = data
@@ -19,12 +20,21 @@ class DataValidation:
                 raise ValueError(f"No Types defined")
                        
             # TODO: Loop for multiple roots
-            root_type = get_schema_type_by_name(j_types, self.root)
-            if root_type == None:
-                raise ValueError(f"Root Type not found {self.root}")
+            roots: list = []
+            if isinstance(self.root, str):
+                roots.append(self.root)
+            elif isinstance(self.root, list):
+                roots = self.root
+            else:
+                raise ValueError(f"Invalid Root Type")           
             
-            clz_instance = create_clz_instance(root_type[1], self.j_schema, root_type, self.data)
-            clz_instance.validate()            
+            for root_item in roots:
+                root_type = get_schema_type_by_name(j_types, root_item)
+                if root_type == None:
+                    raise ValueError(f"Root Type not found {root_item}")
+                
+                clz_instance = create_clz_instance(root_type[1], self.j_schema, root_type, self.data)
+                clz_instance.validate()            
             
         except Exception as err:           
             raise ValueError(err)
