@@ -1,5 +1,5 @@
 from typing import Union
-from jadnvalidation.utils.general_utils import create_clz_instance, get_item_safe_check, get_schema_type_by_name
+from jadnvalidation.utils.general_utils import create_clz_instance, get_schema_type_by_name
 
 
 class DataValidation:
