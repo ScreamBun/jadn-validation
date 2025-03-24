@@ -2,12 +2,14 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional
+from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 
 rules = {
     "type": "check_type",
-    "{": "check_minv",
-    "}": "check_maxv",
+    "[": "check_min_field_occurs",
+    "]": "check_max_field_occurs",
+    "{": "check_min_record_length",
+    "}": "check_max_record_length",
     "fields": "check_fields"
 }
 
@@ -33,13 +35,38 @@ class Record:
             # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
         
+    def check_min_field_occurs(self):
+        for j_key, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            
+            field_data = get_data_by_name(self.data, j_field_obj.type_name)
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            field_occurances = len(field_data)                
+                
+            min_occurs_allowed = get_min_occurs(j_field_obj)
+            if min_occurs_allowed is not None and field_occurances < min_occurs_allowed:
+                self.errors.append(f"Field '{j_field[1]}' must occur at least {min_occurs_allowed} times. Received: {field_occurances}")
+
+    def check_max_field_occurs(self):
+        for j_key, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            
+            field_data = get_data_by_name(self.data, j_field_obj.type_name)
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            field_occurances = len(field_data)                
+                
+            max_occurs_allowed = get_max_occurs(j_field_obj)
+            if max_occurs_allowed is not None and field_occurances < max_occurs_allowed:
+                self.errors.append(f"Field '{j_field[1]}' must occur no more than {max_occurs_allowed} times. Received: {field_occurances}")
         
-    def check_minv(self):
+    def check_min_record_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_maxv(self):
+    def check_max_record_length(self):
         max_length = get_max_length(self.j_type)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
@@ -48,13 +75,13 @@ class Record:
         for j_key, j_field in enumerate(self.j_type.fields):
             field_data = get_data_by_name(self.data, j_field[1])
             
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if field_data is None:
-                if is_optional(j_field[3]):
+                if is_optional(j_field_obj):
                     continue
                 else:
                     raise ValueError(f"Field '{j_field[1]}' is missing from data")
-
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type, self.j_type.config)

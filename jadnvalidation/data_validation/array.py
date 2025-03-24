@@ -57,15 +57,13 @@ class Array:
         for j_index, j_field in enumerate(self.j_type.fields):
             field_data = get_item_safe_check(self.data, j_index)
             
-
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if field_data is None:
-                if is_optional(j_field[3]):
+                if is_optional(j_field_obj):
                     continue
                 else:
                     self.errors.append(f"Missing required field '{j_field[1]}' from array data")
-
-                    
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+        
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type, self.j_type.config)

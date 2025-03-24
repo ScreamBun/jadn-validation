@@ -108,26 +108,28 @@ def get_min_length(j_type: Jadn_Type) -> int:
     
     return min_length  
 
-def get_min_occurs(j_type_opts: List[str]) -> int:
+def get_min_occurs(j_type: Jadn_Type) -> int:
     min_occurs = None
     
-    for type_opt in j_type_opts:
-        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
-        if opt_char_id == "[":
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "[" == opt_key:
             try:
                 min_occurs = int(opt_val)
             except ValueError as e:
                 print("Invalid option: requires integer value: " + e)
-            break   
+            break
     
     return min_occurs  
 
-def get_max_occurs(j_type_opts: List[str]) -> int:
+def get_max_occurs(j_type: Jadn_Type) -> int:
     max_occurs = None
     
-    for type_opt in j_type_opts:
-        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
-        if opt_char_id == "]":
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "]" == opt_key:
             try:
                 max_occurs = int(opt_val)
             except ValueError as e:
@@ -194,10 +196,12 @@ def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
         
     return val
 
-def is_optional(j_type_opts: List[str]) -> bool:
+def is_optional(j_type: Jadn_Type) -> bool:
     is_optional = False
     
-    min = get_min_length(j_type_opts)
+    # TODO: Need logic for min_occurs?
+    
+    min = get_min_length(j_type)
     if min == 0:
         is_optional = True
     

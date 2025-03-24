@@ -215,3 +215,74 @@ def test_record_in_record():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)    
+    
+def test_record_min_occurs():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", ["{1", "}10"], "", [
+                [1, "field_value_1a", "String", ["[1"], ""],
+                [2, "field_value_2a", "String", ["{0"], ""]
+            ]]          
+        ]
+    }  
+    
+    valid_data_list = [
+        {
+            "field_value_1a": "test min occurs 1",
+            "field_value_2a": "Anytown"
+        },
+        {
+            "field_value_1a": "test min occurs 1"
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_2a": "test min occurs 1",
+        }
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+    
+def test_record_max_occurs():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", ["{1", "}10"], "", [
+                [1, "field_value_1a", "String", ["]1"], ""],
+                [2, "field_value_2a", "String", ["{0"], ""]
+            ]]          
+        ]
+    }  
+    
+    valid_data_list = [
+        {
+            "field_value_1a": "test min occurs 1",
+            "field_value_2a": "Anytown"
+        },
+        {
+            "field_value_1a": "test min occurs 1"
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_2a": "test min occurs 1",
+        }
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)   
+    
+# TODO: Test min or max greater than one, which means the data value changes to an array.        

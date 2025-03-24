@@ -61,7 +61,7 @@ class MapOf:
         vtype = get_vtype(self.j_type)
         
         if self.data is None:
-            if not is_optional(self.j_type.type_options):
+            if not is_optional(self.j_type):
                 self.errors.append(f"Map of '{self.j_type.type_name}' missing data")
         
         # If ktype is int, then the data is a list of key-value pairs, as follows:
