@@ -1,5 +1,6 @@
 from typing import Union
 
+from jadnvalidation.models.jadn.jadn_dict import Jadn_Dict
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
@@ -30,7 +31,7 @@ class Record:
         self.data = data  
         
     def check_type(self):
-        if not isinstance(self.data, dict):
+        if not isinstance(self.data, Jadn_Dict):
             # Note: If the data isn't a list, there's no point to continue with other checks
             # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
