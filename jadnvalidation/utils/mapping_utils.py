@@ -159,9 +159,13 @@ def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
     return min_elements, max_elements 
 
 def get_opts(j_type: Jadn_Type):
-    opts = None
+    opts = []
     if isinstance(j_type, Jadn_Type):
         opts = j_type.type_options
+        
+    # Check if opts is None or contains an empty string
+    if opts is None or opts == [""]:
+        opts = []  # Set opts to an empty list
         
     return opts
 
@@ -196,13 +200,15 @@ def get_vtype(j_obj: Union[Jadn_Type, Jadn_Field]):
         
     return val
 
+# Note: A separate function may be needed for optional structures
+# This function is geared towards fields
 def is_optional(j_type: Jadn_Type) -> bool:
     is_optional = False
     
-    # TODO: Need logic for min_occurs?
-    
+    min_occurs = get_min_occurs(j_type)
     min = get_min_length(j_type)
-    if min == 0:
+    
+    if min == 0 or min_occurs == 0:
         is_optional = True
     
     return is_optional

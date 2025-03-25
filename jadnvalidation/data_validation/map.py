@@ -1,14 +1,16 @@
 from typing import Union
 
+from jadnvalidation.models.jadn.jadn_dict import Jadn_Dict
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, is_optional, use_field_ids
+from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional, use_field_ids
 
-# id, extend, minv, maxv
 rules = {
     "type": "check_type",
-    "{": "check_minv",
-    "}": "check_maxv",
+    "[": "check_min_field_occurs",
+    "]": "check_max_field_occurs",    
+    "{": "check_min_map_length",
+    "}": "check_max_map_length",
     "fields": "check_fields",
     "extra_fields": "check_extra_fields",
 }
@@ -30,15 +32,47 @@ class Map:
         self.data = data  
         
     def check_type(self):
-        if not isinstance(self.data, dict):
-            raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
-    def check_minv(self):
+        try:
+            isinstance(self.data, Jadn_Dict)
+        except Exception as err:
+            raise ValueError(f"{err}. Data must be a map / dict. Received: {type(self.data)}")
+        
+        # if not isinstance(self.data, Jadn_Dict):
+        #     raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
+        
+    def check_min_field_occurs(self):
+        for j_key, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            
+            field_data = get_data_by_name(self.data, j_field_obj.type_name)
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            field_occurances = len(field_data)                
+                
+            min_occurs_allowed = get_min_occurs(j_field_obj)
+            if min_occurs_allowed is not None and field_occurances < min_occurs_allowed:
+                self.errors.append(f"Field '{j_field[1]}' must occur at least {min_occurs_allowed} times. Received: {field_occurances}")
+
+    def check_max_field_occurs(self):
+        for j_key, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            
+            field_data = get_data_by_name(self.data, j_field_obj.type_name)
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            field_occurances = len(field_data)                
+                
+            max_occurs_allowed = get_max_occurs(j_field_obj)
+            if max_occurs_allowed is not None and field_occurances < max_occurs_allowed:
+                self.errors.append(f"Field '{j_field[1]}' must occur no more than {max_occurs_allowed} times. Received: {field_occurances}")        
+        
+    def check_min_map_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_maxv(self):
+    def check_max_map_length(self):
         max_length = get_max_length(self.j_type)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
@@ -46,19 +80,19 @@ class Map:
     def check_fields(self):
         use_ids = use_field_ids(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             
             field_data = None
             if use_ids:
-                field_data = get_data_by_id(self.data, j_field[0])
+                field_data = get_data_by_id(self.data, j_field_obj.id)
             else:
-                field_data = get_data_by_name(self.data, j_field[1])
+                field_data = get_data_by_name(self.data, j_field_obj.type_name)
             
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
             if field_data is None:
                 if is_optional(j_field_obj):
                     continue
                 else:
-                    raise ValueError(f"Field '{j_field[1]}' is missing from data")
+                    raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
 
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)

@@ -236,4 +236,97 @@ def test_map_ref_record():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)         
+    assert err_count == len(invalid_data_list)
+    
+    
+def test_map_min_occurs():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "field_value_1", "String", ["[1"], ""],
+                [2, "field_value_2", "String", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {
+                "field_value_1": "placeat repellendus sit",
+                "field_value_2": "molestias, sit elit. sit"
+            },
+            {
+                "field_value_1": "placeat repellendus sit"
+            }            
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_2": "molestias, sit elit. sit"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        },
+        {
+            "field_value_1": 123
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+    
+def test_map_max_occurs():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "field_value_1", "String", ["1]"], ""],
+                [2, "field_value_2", "String", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {
+                "field_value_1": "placeat repellendus sit",
+                "field_value_2": "molestias, sit elit. sit"
+            },
+            {
+                "field_value_1": "placeat repellendus sit"
+            }            
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_21": "data 1",
+            "field_value_11": "data 2"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        },
+        {
+            "field_value_1": 123
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)    
+    
+# TODO: Test min or max greater than one, which means the data value changes to an array.    
