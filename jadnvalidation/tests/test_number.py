@@ -6,7 +6,7 @@ def test_type_num():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Number", [], ""]
+        ["Root-Test", "Number", [], "", []]
       ]
     }
       

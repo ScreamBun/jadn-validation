@@ -6,7 +6,7 @@ def test_type_int():
     
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", [], ""]
+        ["Root-Test", "Integer", [], "", []]
       ]
     }
       
@@ -25,7 +25,7 @@ def test_type_int_duration():
     
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", [], ""]
+        ["Root-Test", "Integer", [], "", []]
       ]
     }
       
@@ -43,7 +43,7 @@ def test_type_int_min():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["{2"], ""]
+        ["Root-Test", "Integer", ["{2"], "", []]
       ]
     }
       
@@ -61,7 +61,7 @@ def test_type_int_max():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["}2"], ""]
+        ["Root-Test", "Integer", ["}2"], "", []]
       ]
     }
       
@@ -79,7 +79,7 @@ def test_type_int_i8():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["/i8"], ""]
+        ["Root-Test", "Integer", ["/i8"], "", []]
       ]
     }
     
@@ -97,7 +97,7 @@ def test_type_int_i16():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["/i16"], ""]
+        ["Root-Test", "Integer", ["/i16"], "", []]
       ]
     }
     
@@ -115,7 +115,7 @@ def test_type_int_i32():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["/i32"], ""]
+        ["Root-Test", "Integer", ["/i32"], "", []]
       ]
     }
     

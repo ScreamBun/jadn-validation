@@ -6,7 +6,7 @@ def test_binary():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", [], ""]
+        ["Root-Test", "Binary", [], "", []]
       ]
     }
     
@@ -28,7 +28,7 @@ def test_binary_min():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", ["{2"], ""]
+        ["Root-Test", "Binary", ["{2"], "", []]
       ]
     }
     
@@ -52,7 +52,7 @@ def test_binary_min_max():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", ["{4","}8"], ""]
+        ["Root-Test", "Binary", ["{4","}8"], "", []]
       ]
     }
     
@@ -76,7 +76,7 @@ def test_binary_eui():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", ["/eui"], ""]
+        ["Root-Test", "Binary", ["/eui"], "", []]
       ]
     }
     
@@ -94,7 +94,7 @@ def test_binary_ipv4_addr():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", ["/ipv4-addr"], ""]
+        ["Root-Test", "Binary", ["/ipv4-addr"], "", []]
       ]
     }  
     
@@ -112,7 +112,7 @@ def test_binary_ipv6_addr():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Binary", ["/ipv6-addr"], ""]
+        ["Root-Test", "Binary", ["/ipv6-addr"], "", []]
       ]
     }  
     

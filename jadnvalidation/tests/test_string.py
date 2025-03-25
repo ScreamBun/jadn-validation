@@ -8,7 +8,7 @@ def test_string_regex():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/regex"], ""]
+        ["Root-Test", "String", ["/regex"], "", []]
       ]
     }
     
@@ -27,7 +27,7 @@ def test_string_relative_json_pointer():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/relative-json-pointer"], ""]
+        ["Root-Test", "String", ["/relative-json-pointer"], "", []]
       ]
     }
     
@@ -45,7 +45,7 @@ def test_string_json_pointer():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/json-pointer"], ""]
+        ["Root-Test", "String", ["/json-pointer"], "", []]
       ]
     }
     
@@ -63,7 +63,7 @@ def test_string_iri_ref():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/iri-reference"], ""]
+        ["Root-Test", "String", ["/iri-reference"], "", []]
       ]
     }
     
@@ -81,7 +81,7 @@ def test_string_iri():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/iri"], ""]
+        ["Root-Test", "String", ["/iri"], "", []]
       ]
     }
     
@@ -99,7 +99,7 @@ def test_string_uri_template():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/uri-template"], ""]
+        ["Root-Test", "String", ["/uri-template"], "", []]
       ]
     }
     
@@ -117,7 +117,7 @@ def test_string_uri_ref():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/uri-reference"], ""]
+        ["Root-Test", "String", ["/uri-reference"], "", []]
       ]
     }
     
@@ -135,7 +135,7 @@ def test_string_uri():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/uri"], ""]
+        ["Root-Test", "String", ["/uri"], "", []]
       ]
     }
     
@@ -153,7 +153,7 @@ def test_string_ipv6():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/ipv6"], ""]
+        ["Root-Test", "String", ["/ipv6"], "", []]
       ]
     }
     
@@ -171,7 +171,7 @@ def test_string_ipv4():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/ipv4"], ""]
+        ["Root-Test", "String", ["/ipv4"], "", []]
       ]
     }
     
@@ -189,7 +189,7 @@ def test_string_idn_hostname():
   
     j_schema = {
       "types": [
-        ["String-Idn-Hostname", "String", ["/idn-hostname"], ""]
+        ["String-Idn-Hostname", "String", ["/idn-hostname"], "", []]
       ]
     }
     
@@ -207,7 +207,7 @@ def test_string_hostname():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/hostname"], ""]
+        ["Root-Test", "String", ["/hostname"], "", []]
       ]
     }
 
@@ -225,7 +225,7 @@ def test_string_idn_email():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/idn-email"], ""]
+        ["Root-Test", "String", ["/idn-email"], "", []]
       ]
     }
 
@@ -243,7 +243,7 @@ def test_string_email():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/email"], ""]
+        ["Root-Test", "String", ["/email"], "", []]
       ]
     }
 
@@ -266,7 +266,7 @@ def test_string_pattern():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["%^jarvis$"], ""]
+        ["Root-Test", "String", ["%^jarvis$"], "", []]
       ]
     }
 
@@ -284,7 +284,7 @@ def test_string_time():
       
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/time"], ""]
+        ["Root-Test", "String", ["/time"], "", []]
       ]
     }
 
@@ -305,7 +305,7 @@ def test_string_date():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/date"], ""]
+        ["Root-Test", "String", ["/date"], "", []]
       ]
     }
 
@@ -326,7 +326,7 @@ def test_string_datetime():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["/date-time"], ""]
+        ["Root-Test", "String", ["/date-time"], "", []]
       ]
     }
 
@@ -352,7 +352,7 @@ def test_jadn_str():
   
     j_schema = {
       "types": [
-        ["Root-Test", "String", ["{4", "}12"], ""]
+        ["Root-Test", "String", ["{4", "}12"], "", []]
       ]
     }
 

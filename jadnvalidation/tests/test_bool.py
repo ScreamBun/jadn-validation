@@ -6,7 +6,7 @@ def test_boolean():
     
     j_schema = {
       "types": [
-        ["Boolean-Test", "Boolean", [], ""]
+        ["Boolean-Test", "Boolean", [], "", []]
       ]
     }
     # remove and move into a record test {'Boolean-Test': True}
