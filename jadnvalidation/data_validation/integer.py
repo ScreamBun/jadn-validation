@@ -1,6 +1,7 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts, get_format_max, get_format_min, get_format
+from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts
+from jadnvalidation.utils.general_utils import split_on_first_char
 
 
 rules = {
@@ -27,24 +28,22 @@ class Integer:
         self.data = data    
         
     def check_format(self):
-        # TODO: formats...
 
-            # opts = get_opts(self.j_type)
-            # format = get_format(self.j_schema)       
-            # min_val = get_min_length(opts)
-            # format_min = get_format_min(format)
-            # if format_min > min_val:
-            #     min_val = format_min
-            # if min_val is not None and self.data < min_val:
-            #     self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
-            # max_val = get_max_length(opts)
-            # format_max = get_format_max(format)
-            # if format_max > min_val:
-            #     min_val = format_max
-            # if max_val is not None and self.data > max_val:
-            #     self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
-        pass
-        
+        val = None
+        opts = get_opts(self.j_type)
+        for opt in opts:
+            opt_key, opt_val = split_on_first_char(opt)
+            if "/" == opt_key:
+
+                val = opt_val
+                format_min = None
+                format_max = None
+                format_min = give_format_constraint(val, 0)
+                format_max = give_format_constraint(val, 1)
+                if self.data > format_max:
+                    self.errors.append(f"Data exceeds allowed format length: {format_max}")
+                if self.data < format_min:
+                    self.errors.append(f"Data does not meet minimum format length: {format_min}")
 
     def check_type(self):
         if self.data:
@@ -73,3 +72,45 @@ class Integer:
             raise ValueError(self.errors)  
         
         return True
+                
+def give_format_constraint(format: str, option_index: int):
+
+        format_designator, designated_value = split_on_first_char(format) 
+        
+        if format == 'duration':
+            constraint_vals = [0, None]
+            return constraint_vals[option_index]
+
+        if format_designator == 'i':            
+            try:
+                signed_value = int(designated_value) -1
+                print("iN value for "+format+" between - and + 2^("+str(designated_value)+"-1)-1")
+                unsig_min = pow(-2,signed_value) - 1
+                unsig_max = pow(2,signed_value) -1
+                struct = [unsig_min, unsig_max]
+                return struct[option_index]
+            except ValueError as e:
+                print("i<n> format requires a numeric component following signed signifier \"i\". \n"+e)
+        else: return None
+        '''
+            if designated_value == '8':
+                constraint_vals = [-127, 128]
+                return constraint_vals[option_index]
+            elif designated_value == '16':
+                constraint_vals = [-32768, 32767]
+                return constraint_vals[option_index]
+            elif designated_value == '32':
+                constraint_vals = [-2147483648, 2147483647]
+                return constraint_vals[option_index]
+        '''
+        if format_designator == "u":
+            try:
+                unsigned_value = int(designated_value)
+                print("uN value is 2^"+str(unsigned_value))
+                unsig_min = 0
+                unsig_max = pow(2,unsigned_value)
+                struct = [unsig_min, unsig_max]
+                return struct[option_index]
+            except ValueError as e:
+                print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
+        else: return None

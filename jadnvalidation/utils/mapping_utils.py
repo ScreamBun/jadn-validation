@@ -218,6 +218,7 @@ def get_format(j_type: Jadn_Type):
         
     return val
 
+'''
 def get_format_min(format: str):
     format_min = None
     format_min = give_format_constraint(format, 0)
@@ -251,7 +252,10 @@ def give_format_constraint(format: str, option_index: int):
             return struct[option_index]
         except ValueError as e:
             print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
-    else: return None
+    else: return None'
+    '''
+    
+
 
 def map_type_opts(j_type: str, j_type_opts: List[str]) -> Pyd_Field_Mapper:
     pyd_field_mapper = Pyd_Field_Mapper()
