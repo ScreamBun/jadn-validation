@@ -131,15 +131,9 @@ def test_array_min_occurs():
         ]
     }
     
-    record_test = {
-        "field_value_1": "test",
-        "field_value_2": True,
-        "field_value_3": 123
-    }
-    
     valid_data_list = [
-            ["test 1", True, False, 1, 2, 3],
-            ["test 1", "test 2", True, False, True, 1, 2, 3, 4],
+            ["test 1", [True, False], [1, 2, 3]],
+            [["test 1", "test 2"], [True, False, True], [1, 2, 3, 4]],
         ]
     
     invalid_data_list = [
