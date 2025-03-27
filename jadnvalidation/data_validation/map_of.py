@@ -1,20 +1,22 @@
 from typing import Union
 
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, is_primitive
-from jadnvalidation.utils.general_utils import create_clz_instance, get_map_of_data_content, get_reference_type, is_even
+from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type, is_even
 from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional
 
 # id, extend, minv, maxv
 rules = {
     "type": "check_type",
-    "{": "check_minv",
-    "}": "check_maxv",
+    "{": "check_min_length",
+    "}": "check_max_length",
     "key_values": "check_key_values",
 }
 
 class MapOf:
     
     j_schema: dict = {}
+    j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The map of data only
     errors = []
@@ -26,7 +28,9 @@ class MapOf:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data  
+        self.data = data
+        
+        self.j_config = get_j_config(self.j_schema)
         
     def check_type(self):
         if isinstance(self.data, list) or isinstance(self.data, dict):
@@ -34,13 +38,13 @@ class MapOf:
         else:
             raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
         
-    def check_minv(self):
+    def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_maxv(self):
-        max_length = get_max_length(self.j_type)
+    def check_max_length(self):
+        max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
 

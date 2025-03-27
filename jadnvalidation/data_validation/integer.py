@@ -1,4 +1,5 @@
 from typing import Union
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts
 from jadnvalidation.utils.general_utils import split_on_first_char
@@ -7,13 +8,14 @@ from jadnvalidation.utils.general_utils import split_on_first_char
 rules = {
     "type": "check_type",
     "/": "check_format",
-    "{": "check_minv",
-    "}": "check_maxv"
+    "{": "check_min_val",
+    "}": "check_max_val"
 }
 
 class Integer:
     
     j_schema: dict = {}
+    j_config: Jadn_Config = None    
     j_type: Union[list, Jadn_Type] = None    
     data: any = None # The int data only
     errors = []   
@@ -25,7 +27,9 @@ class Integer:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data    
+        self.data = data
+        
+        self.j_config = get_j_config(self.j_schema)        
         
     def check_format(self):
 
@@ -50,13 +54,13 @@ class Integer:
             if not isinstance(self.data, int):
                 self.errors.append(f"Data must be of type integer. Received: {type(self.data)}")
                         
-    def check_minv(self):
+    def check_min_val(self):
         min_val = get_min_length(self.j_type)
         if min_val is not None and self.data < min_val:
             self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
         
-    def check_maxv(self):
-        max_val = get_max_length(self.j_type)
+    def check_max_val(self):
+        max_val = get_max_length(self.j_type, self.j_config)
         if max_val is not None and self.data > max_val:
             self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")
         

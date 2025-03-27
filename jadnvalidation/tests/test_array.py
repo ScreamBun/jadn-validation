@@ -28,7 +28,7 @@ def test_forward_ref():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
     
 
 def test_array():
@@ -117,3 +117,38 @@ def test_array_optional_last():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+    
+def test_array_min_occurs():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", ["[1"], ""],
+                [2, "field_value_2", "Boolean", ["[2"], ""],
+                [3, "field_value_3", "Integer", ["[3"], ""]
+            ]]
+        ]
+    }
+    
+    record_test = {
+        "field_value_1": "test",
+        "field_value_2": True,
+        "field_value_3": 123
+    }
+    
+    valid_data_list = [
+            ["test 1", True, False, 1, 2, 3],
+            ["test 1", "test 2", True, False, True, 1, 2, 3, 4],
+        ]
+    
+    invalid_data_list = [
+            [True, "Test", 123],
+            ["test"]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == 2    

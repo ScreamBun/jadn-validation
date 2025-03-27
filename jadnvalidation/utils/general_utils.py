@@ -1,11 +1,9 @@
+from collections import defaultdict
 import sys
 import importlib
 
 from typing import Callable, Union
-#from pydantic import BaseModel, create_model
 from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
-from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
-from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
 
 def addKey(d: dict, k: str = None) -> Callable:
     """
@@ -21,6 +19,21 @@ def addKey(d: dict, k: str = None) -> Callable:
 
 def all_unique(lst):
   return len(lst) == len(set(lst))
+
+def count_data_types(data_list):
+    """
+    Counts the occurrences of each data type in a list.
+
+    Args:
+        data_list: The list to analyze.
+
+    Returns:
+        A dictionary where keys are data types and values are their counts.
+    """
+    type_counts = defaultdict(int)
+    for item in data_list:
+        type_counts[type(item)] += 1
+    return type_counts
 
 def create_derived_class(base_class, class_name, extra_methods=None):
     """
@@ -58,6 +71,7 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "Integer" : "jadnvalidation.data_validation.integer",
         "Map" : "jadnvalidation.data_validation.map",
         "MapOf" : "jadnvalidation.data_validation.map_of",
+        "Number" : "jadnvalidation.data_validation.number",
         "Record" : "jadnvalidation.data_validation.record",
         "String" : "jadnvalidation.data_validation.string"
     }
@@ -120,16 +134,16 @@ def get_data_by_id(data: dict, id: int):
 def get_data_by_name(data: dict, name: str):
     return data.get(name)
 
-def get_global_configs(p_model):
-    global_configs = None
-    if p_model.model_fields:
-        gc_field_info = p_model.model_fields.get(ROOT_GLOBAL_CONFIG_KEY, None)
-        if not gc_field_info:
-            gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
-        if gc_field_info and gc_field_info.default:
-            global_configs = gc_field_info.default
+# def get_global_configs(p_model):
+#     global_configs = None
+#     if p_model.model_fields:
+#         gc_field_info = p_model.model_fields.get(ROOT_GLOBAL_CONFIG_KEY, None)
+#         if not gc_field_info:
+#             gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
+#         if gc_field_info and gc_field_info.default:
+#             global_configs = gc_field_info.default
                 
-    return global_configs
+#     return global_configs
 
 def get_item_safe_check(my_list, index):
     if 0 <= index < len(my_list):
@@ -193,6 +207,26 @@ def get_map_of_data_content(data: dict):
                 
     return return_val
 
+def get_nested_value(data, keys, default=None):
+    """
+    Safely retrieves a value from a nested dictionary given a list of keys.
+
+    Args:
+        data (dict): The dictionary to search within.
+        keys (list): A list of keys representing the path to the desired value.
+        default: The value to return if the key path doesn't exist. Defaults to None.
+
+    Returns:
+        The value at the specified path or the default value if not found.
+    """
+    current = data
+    for key in keys:
+        if isinstance(current, dict) and key in current:
+            current = current[key]
+        else:
+            return default
+    return current
+
 def get_reference_type(jschema, type_name):
     j_types = jschema.get('types')
     ref_type = get_schema_type_by_name(j_types, type_name)
@@ -213,15 +247,6 @@ def get_schema_type_by_name(j_types: list, name: str):
 
 def get_schema_types(j_types: list, base_type: str):
     return [j_type for j_type in j_types if j_type[1] == base_type]
-
-def get_type_opts(p_model) -> Pyd_Field_Mapper:
-    opts = None
-    if p_model.model_fields:
-        type_opts_field = p_model.model_fields.get(TYPE_OPTS_KEY, None)
-        if type_opts_field and type_opts_field.default:
-            opts = type_opts_field.default
-                
-    return opts
 
 def is_even(n):
     return n % 2 == 0
