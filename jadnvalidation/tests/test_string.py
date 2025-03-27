@@ -347,7 +347,7 @@ def test_string_datetime():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
   
-def test_jadn_str():
+def test_str():
     root = "Root-Test"
   
     j_schema = {

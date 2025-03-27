@@ -1,5 +1,6 @@
 from typing import Union
 
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_vtype, is_optional
@@ -7,13 +8,14 @@ from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, g
 rules = {
     "type": "check_type",
     "fields": "check_vtype",
-    "{": "check_minv",
-    "}": "check_maxv"
+    "{": "check_min_length",
+    "}": "check_max_length"
 }
 
 class ArrayOf:
     
     j_schema: dict = {}
+    j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The array of's data only
     errors = []
@@ -25,21 +27,21 @@ class ArrayOf:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data  
+        self.data = data
+        
+        self.j_config = get_j_config(self.j_schema)
         
     def check_type(self):
         if not isinstance(self.data, list):
-            # Note: If the data isn't a list, there's no point to continue with other checks
-            # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a list. Received: {type(self.data)}")
         
-    def check_minv(self):
+    def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Array length must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_maxv(self):
-        max_length = get_max_length(self.j_type)
+    def check_max_length(self):
+        max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Array length must be less than {max_length}. Received: {len(self.data)}")
         

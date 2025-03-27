@@ -1,6 +1,6 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_dict import Jadn_Dict
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional, use_field_ids
@@ -9,8 +9,8 @@ rules = {
     "type": "check_type",
     "[": "check_min_field_occurs",
     "]": "check_max_field_occurs",    
-    "{": "check_min_map_length",
-    "}": "check_max_map_length",
+    "{": "check_min_length",
+    "}": "check_max_length",
     "fields": "check_fields",
     "extra_fields": "check_extra_fields",
 }
@@ -18,6 +18,7 @@ rules = {
 class Map:
     
     j_schema: dict = {}
+    j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The map data only
     errors = []
@@ -29,17 +30,13 @@ class Map:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data  
+        self.data = data
+        
+        self.j_config = get_j_config(self.j_schema)
         
     def check_type(self):
-        
-        try:
-            isinstance(self.data, Jadn_Dict)
-        except Exception as err:
-            raise ValueError(f"{err}. Data must be a map / dict. Received: {type(self.data)}")
-        
-        # if not isinstance(self.data, Jadn_Dict):
-        #     raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
+        if not isinstance(self.data, dict):
+            raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
     def check_min_field_occurs(self):
         for j_key, j_field in enumerate(self.j_type.fields):
@@ -67,13 +64,13 @@ class Map:
             if max_occurs_allowed is not None and field_occurances < max_occurs_allowed:
                 self.errors.append(f"Field '{j_field[1]}' must occur no more than {max_occurs_allowed} times. Received: {field_occurances}")        
         
-    def check_min_map_length(self):
+    def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
             self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_max_map_length(self):
-        max_length = get_max_length(self.j_type)
+    def check_max_length(self):
+        max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
