@@ -1,4 +1,5 @@
 from typing import Union
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
@@ -12,6 +13,7 @@ rules = {
 class Choice:
     
     j_schema: dict = {}
+    j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The choice data only
     errors = []   
@@ -23,7 +25,9 @@ class Choice:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data      
+        self.data = data
+        
+        self.j_config = get_j_config(self.j_schema)
         
     def check_type(self):
         if not isinstance(self.data, dict):

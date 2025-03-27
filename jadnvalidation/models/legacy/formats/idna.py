@@ -1,7 +1,7 @@
 import email
 import re
 
-from jadnvalidation.models.pyd.formats.network import hostname
+from jadnvalidation.models.legacy.formats.network import hostname
 from jadnvalidation.utils.general_utils import addKey
 
 

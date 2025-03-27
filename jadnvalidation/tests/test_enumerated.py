@@ -2,7 +2,7 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
-def test_enum():
+def test_enum(): 
     root = "Root-Test"    
   
     j_schema = {

@@ -1,3 +1,6 @@
+from jadnvalidation.utils.general_utils import get_nested_value
+
+
 ROOT_GLOBAL_CONFIG_KEY = "root_global_config"
 # ROOT_TYPE_OPTS_KEY = "root_type_opts"
 GLOBAL_CONFIG_KEY = "global_config"
@@ -52,3 +55,12 @@ def build_jadn_config_obj(j_config_data: dict) -> Jadn_Config:
     )
     
     return j_config_obj
+
+def get_j_config(j_schema: dict) -> Jadn_Config:
+    j_config = Jadn_Config()
+    
+    j_custom_config = get_nested_value(j_schema, ['info', 'config'], None)
+    if j_custom_config:
+        j_config = build_jadn_config_obj(j_custom_config)
+    
+    return j_config

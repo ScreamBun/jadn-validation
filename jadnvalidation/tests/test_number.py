@@ -1,4 +1,4 @@
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
 
 def test_type_num():
@@ -16,5 +16,5 @@ def test_type_num():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
