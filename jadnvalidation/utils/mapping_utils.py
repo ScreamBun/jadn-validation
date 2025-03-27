@@ -80,25 +80,25 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
     return max_length
             
 def get_min_length(j_type: Jadn_Type) -> int:
-    return get_opt_val("{", j_type)
+    return get_opt_int("{", j_type)
 
 def get_min_occurs(j_type: Jadn_Type) -> int:
-    return get_opt_val("[", j_type)
+    return get_opt_int("[", j_type)
 
 def get_max_occurs(j_type: Jadn_Type) -> int:
-    return get_opt_val("]", j_type)
+    return get_opt_int("]", j_type)
 
 def get_min_inclusive(j_type: Jadn_Type) -> int:   
-    return get_opt_val("w", j_type)
+    return get_opt_int("w", j_type)
 
 def get_max_inclusive(j_type: Jadn_Type) -> int:   
-    return get_opt_val("x", j_type)
+    return get_opt_int("x", j_type)
 
 def get_min_exclusive(j_type: Jadn_Type) -> int:   
-    return get_opt_val("y", j_type)
+    return get_opt_int("y", j_type)
 
 def get_max_exclusive(j_type: Jadn_Type) -> int:   
-    return get_opt_val("z", j_type)
+    return get_opt_int("z", j_type)
 
 def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
     min_elements = None
@@ -130,7 +130,7 @@ def get_opts(j_type: Jadn_Type):
         
     return opts
 
-def get_opt_val(key: str, j_type: Jadn_Type):
+def get_opt_int(key: str, j_type: Jadn_Type):
     return_val = None
     opts = get_opts(j_type)
     for opt in opts:
@@ -140,6 +140,17 @@ def get_opt_val(key: str, j_type: Jadn_Type):
                 return_val = int(opt_val)
             except ValueError as e:
                 print("Invalid option: requires integer value: " + e)
+            break
+        
+    return return_val
+
+def get_opt_str(key: str, j_type: Jadn_Type):
+    return_val = None
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if key == opt_key:
+            return_val = opt_val
             break
         
     return return_val
@@ -187,15 +198,7 @@ def is_optional(j_type: Jadn_Type) -> bool:
     return is_optional
 
 def get_format(j_type: Jadn_Type):
-    val = None
-    opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if "/" == opt_key:
-            val = opt_val
-            break
-        
-    return val
+    return get_opt_str("/", j_type)
 
 '''
 def get_format_min(format: str):

@@ -123,6 +123,7 @@ def format_class_name(class_name: str) -> str:
 def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     
     modules = {
+        "Date" : "jadnvalidation.data_validation.formats.date",
         "DateTime" : "jadnvalidation.data_validation.formats.date_time"
     }
     
