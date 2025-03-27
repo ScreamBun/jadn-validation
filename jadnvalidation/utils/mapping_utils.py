@@ -80,47 +80,25 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
     return max_length
             
 def get_min_length(j_type: Jadn_Type) -> int:
-    min_length = None
-    
-    opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if "{" == opt_key:
-            min_length = int(opt_val)
-            break
-    
-    return min_length  
+    return get_opt_val("{", j_type)
 
 def get_min_occurs(j_type: Jadn_Type) -> int:
-    min_occurs = None
-    
-    opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if "[" == opt_key:
-            try:
-                min_occurs = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
-            break
-    
-    return min_occurs  
+    return get_opt_val("[", j_type)
 
 def get_max_occurs(j_type: Jadn_Type) -> int:
-    max_occurs = None
-    
-    opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if "]" == opt_key:
-            try:
-                max_occurs = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
-            break   
+    return get_opt_val("]", j_type)
 
-    
-    return max_occurs  
+def get_min_inclusive(j_type: Jadn_Type) -> int:   
+    return get_opt_val("w", j_type)
+
+def get_max_inclusive(j_type: Jadn_Type) -> int:   
+    return get_opt_val("x", j_type)
+
+def get_min_exclusive(j_type: Jadn_Type) -> int:   
+    return get_opt_val("y", j_type)
+
+def get_max_exclusive(j_type: Jadn_Type) -> int:   
+    return get_opt_val("z", j_type)
 
 def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
     min_elements = None
@@ -151,6 +129,20 @@ def get_opts(j_type: Jadn_Type):
         opts = []  # Set opts to an empty list
         
     return opts
+
+def get_opt_val(key: str, j_type: Jadn_Type):
+    return_val = None
+    opts = get_opts(j_type)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if key == opt_key:
+            try:
+                return_val = int(opt_val)
+            except ValueError as e:
+                print("Invalid option: requires integer value: " + e)
+            break
+        
+    return return_val
 
 def get_type(j_obj: Jadn_Type):
     type = None
