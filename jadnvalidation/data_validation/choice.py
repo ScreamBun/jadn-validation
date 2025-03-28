@@ -47,11 +47,11 @@ class Choice:
             if j_field is None:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
@@ -72,11 +72,11 @@ class Choice:
             if j_field is None:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
@@ -101,11 +101,11 @@ class Choice:
             if j_field is None:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)

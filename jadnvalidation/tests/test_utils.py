@@ -27,15 +27,21 @@ def validate_invalid_data(j_schema: dict, root: str, data_list: list) -> int:
 
 class Utils:
     
-    def __init__(self):
-        pass
+    j_schema: dict = None
+    root: str = None
+    tests: list = None
     
-    def validate_test(j_schema: dict, root: str, data_list: list) -> int:
+    def __init__(self, j_schema: dict = None, root: str = None, tests: list = None):
+        self.j_schema = j_schema
+        self.root = root
+        self.tests = tests
+    
+    def validate_test(self) -> int:
         
         err_count = 0
-        for data in data_list:
+        for test in self.tests:
             try :
-                j_validation = DataValidation(j_schema, root, data)
+                j_validation = DataValidation(self.j_schema, self.root, test)
                 j_validation.validate()
             except Exception as err:
                 err_count = err_count + 1

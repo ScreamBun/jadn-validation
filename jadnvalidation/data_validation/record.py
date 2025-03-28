@@ -35,13 +35,11 @@ class Record:
         
     def check_type(self):
         if not isinstance(self.data, dict):
-            # Note: If the data isn't a list, there's no point to continue with other checks
-            # Just raise the error to kill the thread rather than collecting and continuing. 
             raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
         
     def check_min_field_occurs(self):
         for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             
             field_data = get_data_by_name(self.data, j_field_obj.type_name)
             if not isinstance(field_data, list):
@@ -54,7 +52,7 @@ class Record:
 
     def check_max_field_occurs(self):
         for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             
             field_data = get_data_by_name(self.data, j_field_obj.type_name)
             if not isinstance(field_data, list):
@@ -79,7 +77,7 @@ class Record:
         for j_key, j_field in enumerate(self.j_type.fields):
             field_data = get_data_by_name(self.data, j_field[1])
             
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             if field_data is None:
                 if is_optional(j_field_obj):
                     continue
@@ -88,7 +86,7 @@ class Record:
             
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)

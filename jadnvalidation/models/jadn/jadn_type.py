@@ -35,7 +35,6 @@ class Base_Type(BaseEnum):
     RECORD = 'Record'
 
 class Jadn_Type():
-    config: Jadn_Config = Jadn_Config()
     id: str = None
     type_name: str = None
     value: str = None
@@ -45,8 +44,7 @@ class Jadn_Type():
     fields: list[Any] = None
     required: bool = False
     
-    def __init__(self, type_name, base_type, config, id = None, type_options = [], type_description = "", fields = []):
-        self.config = config
+    def __init__(self, type_name, base_type, id = None, type_options = [], type_description = "", fields = []):
         self.id = id # available for enums
         self.type_name = type_name
         self.base_type = base_type    
@@ -91,13 +89,11 @@ def is_record_or_map(jadn_type: Jadn_Type) -> bool:
         return False    
     
 # Careful, this one combines types and fields
-def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type | None:
-    
+def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
     jadn_type_obj = None
 
     if is_enumerated(j_type):
         jadn_type_obj = Jadn_Type(
-                config=j_config,
                 id=j_type[0],
                 type_name=j_type[1], 
                 base_type=None, 
@@ -105,7 +101,6 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type
                 type_description=j_type[2])
     elif is_type(j_type):
         jadn_type_obj = Jadn_Type(
-                config=j_config,
                 type_name=j_type[0], 
                 base_type=j_type[1], 
                 type_options=j_type[2], 
@@ -113,7 +108,6 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type
                 fields=safe_get(j_type, 4, []))
     elif is_field(j_type):
         jadn_type_obj = Jadn_Type(
-                config=j_config,
                 id=j_type[0],
                 type_name=j_type[1], 
                 base_type=j_type[2], 
@@ -125,15 +119,11 @@ def build_jadn_type_obj(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type
     
     return jadn_type_obj
 
-def build_j_type(j_type: list, j_config: Jadn_Config = None) -> Jadn_Type | None:
+def build_j_type(j_type: list) -> Jadn_Type | None:
     jadn_type_obj = None
-    
-    if not j_config:
-        j_config = Jadn_Config()    
     
     if is_type(j_type):
         jadn_type_obj = Jadn_Type(
-                config=j_config,
                 type_name=j_type[0], 
                 base_type=j_type[1], 
                 type_options=j_type[2], 

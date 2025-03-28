@@ -65,18 +65,18 @@ def test_data_validation_multi_root():
             ["t", "test", "test", 123, "test", "test", False]
         ]        
 
-    utils1 = Utils()
-    err_count = utils1.validate_test(j_schema, roots[0], valid_data_list_root_1)    
+    utils1 = Utils(j_schema, roots[0], valid_data_list_root_1)
+    err_count = utils1.validate_test()    
     assert err_count == 0
     
-    utils2 = Utils()
-    err_count = utils2.validate_test(j_schema, roots[1], valid_data_list_root_2)    
+    utils2 = Utils(j_schema, roots[1], valid_data_list_root_2)
+    err_count = utils2.validate_test()    
     assert err_count == 0
         
-    utils3 = Utils()        
-    err_count = utils3.validate_test(j_schema, roots[0], invalid_data_list)
+    utils3 = Utils(j_schema, roots[0], invalid_data_list)        
+    err_count = utils3.validate_test()
     assert err_count == len(invalid_data_list)
     
-    utils4 = Utils()
-    err_count = utils4.validate_test(j_schema, roots[1], invalid_data_list)
+    utils4 = Utils(j_schema, roots[1], invalid_data_list)
+    err_count = utils4.validate_test()
     assert err_count == len(invalid_data_list)    

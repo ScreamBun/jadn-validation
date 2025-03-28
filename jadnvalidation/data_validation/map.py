@@ -40,7 +40,7 @@ class Map:
         
     def check_min_field_occurs(self):
         for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             
             field_data = get_data_by_name(self.data, j_field_obj.type_name)
             if not isinstance(field_data, list):
@@ -53,7 +53,7 @@ class Map:
 
     def check_max_field_occurs(self):
         for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             
             field_data = get_data_by_name(self.data, j_field_obj.type_name)
             if not isinstance(field_data, list):
@@ -77,7 +77,7 @@ class Map:
     def check_fields(self):
         use_ids = use_field_ids(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             
             field_data = None
             if use_ids:
@@ -93,7 +93,7 @@ class Map:
 
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)

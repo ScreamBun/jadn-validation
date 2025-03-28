@@ -54,12 +54,12 @@ class ArrayOf:
         
         for data_item in self.data:
             if is_primitive(vtype):
-                of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype, self.j_type.config)
+                of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
                 clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item)
                 clz_instance.validate()
             else:                
                 ref_type = get_reference_type(self.j_schema, vtype)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
                 clz_instance.validate()
         

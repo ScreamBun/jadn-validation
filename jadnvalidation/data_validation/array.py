@@ -44,6 +44,12 @@ class Array:
         # Count unique data types in self.data
         # my_list = [1, "hello", "hi again", 3.14, True, [1, 2], {"a": 1}]
         counts, custom_types = count_data_types(self.data)
+        
+        # for j_index, j_field in enumerate(self.j_type.fields):
+        #     j_field_obj = build_jadn_type_obj(j_field)
+        #     field_data = get_item_safe_check(self.data, j_index)
+        
+        
         pass
 
     def check_max_field_occurs(self):
@@ -68,7 +74,7 @@ class Array:
         
     def check_fields(self):
         for j_index, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field, self.j_type.config)
+            j_field_obj = build_jadn_type_obj(j_field)
             field_data = get_item_safe_check(self.data, j_index)    
             
             if field_data is None:
@@ -79,12 +85,18 @@ class Array:
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type, self.j_type.config)
+                ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
             # TODO: Leftoff here with min/max occurs, need more input on type flipping
             min_occurs = get_min_occurs(j_field_obj)
             max_occurs = get_max_occurs(j_field_obj)
+            
+            if min_occurs is not None and min_occurs > 1:
+                # field type changes to an array of that type
+                j_field_obj = Jadn_Type("of_" + self.j_type.type_name, self.j_type.base_type)
+            
+            
             # if min_occurs is not None and max_occurs is not None:
             #     if min_occurs > 1 or max_occurs > 1:                
             #         arrayOf = ArrayOf(self.j_schema, j_field_obj, field_data)
