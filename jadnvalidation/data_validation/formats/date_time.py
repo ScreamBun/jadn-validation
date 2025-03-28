@@ -3,8 +3,8 @@ from datetime import datetime
 
 class DateTime:
     
+    # Allow different formats?  See date.py
     date_time: str = None
-    errors = []    
     
     def __init__(self, date_time: any = None):
         self.date_time = date_time

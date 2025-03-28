@@ -3,7 +3,7 @@ import sys
 import importlib
 
 from typing import Callable, Union
-from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
+
 
 def addKey(d: dict, k: str = None) -> Callable:
     """
@@ -56,30 +56,6 @@ def count_data_types(data_list):
             custom_types.append(data_item)
         
     return type_counts, custom_types
-
-def create_derived_class(base_class, class_name, extra_methods=None):
-    """
-    Dynamically creates a new class inheriting from base_class.
-
-    Args:
-        base_class: The class to inherit from.
-        class_name: The name of the new class.
-        extra_methods: A dictionary of additional methods for the new class.
-
-    Returns:
-        The newly created class.
-    """
-    if extra_methods is None:
-        extra_methods = {}
-    return type(class_name, (base_class,), extra_methods)
-
-""" - removing in the shift from pydantic KC
-def create_dynamic_model(model_name: str, fields: dict) -> type[BaseModel]:
-    return create_model(
-        model_name,
-        **fields
-    )
-    """
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):
@@ -124,7 +100,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     
     modules = {
         "Date" : "jadnvalidation.data_validation.formats.date",
-        "DateTime" : "jadnvalidation.data_validation.formats.date_time"
+        "DateTime" : "jadnvalidation.data_validation.formats.date_time",
+        "Time" : "jadnvalidation.data_validation.formats.time"
     }
     
     formatted_class_name = format_class_name(class_name)
@@ -157,24 +134,10 @@ def get_data_by_id(data: dict, id: int):
 def get_data_by_name(data: dict, name: str):
     return data.get(name)
 
-# def get_global_configs(p_model):
-#     global_configs = None
-#     if p_model.model_fields:
-#         gc_field_info = p_model.model_fields.get(ROOT_GLOBAL_CONFIG_KEY, None)
-#         if not gc_field_info:
-#             gc_field_info = p_model.model_fields.get(GLOBAL_CONFIG_KEY, None)
-#         if gc_field_info and gc_field_info.default:
-#             global_configs = gc_field_info.default
-                
-#     return global_configs
-
 def get_item_safe_check(my_list, index):
     if 0 <= index < len(my_list):
         return my_list[index]
     return None  # Or any other default value
-
-def get_jadn_type_opts(jadn_type_name: str) -> tuple:
-    return ALLOWED_TYPE_OPTIONS.get(jadn_type_name)
 
 # TODO: We might be able to generalize this function
 def get_choice_data_content(data: dict):
@@ -328,13 +291,3 @@ def split_on_second_char(string):
 
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
-
-class classproperty(property):
-    def __get__(self, obj, objtype=None):
-        return super().__get__(objtype)
-
-    def __set__(self, obj, value):
-        super().__set__(type(obj), value)
-
-    def __delete__(self, obj):
-        super().__delete__(type(obj))

@@ -1,5 +1,5 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.tests.test_utils import validate_valid_data
+from jadnvalidation.tests.test_utils import Utils, validate_valid_data
 
 
 def test_data_validation():  
@@ -65,14 +65,18 @@ def test_data_validation_multi_root():
             ["t", "test", "test", 123, "test", "test", False]
         ]        
 
-    err_count = validate_valid_data(j_schema, roots[0], valid_data_list_root_1)    
+    utils1 = Utils()
+    err_count = utils1.validate_test(j_schema, roots[0], valid_data_list_root_1)    
     assert err_count == 0
     
-    err_count = validate_valid_data(j_schema, roots[1], valid_data_list_root_2)    
+    utils2 = Utils()
+    err_count = utils2.validate_test(j_schema, roots[1], valid_data_list_root_2)    
     assert err_count == 0
         
-    err_count = validate_valid_data(j_schema, roots[0], invalid_data_list)
+    utils3 = Utils()        
+    err_count = utils3.validate_test(j_schema, roots[0], invalid_data_list)
     assert err_count == len(invalid_data_list)
     
-    err_count = validate_valid_data(j_schema, roots[1], invalid_data_list)
+    utils4 = Utils()
+    err_count = utils4.validate_test(j_schema, roots[1], invalid_data_list)
     assert err_count == len(invalid_data_list)    

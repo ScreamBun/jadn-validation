@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 
@@ -288,8 +288,7 @@ def test_string_time():
       ]
     }
 
-    now = datetime.datetime.now()
-    current_time = now.time()
+    current_time = datetime.now().strftime("%H:%M:%S")
 
     valid_data_list = [current_time]
     invalid_data_list = ['hfdkjlajfdkl', 1596542285000]
@@ -312,7 +311,7 @@ def test_string_date():
     valid_data_list = ['2024-01-01']
     invalid_data_list = ['hfdkjlajfdkl',
         'yy2024-01-01zz',
-        datetime.datetime.now(),
+        datetime.now(),
         1596542285000]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
