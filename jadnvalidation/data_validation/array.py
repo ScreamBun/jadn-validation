@@ -69,7 +69,6 @@ class Array:
                 
             min_occurs = get_min_occurs(j_field_obj)
             max_occurs = get_max_occurs(j_field_obj, self.j_config)
-            
             if min_occurs > 1 or max_occurs > 1:
                 j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
                 

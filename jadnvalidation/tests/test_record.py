@@ -223,7 +223,7 @@ def test_record_min_occurs():
         "types": [
             ["Root-Test", "Record", ["{1", "}10"], "", [
                 [1, "field_value_1a", "String", ["[1"], ""],
-                [2, "field_value_2a", "String", ["{0"], ""]
+                [2, "field_value_2a", "String", ["[0"], ""]
             ]]          
         ]
     }  
@@ -258,8 +258,8 @@ def test_record_max_occurs():
         "types": [
             ["Root-Test", "Record", ["{1", "}10"], "", [
                 [1, "field_value_1", "String", ["]1"], ""],
-                [2, "field_value_2", "String", ["{0"], ""],
-                # [2, "field_value_3", "String", ["]3"], ""]
+                [2, "field_value_2", "String", ["[0"], ""],
+                [2, "field_value_3", "String", ["]3"], ""]
             ]]          
         ]
     }  
@@ -268,18 +268,18 @@ def test_record_max_occurs():
         {
             "field_value_1": "darth mekhis",
             "field_value_2": "darth bane",
-            # "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
+            "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
         },
         {
             "field_value_1": "darth mekhis",
-            # "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
+            "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
         }
     ]
     
     invalid_data_list = [
         {
             "field_value_2": "test 2",
-            # "field_value_3": "test 3",
+            "field_value_3": "test 3",
         }
     ]
         
