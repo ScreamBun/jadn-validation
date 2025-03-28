@@ -58,7 +58,7 @@ def test_array():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
 
 def test_array_optional_first():
     root = "Root-Test"    
@@ -144,7 +144,7 @@ def test_array_min_occurs():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
     
 def test_array_max_occurs():
     root = "Root-Test"    
@@ -172,4 +172,33 @@ def test_array_max_occurs():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2     
+    assert err_count == len(invalid_data_list)
+    
+def test_array_min_max_occurs():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", ["[1", "]1"], ""],
+                [2, "field_value_2", "Boolean", ["[2", "]2"], ""],
+                [3, "field_value_3", "Integer", ["[3", "]3"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["test 1", [True, False], [1, 2, 3]]
+        ]
+    
+    invalid_data_list = [
+            ["test 1", [True, False, True], [1, 2, 3]],
+            ["test 1", [True], [1, 2, 3]],
+            ["test 1", [True, False, True], [1, 2, 3, 4]]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)   
