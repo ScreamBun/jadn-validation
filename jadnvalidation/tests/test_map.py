@@ -327,6 +327,4 @@ def test_map_max_occurs():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)    
-    
-# TODO: Test min or max greater than one, which means the data value changes to an array.    
+    assert err_count == len(invalid_data_list)
