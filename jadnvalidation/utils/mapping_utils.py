@@ -1,3 +1,4 @@
+import sys
 from typing import List
 from math import pow
 from pydantic import StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
@@ -83,10 +84,25 @@ def get_min_length(j_type: Jadn_Type) -> int:
     return get_opt_int("{", j_type)
 
 def get_min_occurs(j_type: Jadn_Type) -> int:
-    return get_opt_int("[", j_type)
+    min_val = get_opt_int("[", j_type)
+    if min_val == None:
+        min_val = 1    
+    return min_val
 
-def get_max_occurs(j_type: Jadn_Type) -> int:
-    return get_opt_int("]", j_type)
+def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
+    max_val = get_opt_int("]", j_type)
+    min_val = get_min_occurs(j_type)
+    
+    if min_val == None and max_val == None:
+        max_val = 1
+    elif min_val > 0 and max_val == None:
+        max_val = min_val
+    elif max_val == -1:
+        max_val = global_config.MaxElements
+    elif max_val == -2:
+        max_val = sys.maxsize
+        
+    return max_val
 
 def get_min_inclusive(j_type: Jadn_Type) -> int:   
     return get_opt_int("w", j_type)

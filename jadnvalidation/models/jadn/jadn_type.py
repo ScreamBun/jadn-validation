@@ -29,9 +29,11 @@ class Base_Type(BaseEnum):
     NUMBER = 'Number'
     STRING = 'String'
     ARRAY = 'Array'
+    ARRAY_OF = 'ArrayOf'
     CHOICE = 'Choice'
     ENUMERATED = 'Enumerated'
     MAP = 'Map'
+    MAP_OF = 'MapOf'
     RECORD = 'Record'
 
 class Jadn_Type():

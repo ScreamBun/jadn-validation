@@ -2,17 +2,14 @@ from typing import Union
 
 from jadnvalidation.data_validation.array_of import ArrayOf
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import count_data_types, create_clz_instance, get_data_by_name, get_item_safe_check, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 
 rules = {
     "type": "check_type",
-   # "order": "check_order",
     "fields": "check_fields",
     "/": "check_format",
-    "[": "check_min_field_occurs",
-    # "]": "check_max_field_occurs",    
     "{": "check_min_length",
     "}": "check_max_length"
 }
@@ -39,23 +36,6 @@ class Array:
     def check_type(self):
         if not isinstance(self.data, list):
             raise ValueError(f"Data must be a list. Received: {type(self.data)}")
-        
-    def check_min_field_occurs(self):
-        # Count unique data types in self.data
-        # my_list = [1, "hello", "hi again", 3.14, True, [1, 2], {"a": 1}]
-        counts, custom_types = count_data_types(self.data)
-        
-        # for j_index, j_field in enumerate(self.j_type.fields):
-        #     j_field_obj = build_jadn_type_obj(j_field)
-        #     field_data = get_item_safe_check(self.data, j_index)
-        
-        
-        pass
-
-    def check_max_field_occurs(self):
-        # Count unique data types in self.data
-        counts, custom_types = count_data_types(self.data)
-        pass
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
@@ -88,19 +68,20 @@ class Array:
                 ref_type_obj = build_j_type(ref_type)
                 j_field_obj = ref_type_obj
                 
-            # TODO: Leftoff here with min/max occurs, need more input on type flipping
             min_occurs = get_min_occurs(j_field_obj)
-            max_occurs = get_max_occurs(j_field_obj)
+            max_occurs = get_max_occurs(j_field_obj, self.j_config)
             
-            if min_occurs is not None and min_occurs > 1:
-                # field type changes to an array of that type
-                j_field_obj = Jadn_Type("of_" + self.j_type.type_name, self.j_type.base_type)
-            
-            
-            # if min_occurs is not None and max_occurs is not None:
-            #     if min_occurs > 1 or max_occurs > 1:                
-            #         arrayOf = ArrayOf(self.j_schema, j_field_obj, field_data)
-            #         arrayOf.validate()
+            if min_occurs > 1 or max_occurs > 1:
+                # field type changes to an array of that type; array length equals max occurs
+                array_vtype = "*" + j_field_obj.base_type
+                array_min_len = "{" + str(min_occurs)
+                array_max_len = "}" + str(max_occurs)
+                
+                j_field_obj = Jadn_Type(j_field_obj.type_name, Base_Type.ARRAY_OF.value)
+                j_field_obj.type_options = []
+                j_field_obj.type_options.append(array_vtype)
+                j_field_obj.type_options.append(array_min_len)
+                j_field_obj.type_options.append(array_max_len)
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
             clz_instance.validate()
