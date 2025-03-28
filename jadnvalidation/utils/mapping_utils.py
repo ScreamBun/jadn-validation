@@ -114,7 +114,7 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
     
     if min_val == None and max_val == None:
         max_val = 1
-    elif min_val > -1 and max_val == None:
+    elif min_val >= 0 and max_val == None:
         max_val = min_val
     elif max_val == -1:
         max_val = global_config.MaxElements
