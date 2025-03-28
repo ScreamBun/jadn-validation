@@ -1,10 +1,9 @@
 from typing import Union
 
-from jadnvalidation.data_validation.array_of import ArrayOf
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
-from jadnvalidation.utils.general_utils import count_data_types, create_clz_instance, get_data_by_name, get_item_safe_check, get_reference_type
-from jadnvalidation.utils.mapping_utils import get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.utils.general_utils import create_clz_instance, get_item_safe_check, get_reference_type
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 
 rules = {
     "type": "check_type",
@@ -72,16 +71,7 @@ class Array:
             max_occurs = get_max_occurs(j_field_obj, self.j_config)
             
             if min_occurs > 1 or max_occurs > 1:
-                # field type changes to an array of that type; array length equals max occurs
-                array_vtype = "*" + j_field_obj.base_type
-                array_min_len = "{" + str(min_occurs)
-                array_max_len = "}" + str(max_occurs)
-                
-                j_field_obj = Jadn_Type(j_field_obj.type_name, Base_Type.ARRAY_OF.value)
-                j_field_obj.type_options = []
-                j_field_obj.type_options.append(array_vtype)
-                j_field_obj.type_options.append(array_min_len)
-                j_field_obj.type_options.append(array_max_len)
+                j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
             clz_instance.validate()

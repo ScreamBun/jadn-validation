@@ -60,6 +60,7 @@ def test_array():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
 
+
 def test_array_optional_first():
     root = "Root-Test"    
     
@@ -88,6 +89,7 @@ def test_array_optional_first():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+
 
 def test_array_optional_last():
     root = "Root-Test"    

@@ -44,6 +44,22 @@ def convert_to_python_type(type_str: str) -> type:
     }
     return type_mapping.get(type_str, str)
 
+def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
+    """
+    Field type changes to an array of that type; array length equals max occurs.
+    """
+    array_vtype = "*" + j_type_obj.base_type
+    array_min_len = "{" + str(min_occurs)
+    array_max_len = "}" + str(max_occurs)
+    
+    j_field_obj = Jadn_Type(j_type_obj.type_name, Base_Type.ARRAY_OF.value)
+    j_field_obj.type_options = []
+    j_field_obj.type_options.append(array_vtype)
+    j_field_obj.type_options.append(array_min_len)
+    j_field_obj.type_options.append(array_max_len)    
+    
+    return j_field_obj
+
 def get_choice_type(j_type_opts: List[str]) -> str:
     choice_type = Choice_Consts.CHOICE_ONE_OF
     
@@ -81,12 +97,15 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
     return max_length
             
 def get_min_length(j_type: Jadn_Type) -> int:
-    return get_opt_int("{", j_type)
+    min_val = get_opt_int("{", j_type)
+    if min_val == None:
+        min_val = 0    
+    return min_val
 
 def get_min_occurs(j_type: Jadn_Type) -> int:
     min_val = get_opt_int("[", j_type)
     if min_val == None:
-        min_val = 1    
+        min_val = 1
     return min_val
 
 def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
@@ -95,7 +114,7 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
     
     if min_val == None and max_val == None:
         max_val = 1
-    elif min_val > 0 and max_val == None:
+    elif min_val > -1 and max_val == None:
         max_val = min_val
     elif max_val == -1:
         max_val = global_config.MaxElements
@@ -206,9 +225,9 @@ def is_optional(j_type: Jadn_Type) -> bool:
     is_optional = False
     
     min_occurs = get_min_occurs(j_type)
-    min = get_min_length(j_type)
+    min_length = get_min_length(j_type)
     
-    if min == 0 or min_occurs == 0:
+    if min_length == 0 or min_occurs == 0:
         is_optional = True
     
     return is_optional
