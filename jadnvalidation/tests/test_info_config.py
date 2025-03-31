@@ -178,8 +178,8 @@ def test_max_elements_record():
     assert err_count == len(invalid_data_list)
     
 def test_sys_indicator():
-    root = "Root-Test"    
-  
+    root = "Root-Test"
+    
     invalid_j_schema = {
         "info": {
             "package": "http://test/v1.0",
@@ -196,15 +196,15 @@ def test_sys_indicator():
             }
         },
         "types": [
-            ["$Root-Test", "Record", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", ["[0"], ""]
+                [3, "$field_value_3", "String", ["[0"], ""]
             ]]
         ]
-    }
+    }    
     
-    j_schema = {
+    valid_j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
@@ -235,7 +235,7 @@ def test_sys_indicator():
                             }
                         ]    
   
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    err_count = validate_valid_data(valid_j_schema, root, valid_data_list)    
     assert err_count == 0
     
     err_count = validate_valid_data(invalid_j_schema, root, valid_data_list)    

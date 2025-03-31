@@ -33,6 +33,10 @@ class Choice:
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
         
+    def check_sys_char(self, j_field_obj: Jadn_Type):        
+        if self.j_config.Sys and self.j_config.Sys in j_field_obj.type_name:
+            raise ValueError(f"Field Name {j_field_obj.type_name} contains System Character {self.j_config.Sys}")        
+        
     def process_any_of(self, use_ids):
         
         # At least one field must be present
@@ -48,6 +52,7 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
+            self.check_sys_char(j_field_obj)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
@@ -73,6 +78,7 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
+            self.check_sys_char(j_field_obj)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
@@ -102,6 +108,7 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
+            self.check_sys_char(j_field_obj)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)

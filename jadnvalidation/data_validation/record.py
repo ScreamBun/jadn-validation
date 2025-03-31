@@ -44,12 +44,18 @@ class Record:
         max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
+            
+    def check_sys_char(self, j_field_obj: Jadn_Type):
+        if self.j_config.Sys and self.j_config.Sys in j_field_obj.type_name:
+            raise ValueError(f"Field Name {j_field_obj.type_name} contains System Character {self.j_config.Sys}")
         
     def check_fields(self):
         for j_key, j_field in enumerate(self.j_type.fields):
             field_data = get_data_by_name(self.data, j_field[1])
-            
             j_field_obj = build_jadn_type_obj(j_field)
+            
+            self.check_sys_char(j_field_obj)
+            
             if field_data is None:
                 if is_optional(j_field_obj):
                     continue

@@ -35,7 +35,6 @@ class DataValidation:
                 if root_type == None:
                     raise ValueError(f"Root Type not found {root_item}")
                 
-                # TODO: Left off here
                 root_type_obj = build_jadn_type_obj(root_type)
                 clz_instance = create_clz_instance(root_type_obj.base_type, self.j_schema, root_type, self.data)
                 clz_instance.validate()            

@@ -47,11 +47,17 @@ class Map:
         max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
+            
+    def check_sys_char(self, j_field_obj: Jadn_Type):
+        if self.j_config.Sys and self.j_config.Sys in j_field_obj.type_name:
+            raise ValueError(f"Field Name {j_field_obj.type_name} contains System Character {self.j_config.Sys}")            
         
     def check_fields(self):
         use_ids = use_field_ids(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
+            
+            self.check_sys_char(j_field_obj)
             
             field_data = None
             if use_ids:
