@@ -1,6 +1,6 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_sys_char, check_type_name, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
@@ -51,6 +51,7 @@ class Record:
             j_field_obj = build_jadn_type_obj(j_field)
             
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
             
             if field_data is None:
                 if is_optional(j_field_obj):

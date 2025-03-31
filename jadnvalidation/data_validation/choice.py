@@ -1,5 +1,5 @@
 from typing import Union
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_sys_char, check_type_name, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
@@ -49,6 +49,7 @@ class Choice:
             
             j_field_obj = build_jadn_type_obj(j_field)
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
@@ -76,6 +77,7 @@ class Choice:
             
             j_field_obj = build_jadn_type_obj(j_field)
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
@@ -107,6 +109,7 @@ class Choice:
             
             j_field_obj = build_jadn_type_obj(j_field)
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
