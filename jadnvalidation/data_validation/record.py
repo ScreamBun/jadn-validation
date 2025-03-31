@@ -1,6 +1,6 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
@@ -44,17 +44,13 @@ class Record:
         max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
-            
-    def check_sys_char(self, j_field_obj: Jadn_Type):
-        if self.j_config.Sys and self.j_config.Sys in j_field_obj.type_name:
-            raise ValueError(f"Field Name {j_field_obj.type_name} contains System Character {self.j_config.Sys}")
         
     def check_fields(self):
         for j_key, j_field in enumerate(self.j_type.fields):
             field_data = get_data_by_name(self.data, j_field[1])
             j_field_obj = build_jadn_type_obj(j_field)
             
-            self.check_sys_char(j_field_obj)
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
             
             if field_data is None:
                 if is_optional(j_field_obj):
@@ -65,6 +61,7 @@ class Record:
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
             min_occurs = get_min_occurs(j_field_obj)

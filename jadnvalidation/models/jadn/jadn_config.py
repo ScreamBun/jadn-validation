@@ -1,3 +1,4 @@
+import re
 from jadnvalidation.utils.general_utils import get_nested_value
 
 
@@ -64,3 +65,12 @@ def get_j_config(j_schema: dict) -> Jadn_Config:
         j_config = build_jadn_config_obj(j_custom_config)
     
     return j_config
+
+def check_sys_char(j_field_name, j_config_sys: str):
+    if j_config_sys and j_config_sys in j_field_name:
+        raise ValueError(f"Field Name {j_field_name} contains System Character {j_config_sys}")
+
+def check_type_name(j_type_name, j_config_type_name_reg: str):
+    match = re.fullmatch(j_config_type_name_reg, j_type_name)
+    if not match:
+        raise ValueError(f"Invalid Type Name {j_type_name} per regex pattern {j_config_type_name_reg}")    

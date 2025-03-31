@@ -1,5 +1,5 @@
 from typing import Union
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
@@ -33,10 +33,6 @@ class Choice:
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
         
-    def check_sys_char(self, j_field_obj: Jadn_Type):        
-        if self.j_config.Sys and self.j_config.Sys in j_field_obj.type_name:
-            raise ValueError(f"Field Name {j_field_obj.type_name} contains System Character {self.j_config.Sys}")        
-        
     def process_any_of(self, use_ids):
         
         # At least one field must be present
@@ -52,11 +48,12 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
-            self.check_sys_char(j_field_obj)
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
@@ -78,11 +75,12 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
-            self.check_sys_char(j_field_obj)
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
@@ -108,11 +106,12 @@ class Choice:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
             
             j_field_obj = build_jadn_type_obj(j_field)
-            self.check_sys_char(j_field_obj)
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)

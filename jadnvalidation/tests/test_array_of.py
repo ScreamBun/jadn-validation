@@ -15,7 +15,7 @@ def test_array_of_ints():
     }
     
     valid_data_list = [
-            [1, -1, 11111111],
+            [1, 2, 11111111],
             [0, 00, 0]
         ]
     

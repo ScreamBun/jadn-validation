@@ -1,11 +1,13 @@
 from typing import Union
 
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.utils.general_utils import create_clz_instance, get_schema_type_by_name
 
 
 class DataValidation:
     j_schema: dict = {}
+    j_config: Jadn_Config = None
     root: Union[str, list] = None
     data: dict = {}
     
@@ -13,6 +15,7 @@ class DataValidation:
         self.j_schema = j_schema
         self.root = root
         self.data = data
+        self.j_config = get_j_config(self.j_schema)        
         
     def validate(self):
         
@@ -36,6 +39,8 @@ class DataValidation:
                     raise ValueError(f"Root Type not found {root_item}")
                 
                 root_type_obj = build_jadn_type_obj(root_type)
+                check_type_name(root_type_obj.type_name, self.j_config.TypeName)
+                    
                 clz_instance = create_clz_instance(root_type_obj.base_type, self.j_schema, root_type, self.data)
                 clz_instance.validate()            
             
