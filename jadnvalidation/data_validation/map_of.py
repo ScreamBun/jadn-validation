@@ -5,9 +5,9 @@ from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_t
 from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type, is_even
 from jadnvalidation.utils.mapping_utils import get_ktype, get_max_length, get_min_length, get_vtype, is_optional
 
-# id, extend, minv, maxv
 rules = {
     "type": "check_type",
+    "max_elements": "check_max_elements",    
     "{": "check_min_length",
     "}": "check_max_length",
     "key_values": "check_key_values",
@@ -36,7 +36,17 @@ class MapOf:
         if isinstance(self.data, list) or isinstance(self.data, dict):
             return
         else:
-            raise ValueError(f"Data must be a dict / object / record that contains an iterable structure. Received: {type(self.data)}")
+            raise ValueError(f"Data must be a list / dict / object / record that contains an iterable structure. Received: {type(self.data)}")
+        
+    def check_max_elements(self):
+        if self.data:
+            if isinstance(self.data, list):
+                if len(self.data) > self.j_config.MaxElements * 2:
+                    raise ValueError(f"Data items exceed the maximum limit of {self.j_config.MaxElements}")
+                
+            if isinstance(self.data, dict):
+                if len(self.data) > self.j_config.MaxElements:
+                    raise ValueError(f"Data items exceed the maximum limit of {self.j_config.MaxElements}")                
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
@@ -57,8 +67,7 @@ class MapOf:
             ref_type = get_reference_type(self.j_schema, kv_type)
             ref_type_obj = build_j_type(ref_type)
             clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
-            clz_instance.validate()        
-
+            clz_instance.validate()
         
     def check_key_values(self):
         ktype = get_ktype(self.j_type)
@@ -71,7 +80,7 @@ class MapOf:
         # If ktype is int, then the data is a list of key-value pairs, as follows:
         #  [key1, value1, key2, value2, ...].
         if ktype == Base_Type.INTEGER.value:
-            # TODO: Expand this to handle more than just integers
+            # TODO: Expand this to handle more than just integers?
         
             for i, data_item in enumerate(self.data):
                 

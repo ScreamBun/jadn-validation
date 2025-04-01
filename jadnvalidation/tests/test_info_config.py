@@ -96,42 +96,49 @@ def test_max_binary():
             
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+      
+def test_max_elements_array_of_ints():
+    root = "Root-Test"    
     
-def test_max_binary_order_of_precedence():
-    root = "Root-Test"     
-  
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
             "title": "Test Title",
+            "exports": ["Root-Test"],
             "config": {
-            "$MaxBinary": 10,
+            "$MaxBinary": 255,
             "$MaxString": 255,
-            "$MaxElements": 100,
+            "$MaxElements": 3,
             "$Sys": "$",
             "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-            },
-            "exports": ["Root-Test"]
+            }
         },
         "types": [
-            ["Root-Test", "Binary", ["}2"], ""]
+            ["Root-Test", "ArrayOf", ["*Integer", "{1", "}3"], ""]
         ]
     }
     
-    valid_data_list = [ b"zz"]
-    invalid_data_list = [b"testing"]
+    valid_data_list = [
+            [1, 2, 3],
+            [0, 0, 0]
+        ]
     
+    invalid_data_list = [
+            [1, 2, 3, 4],
+            [0, 0, 0, 0]
+        ]
+        
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-    
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)    
-    assert err_count == len(invalid_data_list)
-    
-def test_max_elements_record():
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)            
+      
+def test_max_elements_map_of_int_key():
     root = "Root-Test"
-  
+    
     j_schema = {
         "info": {
             "package": "http://test/v1.0",
@@ -148,34 +155,69 @@ def test_max_elements_record():
             }
         },
         "types": [
-            ["Root-Test", "Record", [], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", [], ""],
-                [3, "field_value_3", "String", ["{0"], ""]
-            ]]
+            ["Integer-Name", "Integer", [], ""],
+            ["String-Name", "String", [], ""],
+            ["Root-Test", "MapOf", ["+Integer", "*String"], ""]
         ]
     }
     
-    valid_data_list =   [
-                            {
-                                "field_value_1" : "test",
-                                "field_value_2" : "test"
-                            }
-                        ]
+    valid_data_list = [
+         [1, "asdf"]
+    ]
     
     invalid_data_list = [
-                            {
-                                "field_value_1" : "test",
-                                "field_value_2" : "test",
-                                "field_value_3" : "test"
-                            }
-                        ]
-  
+         [1, "True", 2, "False", 3, "False"]
+    ]
+    
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)  
     
-    err_count = validate_valid_data(j_schema, root, invalid_data_list)    
-    assert err_count == len(invalid_data_list)
+def test_max_elements_map_of_string_key():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "title": "Test Title",
+            "exports": ["Root-Test"],
+            "config": {
+            "$MaxBinary": 255,
+            "$MaxString": 255,
+            "$MaxElements": 2,
+            "$Sys": "$",
+            "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
+            "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+            "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+            }
+        },
+        "types": [
+            ["Root-Test", "MapOf", ["+String", "*String"], ""]
+        ]
+    }
+    
+    valid_data_list = [
+        {
+            "key1" : "val1",
+            "key2" : "val2"
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "key1" : "val1",
+            "key2" : "val2",
+            "key3" : "val3"
+        }
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)  
     
 def test_sys_indicator():
     root = "Root-Test"

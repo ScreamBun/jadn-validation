@@ -7,6 +7,7 @@ from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, g
 
 rules = {
     "type": "check_type",
+    "max_elements": "check_max_elements",
     "fields": "check_vtype",
     "{": "check_min_length",
     "}": "check_max_length"
@@ -34,6 +35,10 @@ class ArrayOf:
     def check_type(self):
         if not isinstance(self.data, list):
             raise ValueError(f"Data must be a list. Received: {type(self.data)}")
+        
+    def check_max_elements(self):
+        if self.data and len(self.data) > self.j_config.MaxElements:
+            raise ValueError(f"Data items exceed the maximum limit of {self.j_config.MaxElements}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
