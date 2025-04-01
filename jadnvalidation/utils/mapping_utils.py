@@ -221,7 +221,7 @@ def get_vtype(j_obj: Jadn_Type):
 
 # Note: A separate function may be needed for optional structures
 # This function is geared towards fields
-def is_optional(j_type: Jadn_Type) -> bool:
+def is_optional(j_type: Jadn_Type) -> bool: 
     is_optional = False
     
     min_occurs = get_min_occurs(j_type)
