@@ -28,6 +28,7 @@ class Choice:
         self.data = data
         
         self.j_config = get_j_config(self.j_schema)
+        self.errors = []
         
     def check_type(self):
         if not isinstance(self.data, dict):
