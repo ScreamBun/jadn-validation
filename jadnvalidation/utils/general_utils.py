@@ -19,43 +19,6 @@ def addKey(d: dict, k: str = None) -> Callable:
 
 def all_unique(lst):
   return len(lst) == len(set(lst))
-
-def count_data_types(data_list):
-    """
-    Counts the occurrences of each data type in a list.
-
-    Args:
-        data_list: The list to analyze.
-
-    Returns:
-        A dictionary where keys are data types and values are their counts.
-    """
-    
-    custom_types = []
-    
-    type_counts = defaultdict(int)
-    for data_item in data_list:
-        
-        item_type = type(data_item)
-        if item_type == list:
-            type_counts["Array"] += 1
-        elif item_type == dict:
-            type_counts["Record"] += 1
-        elif item_type == str:
-            type_counts["String"] += 1
-        elif item_type == int: 
-            type_counts["Integer"] += 1
-        elif item_type == float:
-            type_counts["Number"] += 1
-        elif item_type == bool:
-            type_counts["Boolean"] += 1
-        elif item_type == bytes:    
-            type_counts["Binary"] += 1
-        else:
-            type_counts["Custom"] += 1
-            custom_types.append(data_item)
-        
-    return type_counts, custom_types
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):

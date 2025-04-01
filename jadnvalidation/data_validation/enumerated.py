@@ -6,7 +6,7 @@ from jadnvalidation.utils.mapping_utils import use_field_ids
 
 rules = {
     "type": "check_type",
-    "choice": "check_enumeration",
+    "value": "check_enumeration",
 }
 
 class Enumerated:
@@ -14,7 +14,7 @@ class Enumerated:
     j_schema: dict = {}
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
-    data: any = None # The choice data only
+    data: any = None # The enumeration data only
     errors = []   
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
@@ -61,7 +61,7 @@ class Enumerated:
         if use_ids:
             enum_base_type = Base_Type.INTEGER.value
             
-        enum_jtype = Jadn_Type(self.j_type.type_name, enum_base_type, self.j_type.config)
+        enum_jtype = Jadn_Type(self.j_type.type_name, enum_base_type)
         clz_instance = create_clz_instance(enum_base_type, self.j_schema, enum_jtype, self.data)
         clz_instance.validate()
 
