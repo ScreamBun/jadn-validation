@@ -2,7 +2,6 @@ import sys
 import importlib
 
 from typing import Callable, Union
-#from pydantic import BaseModel, create_model
 from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
 from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
 from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
@@ -87,7 +86,10 @@ def format_class_name(class_name: str) -> str:
 def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     
     modules = {
-        "DateTime" : "jadnvalidation.data_validation.formats.date_time"
+        "DateTime" : "jadnvalidation.data_validation.formats.date_time",
+        "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
+        "Ipv6" : "jadnvalidation.data_validation.formats.ipv6",
+        "Eui" : "jadnvalidation.data_validation.formats.eui"
     }
     
     formatted_class_name = format_class_name(class_name)

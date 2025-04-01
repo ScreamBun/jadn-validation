@@ -90,6 +90,18 @@ class Record:
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
             clz_instance.validate()
+            
+        # Check for unknown data
+        for data_key in self.data.keys():
+            is_found = False
+            for j_field in self.j_type.fields:
+                if data_key == j_field[1]:
+                    is_found = True
+                    break
+            
+            if is_found == False:
+                self.errors.append(f"Unknown data {data_key}.")
+                
         
     def validate(self):
 
