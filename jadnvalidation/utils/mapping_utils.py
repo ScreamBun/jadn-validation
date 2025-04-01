@@ -227,7 +227,7 @@ def is_optional(j_type: Jadn_Type) -> bool:
     min_occurs = get_min_occurs(j_type)
     min_length = get_min_length(j_type)
     
-    if min_length == 0 and min_occurs == 0:
+    if min_length == 0 or min_occurs == 0:
         is_optional = True
     
     return is_optional
