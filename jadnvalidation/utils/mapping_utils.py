@@ -98,8 +98,8 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
             
 def get_min_length(j_type: Jadn_Type) -> int:
     min_val = get_opt_int("{", j_type)
-    if min_val == None:
-        min_val = 0    
+    # if min_val == None:
+    #     min_val = 0    
     return min_val
 
 def get_min_occurs(j_type: Jadn_Type) -> int:

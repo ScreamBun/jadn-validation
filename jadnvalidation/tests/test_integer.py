@@ -65,7 +65,7 @@ def test_type_int_max():
       ]
     }
       
-    valid_data_list = [-1, 2]      
+    valid_data_list = [1, 2]      
     invalid_data_list = [3, 5] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
