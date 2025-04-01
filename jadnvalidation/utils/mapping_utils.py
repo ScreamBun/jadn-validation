@@ -1,48 +1,12 @@
 import sys
 from typing import List
 from math import pow
-from pydantic import StrictBool, StrictBytes, StrictFloat, StrictInt, StrictStr
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
 from jadnvalidation.utils import general_utils
 from jadnvalidation.utils.consts import Choice_Consts
 
-
-def convert_to_pyd_type(type_str: str) -> type:
-    
-    # Converts a jadn type to its corresponding Pydantic type.
-    
-    type_mapping = {
-        Base_Type.STRING.value: StrictStr,
-        # Base_Type.BINARY.value: Annotated [bytes, BeforeValidator(validate_bytes), Field(strict=True, ge=None, le=None)],
-        Base_Type.BINARY.value: StrictBytes,
-        Base_Type.BOOLEAN.value: StrictBool,
-        # Base_Type.INTEGER.value: Annotated [int, Field(strict=True, ge=None, le=None)],
-        Base_Type.INTEGER.value: StrictInt,
-        # Base_Type.NUMBER.value: Annotated [float, Field(strict= True, ge=None, le=None)],
-        Base_Type.NUMBER.value: StrictFloat,
-        Base_Type.ARRAY.value: list,
-        Base_Type.RECORD.value: dict
-        # Add more mappings as needed
-    }
-    return type_mapping.get(type_str, str)  # Default to string if type is unknown
-
-
-def convert_to_python_type(type_str: str) -> type:
-    """
-    Converts a jadn type to its corresponding Python type.
-    """
-    type_mapping = {
-        Base_Type.STRING.value: str,
-        Base_Type.BINARY.value: bytes,
-        Base_Type.BOOLEAN.value: bool,
-        Base_Type.INTEGER.value: int,
-        Base_Type.NUMBER.value: float,
-        Base_Type.ARRAY.value: list,
-        Base_Type.RECORD.value: dict
-    }
-    return type_mapping.get(type_str, str)
 
 def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     """
