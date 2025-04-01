@@ -27,6 +27,7 @@ class Enumerated:
         self.data = data
         
         self.j_config = get_j_config(self.j_schema) 
+        self.errors = []
         
     def check_type(self):
         use_ids = use_field_ids(self.j_type.type_options)
