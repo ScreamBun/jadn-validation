@@ -199,6 +199,10 @@ def is_optional(j_type: Jadn_Type) -> bool:
 def get_format(j_type: Jadn_Type):
     return get_opt_str("/", j_type)
 
+def get_pattern(j_type: Jadn_Type):
+    return get_opt_str("%", j_type)
+
+
 '''
 def get_format_min(format: str):
     format_min = None

@@ -1,3 +1,4 @@
+import re
 import sys
 import importlib
 
@@ -17,6 +18,12 @@ def addKey(d: dict, k: str = None) -> Callable:
 
 def all_unique(lst):
   return len(lst) == len(set(lst))
+
+def create_regex(pattern_string):
+  try:
+    return re.compile(pattern_string)
+  except re.error as e:
+    raise ValueError(f"Invalid regex pattern: {e}")
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):
@@ -65,7 +72,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Time" : "jadnvalidation.data_validation.formats.time",
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv6" : "jadnvalidation.data_validation.formats.ipv6",
-        "Eui" : "jadnvalidation.data_validation.formats.eui"
+        "Eui" : "jadnvalidation.data_validation.formats.eui",
+        "Pattern" : "jadnvalidation.data_validation.formats.pattern"
     }
     
     formatted_class_name = format_class_name(class_name)
@@ -236,6 +244,16 @@ def safe_get(lst, index, default=None):
         return lst[index]
     except IndexError:
         return default
+    
+def search_string(regex_pattern, text):
+  """Searches a string for the regex pattern and returns the result."""
+  if regex_pattern:
+    match = regex_pattern.search(text)
+    if match:
+      return match.group()
+    else:
+      return None
+  return None    
 
 def split_on_first_char(string):
     """Splits a string on the first character."""
