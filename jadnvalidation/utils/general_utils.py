@@ -3,9 +3,9 @@ import sys
 import importlib
 
 from typing import Callable, Union
-from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
-from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
-from jadnvalidation.models.pyd.pyd_field_mapper import Pyd_Field_Mapper
+#from jadnvalidation.utils.consts import ALLOWED_TYPE_OPTIONS
+#from jadnvalidation.models.jadn.jadn_config import GLOBAL_CONFIG_KEY, ROOT_GLOBAL_CONFIG_KEY, TYPE_OPTS_KEY
+
 
 def addKey(d: dict, k: str = None) -> Callable:
     """

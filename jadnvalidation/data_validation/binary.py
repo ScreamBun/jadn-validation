@@ -3,8 +3,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 import base64
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_opts
-from jadnvalidation.utils.general_utils import split_on_first_char
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
 
 rules = {
     "type": "check_type",
@@ -36,16 +35,18 @@ class Binary:
         self.errors = []
         
     def check_type(self):
-        if isinstance(self.data, bytes):
+        if isinstance(self.data, bytes) | isinstance(self.data, Binary):
             try:
                 self.data_bytes = self.data
-                self.data_string = self.data_bytes.decode('utf-8') # decoding a string for regex and length checks 
+                self.data_str = self.data_bytes.decode('utf-8') # decoding a string for regex and length checks 
+                print("bytes-like data: "+self.data_str)
             except ValueError as e:
                 self.errors.append(f"Error encoding Binary data: "+e)
         elif isinstance(self.data, str):
             try:
                 self.data_str = self.data #hi
-                self.data_bytes = self.data_str.encode('utf8') # encoding data into bytes from string
+                self.data_bin = self.data_str.encode('utf8') # encoding data into bytes from string
+                print("String-like data: "+self.data_bin)
             except ValueError as e:
                 self.errors.append(f"Error getting binary data from String: "+e)
         else:
