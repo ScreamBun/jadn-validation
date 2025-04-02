@@ -1,6 +1,6 @@
 import re
 
-class EUI:
+class Eui:
     
     data_str: str = None
     data_bin: bytes = None

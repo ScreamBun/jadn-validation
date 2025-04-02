@@ -1,6 +1,6 @@
 import re
 
-class ipv6:
+class Ipv6:
     
     data_str: str = None
     data_bin: bytes = None

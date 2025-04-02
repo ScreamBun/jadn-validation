@@ -1,6 +1,6 @@
 import re
 
-class ipv4:
+class Ipv4:
     
     data_str: str = None
     data_bin: bytes = None

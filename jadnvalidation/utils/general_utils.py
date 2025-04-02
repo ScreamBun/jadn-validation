@@ -69,7 +69,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Time" : "jadnvalidation.data_validation.formats.time",
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv6" : "jadnvalidation.data_validation.formats.ipv6",
-        "Eui" : "jadnvalidation.data_validation.formats.eui"
+        "Eui" : "jadnvalidation.data_validation.formats.eui",
+        "Regex" : "jadnvalidation.data_validation.formats.regex"
     }
     
     formatted_class_name = format_class_name(class_name)
