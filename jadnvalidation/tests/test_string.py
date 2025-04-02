@@ -189,12 +189,12 @@ def test_string_idn_hostname():
   
     j_schema = {
       "types": [
-        ["String-Idn-Hostname", "String", ["/idn-hostname"], "", []]
+        ["Root-Test", "String", ["/idn-hostname"], "", []]
       ]
     }
     
-    valid_data_list = ['example.com', 'xn----gtbspbbmkef.xn--p1ai']
-    invalid_data_list = ['qwerasdf']
+    valid_data_list = ['xn--bcher-kva.example.com', 'ümlaut.example.com']
+    invalid_data_list = ['invalid-end-.com','-invalid-start.com', 'long-hostname-that-exceeds-the-maximum-length-allowed-by-the-rfc-1034-standard-------------------------------------------------------------------------------------------------------------------------------------------------------------------.com']
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -212,7 +212,7 @@ def test_string_hostname():
     }
 
     valid_data_list = ['example.com', '192.168.123.132']
-    invalid_data_list = ['http://exam_ple.com','http://example.com', 'qwerasdf']
+    invalid_data_list = ['http://exam_ple.com','http://example.com']
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

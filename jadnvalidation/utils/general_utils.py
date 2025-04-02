@@ -73,7 +73,9 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv6" : "jadnvalidation.data_validation.formats.ipv6",
         "Email" : "jadnvalidation.data_validation.formats.email",
+        "Hostname" : "jadnvalidation.data_validation.formats.hostname",
         "IdnEmail" : "jadnvalidation.data_validation.formats.idn_email",
+        "IdnHostname" : "jadnvalidation.data_validation.formats.idn_hostname",
         "Eui" : "jadnvalidation.data_validation.formats.eui",
         "Pattern" : "jadnvalidation.data_validation.formats.pattern",
         "Regex" : "jadnvalidation.data_validation.formats.regex"

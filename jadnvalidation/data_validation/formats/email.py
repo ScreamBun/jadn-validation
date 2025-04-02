@@ -1,4 +1,5 @@
-from email_validator import validate_email, EmailNotValidError
+# from email_validator import validate_email, EmailNotValidError
+import validators
 
 
 class Email:
@@ -9,7 +10,6 @@ class Email:
         self.data = data
     
     def validate(self):
-        try:
-            validate_email(self.data, check_deliverability=False)
-        except EmailNotValidError as e:
-            raise ValueError((str(e)))
+        is_valid = validators.email(self.data)
+        if not is_valid:
+            raise ValueError(f"'{self.data}' is not a valid email.")
