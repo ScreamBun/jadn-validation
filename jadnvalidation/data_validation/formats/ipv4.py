@@ -1,13 +1,15 @@
 import re
 
 class Ipv4:
-    
+    data: bytes = None
     data_str: str = None
-    data_bin: bytes = None
     errors = []    
     
     def __init__(self, data: any = None):
-        self.data_str = data
+        if isinstance(self.data, str):
+            self.data_str = data
+        else:   
+            self.data_str = self.data.decode('utf-8')
     
     def validate(self):
         """

@@ -2,12 +2,15 @@ import re
 
 class Eui:
     
-    data_str: str = None
-    data_bin: bytes = None
+    data_str: str = ""
+    data: bytes = None
     errors = []    
     
     def __init__(self, data: any = None):
-        self.data_str = data
+        if isinstance(self.data, str):
+            self.data_str = data
+        else:   
+            self.data_str = self.data.decode('utf-8')
     
     def validate(self):
         """
@@ -19,5 +22,5 @@ class Eui:
                 pass
             else:
                 self.errors.append(f"Data does not match eui: {self.data_str}")
-        except ValueError:
-            raise ValueError(f"Invalid eui format: {self.data_str}")
+        except Exception as err:
+            raise ValueError(err)
