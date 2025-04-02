@@ -1,17 +1,14 @@
-import re
+from jadnvalidation.utils.general_utils import create_regex
 
 class Regex:
-    data = None
-    errors = []    
+    reg_pattern = None
     
-    def __init__(self, data: any = None):
-        self.data = data
+    def __init__(self, reg_pattern: any = None):
+        self.reg_pattern = reg_pattern
     
     def validate(self):
-            try: 
-                match = re.match(self.data, "", flags=0) 
-                '''attempts to match with given regex string. if match or not, it can build; if error in attempt, not regex.'''
-
+            try:  
+                create_regex(self.reg_pattern)
             except ValueError:
-                self.errors.append('Invalid ECMAScript Regex: '+self.data)
+                raise ValueError(f"Invalid ECMAScript Regex: {self.reg_pattern}")
             
