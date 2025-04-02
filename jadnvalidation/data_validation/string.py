@@ -1,14 +1,16 @@
+from jadnvalidation.data_validation.formats.pattern import Pattern
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance
-from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_pattern
 
 
 rules = {
     "type": "check_type",
     "/": "check_format",
     "{": "check_min_length",
-    "}": "check_max_length"
+    "}": "check_max_length",
+    "%": "check_pattern"
 }
 
 class String:
@@ -36,6 +38,12 @@ class String:
         if format is not None:
             fmt_clz_instance = create_fmt_clz_instance(format, self.data)
             fmt_clz_instance.validate()
+            
+    def check_pattern(self):
+        pattern = get_pattern(self.j_type)
+        if pattern is not None and self.data:
+            pattern_instance = Pattern(self.data, pattern)
+            pattern_instance.validate()        
         
     def check_type(self):
         if not isinstance(self.data, str):
