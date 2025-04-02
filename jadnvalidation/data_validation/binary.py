@@ -3,8 +3,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 import base64
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_opts
-from jadnvalidation.utils.general_utils import split_on_first_char
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
 
 rules = {
     "type": "check_type",
