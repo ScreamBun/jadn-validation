@@ -28,44 +28,32 @@ class Binary:
         
         self.j_type = j_type
         self.data = data  
-        self.data_bin = None
-        self.data_str = None
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
         
     def check_type(self):
-        if isinstance(self.data, bytes) | isinstance(self.data, Binary):
-            try:
-                self.data_bytes = self.data
-                self.data_str = self.data_bytes.decode('utf-8') # decoding a string for regex and length checks 
-                print("bytes-like data: "+self.data_str)
-            except ValueError as e:
-                self.errors.append(f"Error encoding Binary data: "+e)
-        elif isinstance(self.data, str):
-            try:
-                self.data_str = self.data #hi
-                self.data_bin = self.data_str.encode('utf8') # encoding data into bytes from string
-                print("String-like data: "+self.data_bin)
-            except ValueError as e:
-                self.errors.append(f"Error getting binary data from String: "+e)
-        else:
-            self.errors.append(f"Data must be binary. Received: {type(self.data)}")
+        if isinstance(self.data, str):
+            string_variable = self.data
+            self.data = string_variable.encode('utf-8')
+        
+        if not isinstance(self.data, bytes):
+            raise ValueError(f"Binary data is not of type binary or string.  Received {type(self.data)}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
-        if min_length is not None and len(self.data_str) < min_length:
-            self.errors.append(f"Binary length must be greater than or equal to {min_length}. Received: {len(self.data_str)}")
+        if min_length is not None and len(self.data) < min_length:
+            self.errors.append(f"Binary length must be greater than or equal to {min_length}. Received: {len(self.data)}")
         
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
         if len(self.data) > max_length:
-            self.errors.append(f"Binary length must be less than or equal to {max_length}. Received: {len(self.data_str)}")
+            self.errors.append(f"Binary length must be less than or equal to {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
         format = get_format(self.j_type)
         if format is not None:
-            fmt_clz_instance = create_fmt_clz_instance(format, self.data_str)
+            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
             fmt_clz_instance.validate()
         
     def validate(self):
