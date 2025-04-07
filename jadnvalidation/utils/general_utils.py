@@ -75,7 +75,14 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Email" : "jadnvalidation.data_validation.formats.email",
         "Eui" : "jadnvalidation.data_validation.formats.eui",
         "Pattern" : "jadnvalidation.data_validation.formats.pattern",
-        "Regex" : "jadnvalidation.data_validation.formats.regex"
+        "Regex" : "jadnvalidation.data_validation.formats.regex",
+        "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
+        "JsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
+        "Iri" : "jadnvalidation.data_validation.formats.iri",
+        "IriRef" : "jadnvalidation.data_validation.formats.iri_ref",
+        "Uri" : "jadnvalidation.data_validation.formats.uri",
+        "UriRef" : "jadnvalidation.data_validation.formats.uri_ref",
+        "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template"
     }
     
     formatted_class_name = format_class_name(class_name)
