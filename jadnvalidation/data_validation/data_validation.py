@@ -2,7 +2,7 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
-from jadnvalidation.utils.general_utils import create_clz_instance, get_schema_type_by_name
+from jadnvalidation.utils.general_utils import create_clz_instance, get_err_msgs, get_schema_type_by_name
 
 
 class DataValidation:
@@ -44,5 +44,6 @@ class DataValidation:
                 clz_instance = create_clz_instance(root_type_obj.base_type, self.j_schema, root_type, self.data)
                 clz_instance.validate()            
             
-        except Exception as err:           
-            raise ValueError(err)
+        except Exception as err:
+            errs = get_err_msgs(err)       
+            raise ValueError(errs)

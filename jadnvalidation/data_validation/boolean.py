@@ -28,6 +28,12 @@ class Boolean:
         self.errors = []         
         
     def check_type(self):
+        if isinstance(self.j_type, str):
+            if (self.j_type.lower() in ['true', '1', 'y', 'yes']):
+                self.data = True
+            if (self.j_type.lower() in ['false', '0', 'n', 'no']):
+                self.data = False
+        
         if not isinstance(self.data, bool):
             self.errors.append(f"Data must be a boolean. Received: {type(self.data)}")
     

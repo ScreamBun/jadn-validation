@@ -111,6 +111,48 @@ def get_data_by_id(data: dict, id: int):
 def get_data_by_name(data: dict, name: str):
     return data.get(name)
 
+def get_err_msgs(err: ValueError, err_list: list = []):
+    
+    if isinstance(err, ValueError):
+        
+        if isinstance(err.args, ValueError):
+            get_err_msgs(err.args[0], err_list)
+            
+        elif isinstance(err.args, tuple):
+            for arg in err.args:
+                if isinstance(arg, ValueError):
+                    get_err_msgs(arg, err_list)
+                else:
+                    err_list.append(str(arg))
+                    
+        elif isinstance(err.args, list):
+            for arg in err.args:
+                if isinstance(arg, ValueError):
+                    get_err_msgs(arg, err_list)
+                else:
+                    err_list.append(str(arg))
+                    
+        elif isinstance(err.args, dict):
+            for key, value in err.args.items():
+                if isinstance(value, ValueError):
+                    get_err_msgs(value, err_list)
+                else:
+                    err_list.append(f"{key}: {value}")
+                    
+        elif isinstance(err.args, str):
+            err_list.append(err.args)
+         
+        else:
+            err_list.append(str(err))    
+        
+    elif hasattr(err, 'args') and len(err.args) > 0:
+        err_list.append(err.args[0])
+        
+    else:
+        err_list.append(err)
+       
+    return "\n".join(err_list)
+
 def get_item_safe_check(my_list, index):
     if 0 <= index < len(my_list):
         return my_list[index]
