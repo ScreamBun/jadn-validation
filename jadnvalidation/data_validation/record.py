@@ -2,15 +2,19 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
+from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, get_reference_type
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 
-rules = {
+common_rules = {
     "type": "check_type",
     "{": "check_min_length",
     "}": "check_max_length",
     "fields": "check_fields"
 }
+
+json_rules = {}
+xml_rules = {}
 
 class Record:
     
@@ -18,9 +22,10 @@ class Record:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The record data only
+    data_format: str = None    
     errors = []
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -28,6 +33,7 @@ class Record:
         
         self.j_type = j_type
         self.data = data
+        self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
@@ -71,7 +77,7 @@ class Record:
             if min_occurs > 1 or max_occurs > 1:
                 j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)                
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data)
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
             clz_instance.validate()
             
         # Check for unknown data
@@ -87,16 +93,21 @@ class Record:
                 
         
     def validate(self):
-
-        # peel out your formats
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
-            raise ValueError(self.errors)
+            raise ValueError(self.errors)  
         
         return True

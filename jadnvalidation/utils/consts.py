@@ -9,3 +9,8 @@ class Choice_Consts:
 TIME_FORMAT = "%H:%M:%S"
 DATE_FORMAT = "%Y-%m-%d"
 HOSTNAME_MAX_LENGTH = 255
+
+# Data Formats
+CBOR = "cbor"
+JSON = "json"
+XML = "xml"

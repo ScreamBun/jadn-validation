@@ -9,10 +9,10 @@ def test_boolean():
         ["Boolean-Test", "Boolean", [], "", []]
       ]
     }
-    # remove and move into a record test {'Boolean-Test': True}
-    valid_data_list = [True, False]
     
-    invalid_data_list = [{'Boolean-Test': True},'True', 'zzz', '__false__']
+    valid_data_list = [True, False, 'true', 'false', '1', '0', 'yes', 'no', 1, 0, '', None]
+    
+    invalid_data_list = [{'Boolean-Test': True}, ['zzz'], ('true','false')]
       
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

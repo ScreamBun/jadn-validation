@@ -1,13 +1,17 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type
+from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnvalidation.utils.mapping_utils import use_field_ids
 
-rules = {
+common_rules = {
     "type": "check_type",
     "value": "check_enumeration",
 }
+
+json_rules = {}
+xml_rules = {}
 
 class Enumerated:
     
@@ -15,9 +19,10 @@ class Enumerated:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The enumeration data only
+    data_format: str = None    
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -25,6 +30,7 @@ class Enumerated:
         
         self.j_type = j_type
         self.data = data
+        self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema) 
         self.errors = []
@@ -69,10 +75,17 @@ class Enumerated:
     def validate(self):
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
             raise ValueError(self.errors)  

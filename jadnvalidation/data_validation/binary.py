@@ -1,16 +1,20 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 import base64
+from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
 
-rules = {
+common_rules = {
     "type": "check_type",
     "/": "check_format",
     "{": "check_min_length",
     "}": "check_max_length"
 }
+
+json_rules = {}
+xml_rules = {}
 
 class Binary:
     
@@ -18,16 +22,18 @@ class Binary:
     j_config: Jadn_Config = None    
     j_type: Union[list, Jadn_Type] = None
     data: any = None # Binary data only
+    data_format: str = None  
     errors = []
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = [], data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data  
+        self.data = data
+        self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
@@ -59,12 +65,19 @@ class Binary:
     def validate(self):
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
-            raise ValueError(self.errors)
+            raise ValueError(self.errors)  
         
         return True

@@ -1,4 +1,5 @@
 from jadnvalidation.tests.test_utils import validate_valid_data, validate_invalid_data
+from jadnvalidation.utils.consts import XML
 
 def test_forward_ref():
     root = "Root-Test"
@@ -177,6 +178,61 @@ def test_record():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_xml_record():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", ["{2", "}2"], "", [
+                [1, "field_value_1a", "String", [], ""],
+                [2, "field_value_2a", "String", [], ""]
+            ]]          
+        ]
+    }  
+    
+    valid_xml_1 = """<Root-Test>
+        <field_value_1a>test field</field_value_1a>
+        <field_value_2a>Darth Andeddu</field_value_2a>
+    </Root-Test>"""
+    valid_xml_2 = """<Root-Test>
+        <field_value_1a>testing more</field_value_1a>
+        <field_value_2a>Darth Atrius</field_value_2a>
+    </Root-Test>"""
+    valid_xml_3 = """<Root-Test>
+        <field_value_1a>testing more 123</field_value_1a>
+        <field_value_2a>Darth Bane</field_value_2a>
+    </Root-Test>"""
+    
+    
+    invalid_xml_1 = """<Root-Test>
+        <field_value_1b>test field</field_value_1b>
+        <field_value_2b>Darth Andeddu</field_value_2b>
+    </Root-Test>"""
+    invalid_xml_2 = """<Root-Test>
+        <field_value_1a>testing more</field_value_1a>
+    </Root-Test>"""
+    invalid_xml_3 = """<Root-Test>
+        <field_value_2a>Darth Bane</field_value_2a>
+    </Root-Test>"""    
+    
+    valid_data_list = [
+        valid_xml_1,
+        valid_xml_2,
+        valid_xml_3       
+    ]
+    
+    invalid_data_list = [
+        invalid_xml_1,
+        invalid_xml_2,
+        invalid_xml_3        
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)    
     
 def test_record_in_record():
     root = "Root-Test"

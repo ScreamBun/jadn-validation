@@ -1,29 +1,36 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
+from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.mapping_utils import get_max_exclusive, get_max_inclusive, get_min_exclusive, get_min_inclusive
 
 
-rules = {
-    "type": "check_type",
+common_rules = {
     "/": "check_format",
-    # "{": "check_min_length",
-    # "}": "check_max_length",
     "w": "check_min_inclusive",
     "x": "check_max_inclusive",
     "y": "check_min_exclusive",
     "z": "check_max_exclusive",
 }
 
+json_rules = {
+    "type": "json_check_type"
+}
+
+xml_rules = {
+    "type": "xml_check_type"
+}
+
 class Number:
     
     j_schema: dict = {}
     j_config: Jadn_Config = None    
-    j_type: Union[list, Jadn_Type] = None    
+    j_type: Union[list, Jadn_Type] = None
     data: float = None # The number data only
+    data_format: str = None
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = [], data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -31,6 +38,7 @@ class Number:
         
         self.j_type = j_type
         self.data = data
+        self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema) 
         self.errors = []   
@@ -39,19 +47,21 @@ class Number:
         # TODO: formats...
         tbd = ""          
         
-    def check_type(self):
+    def json_check_type(self):
+        if self.data:   
+            if not isinstance(self.data, float):
+                self.errors.append(f"Data must be a float. Received: {type(self.data)}")        
+        
+    def xml_check_type(self):
+        if self.data:
+            if isinstance(self.data, str):
+                try:
+                    self.data = float(self.data)
+                except ValueError as e:
+                    raise ValueError(f"Unable to serialize data into an type float. Received: {type(self.data)}")
+                        
         if not isinstance(self.data, float):
             self.errors.append(f"Data must be a float. Received: {type(self.data)}")
-                        
-    # def check_min_length(self):
-    #     min_length = get_min_length(self.j_type)
-    #     if min_length is not None and self.data < min_length:
-    #         self.errors.append(f"String length must be greater than or equal to {min_length}. Received: {len(self.data)}")
-        
-    # def check_max_length(self): 
-    #     max_length = get_max_length(self.j_type, self.j_config)
-    #     if max_length is not None and self.data > max_length:
-    #         self.errors.append(f"String length must be less than or equal to {max_length}. Received: {len(self.data)}")
             
     # Instance is greater than or equal to option value        
     def check_min_inclusive(self): 
@@ -80,10 +90,17 @@ class Number:
     def validate(self):
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
             raise ValueError(self.errors)  
