@@ -6,12 +6,16 @@ from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnvalidation.utils.mapping_utils import use_field_ids
 
 common_rules = {
-    "type": "check_type",
     "value": "check_enumeration",
 }
 
-json_rules = {}
-xml_rules = {}
+json_rules = {
+    "type": "json_check_type"
+}
+
+xml_rules = {
+    "type": "xml_check_type"
+}
 
 class Enumerated:
     
@@ -35,14 +39,31 @@ class Enumerated:
         self.j_config = get_j_config(self.j_schema) 
         self.errors = []
         
-    def check_type(self):
-        use_ids = use_field_ids(self.j_type.type_options)
-        if use_ids:
-            if not isinstance(self.data, int):
-                raise ValueError(f"Data must be an integer. Received: {type(self.data)}")
-        else:
-            if not isinstance(self.data, str):
-                raise ValueError(f"Data must be a string. Received: {type(self.data)}")
+    def json_check_type(self):
+        if self.data:
+            use_ids = use_field_ids(self.j_type.type_options)
+            if use_ids:
+                if not isinstance(self.data, int):
+                    raise ValueError(f"Data must be an integer. Received: {type(self.data)}")
+            else:
+                if not isinstance(self.data, str):
+                    raise ValueError(f"Data must be a string. Received: {type(self.data)}")
+            
+    def xml_check_type(self):
+        if self.data:
+            use_ids = use_field_ids(self.j_type.type_options)
+            if use_ids:
+                if isinstance(self.data, str):
+                    try:
+                        self.data = int(self.data)
+                    except ValueError as e:
+                        raise ValueError(f"Unable to serialize data into an type integer. Received: {type(self.data)}")
+                
+                if not isinstance(self.data, int):
+                    raise ValueError(f"Data must be of type integer. Received: {type(self.data)}")
+            else:
+                if not isinstance(self.data, str):
+                    raise ValueError(f"Data must be a string. Received: {type(self.data)}")            
             
     def check_enumeration(self):
         use_ids = use_field_ids(self.j_type.type_options)
