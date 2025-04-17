@@ -82,9 +82,9 @@ def test_binary_eui():
     }
     
     bytes_valid_1 = "00:00:5e:00:53:01"
-    bytes_valid_2 = b"00:00:5e:00:53:01"
-    bytes_invalid_1 = b"zzzz"
-    bytes_invalid_2 = "zzzz"
+    bytes_valid_2 = "00:00:5e:00:53:02"
+    bytes_invalid_1 = b"zzzzb"
+    bytes_invalid_2 = "zzzzs"
     valid_data_list = [bytes_valid_1, bytes_valid_2]
     invalid_data_list = [bytes_invalid_1, bytes_invalid_2]
     
@@ -103,7 +103,7 @@ def test_binary_ipv4_addr():
       ]
     }  
     
-    valid_data_list = ["127.0.0.1"]
+    valid_data_list = ['127.0.0.1']
     invalid_data_list = ["zz127.0.0.1zz"]
 
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

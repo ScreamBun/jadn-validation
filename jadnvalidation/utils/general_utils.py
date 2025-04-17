@@ -61,6 +61,8 @@ def format_class_name(class_name: str) -> str:
    
     # Title each word and concatenate them into one word
     formatted_class_name = ''.join(word.title() for word in words)
+    if formatted_class_name == 'JsonPointer':
+        formatted_class_name = 'JadnJsonPointer'
     
     return formatted_class_name
 
@@ -71,13 +73,15 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "DateTime" : "jadnvalidation.data_validation.formats.date_time",
         "Time" : "jadnvalidation.data_validation.formats.time",
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
+        "Ipv4Addr" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv6" : "jadnvalidation.data_validation.formats.ipv6",
+        "Ipv6Addr" : "jadnvalidation.data_validation.formats.ipv6",
         "Email" : "jadnvalidation.data_validation.formats.email",
         "Eui" : "jadnvalidation.data_validation.formats.eui",
         "Pattern" : "jadnvalidation.data_validation.formats.pattern",
         "Regex" : "jadnvalidation.data_validation.formats.regex",
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
-        "JsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
+        "JadnJsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
         "Iri" : "jadnvalidation.data_validation.formats.iri",
         "IriRef" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",

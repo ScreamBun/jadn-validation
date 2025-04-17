@@ -1,5 +1,5 @@
 from rfc3987 import parse
-import regex
+from regex import *
 
 class UriRef:
     
@@ -14,6 +14,6 @@ class UriRef:
         """
         try:
             # Parse the string using RFC 3387
-            parse(self.data, rule='URI')
+            uri_ref = parse(self.data, rule='URI_reference')
         except ValueError:
             raise ValueError(f"Invalid URI Reference: {self.data}")

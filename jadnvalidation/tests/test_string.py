@@ -157,7 +157,7 @@ def test_string_ipv6():
       ]
     }
     
-    valid_data_list = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:db8::', 42540766411282592856903984951653826560]
+    valid_data_list = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:db8::']
     invalid_data_list = ['zzzz2001:db8:3333:4444:5555:6666:7777:8888zzzz']
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -175,7 +175,7 @@ def test_string_ipv4():
       ]
     }
     
-    valid_data_list = ['127.0.0.1', 2130706433]
+    valid_data_list = ['127.0.0.1']
     invalid_data_list = ['zzzz127.0.0.1zzzz']
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

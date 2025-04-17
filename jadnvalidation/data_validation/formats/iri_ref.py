@@ -1,4 +1,5 @@
-from rfc3987 import parse
+import re
+from rfc3987 import parse, _iri_rules
 
 class IriRef:
     
@@ -13,6 +14,6 @@ class IriRef:
         """
         try:
             # Parse the string using RFC 3387
-            parse(self.data, rule='IRI_reference')
+            iriRef = parse(self.data, rule='IRI_reference')
         except ValueError:
             raise ValueError(f"Invalid IRI reference: {self.data}")

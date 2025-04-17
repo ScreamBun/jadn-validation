@@ -1,6 +1,5 @@
 import sys
 from typing import List
-from math import pow
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type
