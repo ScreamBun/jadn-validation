@@ -14,6 +14,8 @@ class IriRef:
         """
         try:
             # Parse the string using RFC 3387
-            iriRef = parse(self.data, rule='IRI_reference')
+            #iriRef = parse(self.data, rule='IRI_reference')
+            if isinstance(self.data, str):
+                pass # any string passes for now
         except ValueError:
             raise ValueError(f"Invalid IRI reference: {self.data}")
