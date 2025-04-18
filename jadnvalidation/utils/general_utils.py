@@ -86,7 +86,7 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
         "JadnJsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
         "Iri" : "jadnvalidation.data_validation.formats.iri",
-        "IriRef" : "jadnvalidation.data_validation.formats.iri_ref",
+        "IriReference" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",
         "UriRef" : "jadnvalidation.data_validation.formats.uri_ref",
         "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template"
