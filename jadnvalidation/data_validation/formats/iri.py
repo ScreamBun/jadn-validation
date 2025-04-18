@@ -12,7 +12,6 @@ class Iri:
         Validates if a string conforms to the RFC 3387 IRI format.
         """
         try:
-            # Parse the string using RFC 3387
             parse(self.data, rule='IRI')
         except ValueError:
             raise ValueError(f"Invalid IRI: {self.data}")

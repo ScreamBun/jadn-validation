@@ -9,11 +9,16 @@ class RelativeJsonPointer:
     
     def validate(self):
         """
-        Validates if a string conforms to the RFC 3387 IRI format.
+        RFC 6901 and RFC 6902
         """
         try:
-            # ptr = JsonPointer(self.data).path
-            if isinstance(self.data, str):
-                pass # any string passes for now
+
+            if not isinstance(self.data, str):
+                raise ValueError(f"Invalid JSON pointer, invalid type.  Received {type(self.data)}")
+            
+            pattern = r"^(0|[1-9][0-9]*)(/[^/]*)?$"
+            if not re.fullmatch(pattern, self.data):
+                raise ValueError(f"Invalid JSON pointer: {self.data}")
+
         except ValueError:
             raise ValueError(f"Invalid JSON pointer: {self.data}")

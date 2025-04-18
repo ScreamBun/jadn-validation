@@ -1,5 +1,4 @@
-import re
-from rfc3987 import *
+from rfc3987 import parse, _iri_rules
 
 class IriReference:
     
@@ -13,9 +12,6 @@ class IriReference:
         Validates if a string conforms to the RFC 3387 IRI format.
         """
         try:
-            # Parse the string using RFC 3387
-            assert match(self.data, rule='IRI_reference')
-            #if isinstance(self.data, str):
-                #pass # any string passes for now
+            parse(self.data, rule='IRI_reference')
         except ValueError:
             raise ValueError(f"Invalid IRI reference: {self.data}")
