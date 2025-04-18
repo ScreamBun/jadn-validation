@@ -71,8 +71,8 @@ def test_string_iri_ref():
     valid_data_list = ['http://fdasdf.fdsfîășîs.fss/ăîăî', 'mailto:info@example.com', 'file://localhost/absolute/path/to/file', 'https://www.example.珠宝/']
     invalid_data_list = [':///items.starfox']
     
-    # err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    # assert err_count == 0
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
