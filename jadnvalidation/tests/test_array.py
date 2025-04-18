@@ -1,34 +1,5 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
-
-def test_forward_ref():
-    root = "Root-Test"
-    
-    j_schema =   {  
-        "types": [
-            ["Root-Test", "Array", [], "", [
-                [1, "field_value_1a", "ArrayName2", [], ""]
-            ]],
-            ["ArrayName2", "Array", [], "", [
-                [1, "field_value_2a", "String", [], ""]
-            ]]
-        ]
-    }
-    
-    valid_data_list = [
-            [['Anytown', 'Any String']],
-            [['123', '']]
-        ]
-    
-    invalid_data_list = [
-            [[123, 'Any String']],
-            [True, False]
-        ]
-    
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    assert err_count == 0
-        
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == len(invalid_data_list)
+from jadnvalidation.utils.consts import XML
     
 
 def test_array():
@@ -59,6 +30,46 @@ def test_array():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+    
+def test_xml_array():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Boolean", [], ""],
+                [3, "field_value_3", "Integer", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <items>
+        <item>test</item>
+        <item>True</item>
+        <item>123</item>
+    </items>"""
+    
+    invalid_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <root>
+        <item>test</item>
+    </root>
+    """      
+    
+    valid_data_list = [
+            valid_xml
+        ]
+    
+    invalid_data_list = [
+            invalid_xml
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list, data_format=XML)
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, data_format=XML)
+    assert err_count == len(invalid_data_list)    
 
 
 def test_array_optional_first():
@@ -204,3 +215,33 @@ def test_array_min_max_occurs():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)   
+    
+def test_forward_ref():
+    root = "Root-Test"
+    
+    j_schema =   {  
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1a", "ArrayName2", [], ""]
+            ]],
+            ["ArrayName2", "Array", [], "", [
+                [1, "field_value_2a", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            [['Anytown', 'Any String']],
+            [['123', '']]
+        ]
+    
+    invalid_data_list = [
+            [[123, 'Any String']],
+            [True, False]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)    

@@ -1,4 +1,5 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
+from jadnvalidation.utils.consts import XML
     
 
 def test_array_of_ints():
@@ -29,6 +30,54 @@ def test_array_of_ints():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+    
+def test_xml_array_of():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Integer", "{1", "}3"], ""]
+        ]
+    }
+    
+    valid_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <items>
+        <item>123</item>
+        <item>123</item>
+        <item>123</item>
+    </items>"""
+    
+    invalid_xml_1 = """<?xml version="1.0" encoding="UTF-8"?>
+    <root>
+        <item>test</item>
+    </root>
+    """
+    
+    invalid_xml_2 = """<?xml version="1.0" encoding="UTF-8"?>
+    <items>
+        <item>False</item>
+        <item>"123"</item>
+        <item>"123"</item>
+    </items>""" 
+    
+    valid_data_list = [
+            valid_xml
+        ]
+    
+    invalid_data_list = [
+            invalid_xml_1,
+            invalid_xml_2
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)    
+    assert err_count == len(invalid_data_list)    
     
 def test_array_of_strs():
     root = "Root-Test"    

@@ -1,8 +1,7 @@
-# from email_validator import validate_email, EmailNotValidError
 import validators
 
 
-class Email:
+class IdnEmail:
     
     data: str = None
     
