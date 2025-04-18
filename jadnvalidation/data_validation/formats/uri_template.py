@@ -1,6 +1,6 @@
 import uri_template
 
-class JadnUriTemplate:
+class UriTemplate:
     
     data: str = None
     
