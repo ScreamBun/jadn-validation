@@ -3,12 +3,15 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
-from jadnvalidation.utils.consts import Choice_Consts
+from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 
-rules = {
+common_rules = {
     "type": "check_type",
     "choice": "check_choice",
 }
+
+json_rules = {}
+xml_rules = {}
 
 class Choice:
     
@@ -16,9 +19,10 @@ class Choice:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The choice data only
+    data_format: str = None    
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -26,6 +30,7 @@ class Choice:
         
         self.j_type = j_type
         self.data = data
+        self.data_format = data_format          
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
@@ -58,7 +63,7 @@ class Choice:
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
         
     def process_all_of(self, use_ids):
@@ -86,7 +91,7 @@ class Choice:
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
         
     def process_not(self, use_ids):
@@ -118,7 +123,7 @@ class Choice:
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data)
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
             
             break # Only one choice is allowed.        
@@ -141,10 +146,17 @@ class Choice:
     def validate(self):
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
             raise ValueError(self.errors)  

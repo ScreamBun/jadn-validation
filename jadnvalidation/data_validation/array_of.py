@@ -2,10 +2,11 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type
 from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_vtype, is_optional
 
-rules = {
+common_rules = {
     "type": "check_type",
     "max_elements": "check_max_elements",
     "fields": "check_vtype",
@@ -13,15 +14,19 @@ rules = {
     "}": "check_max_length"
 }
 
+json_rules = {}
+xml_rules = {}
+
 class ArrayOf:
     
     j_schema: dict = {}
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The array of's data only
+    data_format: str = None      
     errors = []
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -29,6 +34,7 @@ class ArrayOf:
         
         self.j_type = j_type
         self.data = data
+        self.data_format = data_format          
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
@@ -61,23 +67,30 @@ class ArrayOf:
         for data_item in self.data:
             if is_primitive(vtype):
                 of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item)
+                clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item, self.data_format)
                 clz_instance.validate()
             else:                
                 ref_type = get_reference_type(self.j_schema, vtype)
                 ref_type_obj = build_j_type(ref_type)
-                clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item)
+                clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item, self.data_format)
                 clz_instance.validate()
         
     def validate(self):
         
         # Check data against rules
+        rules = json_rules
+        if self.data_format == XML:
+            rules = xml_rules
+       
+       # Data format specific rules
         for key, function_name in rules.items():
             getattr(self, function_name)()
-        
-        # Other Checks.....?
+            
+        # Common rules across all data formats
+        for key, function_name in common_rules.items():
+            getattr(self, function_name)()            
             
         if len(self.errors) > 0:
-            raise ValueError(self.errors)
+            raise ValueError(self.errors)  
         
         return True

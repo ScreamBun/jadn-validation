@@ -1,4 +1,5 @@
-email-validator==2.2.0
+./whls/jadnxml-1.10.0-py2.py3-none-any.whl
+
 jsonpointer==3.0.0
 pytest==8.3.3
 netaddr==1.3.0  # latest 1.3.0 breaking changes? sunset old formats, updated
