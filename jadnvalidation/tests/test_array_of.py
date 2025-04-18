@@ -117,25 +117,32 @@ def test_array_of_booleans():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "ArrayOf", ["*Boolean", "{1", "}3"], ""]
+            ["Root-Test", "ArrayOf", ["*Boolean", "{2", "}3"], ""]
         ]
     }
-    
+
+    # Think like a computer... 'truthy' and 'falsy' items will be validated as true or false, 
+    # regardless of how "non-boolean" they may appear
     valid_data_list = [
             [True, False],
-            [False, False, True]
+            [False, False, True],
+            ["False", "False"],
+            [0, 1], 
+            [1, "Hello World"]
         ]
     
     invalid_data_list = [
-            ["True", "False", 1],
-            ["true", True, False],
+            [True],
+            [],
+            [10, 333]
         ]
+
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == 2
+    assert err_count == len(invalid_data_list)
     
 def test_array_of_records():
     root = "Root-Test"    
