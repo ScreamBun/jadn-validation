@@ -69,7 +69,7 @@ def test_string_iri_ref():
     }
     
     valid_data_list = ['mailto:info@example.com', 'file://localhost/absolute/path/to/file', 'https://www.example.珠宝/']
-    invalid_data_list = [':///items.starfox']#former invalid items: ['zzzz', ':///items.starfox'] . trimmed, re-assess later.
+    invalid_data_list = ['zzzz', ':///items.starfox']
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -105,7 +105,7 @@ def test_string_uri_template():
     }
     
     valid_data_list = ['https://www.example.com/api/v1/items/{/item_id}']
-    invalid_data_list = ['zzzz', '/items/{}', 'https://www.example.com/api/v1/items/'] #former invalid items: ['zzzz', '/items/{}', 'https://www.example.com/api/v1/items/'] . trimmed, re-assess later.
+    invalid_data_list = ['zzzz', '/items/{}', 'https://www.example.com/api/v1/items/'] 
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -123,7 +123,7 @@ def test_string_uri_ref():
     }
     
     valid_data_list = ['http://www.example.com/questions/3456/my-document', 'mailto:info@example.com', 'file://localhost/absolute/path/to/file']
-    invalid_data_list = [] #former invalid items: ['zzzz', '//./file_at_current_dir'] . trimmed, re-assess later. 
+    invalid_data_list = ['zzzz', '//./file_at_current_dir'] 
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
