@@ -18,6 +18,7 @@ class Binary:
     j_config: Jadn_Config = None    
     j_type: Union[list, Jadn_Type] = None
     data: any = None # Binary data only
+    string_variable: str = None
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = []):

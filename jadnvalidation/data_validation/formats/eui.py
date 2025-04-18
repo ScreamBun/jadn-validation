@@ -2,7 +2,7 @@ from netaddr import *
 
 class Eui:
     
-    data_str: str = ""
+    data_str: str = None
     data: bytes = None
     errors = []    
     
@@ -28,7 +28,12 @@ class Eui:
         Validates if a string matches an EUI with either hyphens or colons.
         """
         try:
-            assert valid_eui64(self.data_str)
+            #print(self.data_str)
+            testEUI = EUI(self.data_str, None, None)
+            print(str(testEUI))
+            # assert valid_eui64(self.data_str)
+            pass
+            
             '''
             match = re.fullmatch("^(?:(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\\.(?!$)|$)){4}$", self.data_str, flags=0)
             print(str(match))

@@ -58,7 +58,7 @@ class Ipv4Addr:
                 self.data_str = str(self.data)
             except ValueError as e:
                 self.errors.append(f"cannot check value against ipv4 format: {self.data}")
-            #self.errors.append(f"Data does not match ipv6: {self.string_variable}")
+            #self.errors.append(f"Data does not match ipv6: {self.data_str}")
     
     def validate(self):
         """

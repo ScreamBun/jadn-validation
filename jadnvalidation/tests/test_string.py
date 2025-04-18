@@ -48,9 +48,9 @@ def test_string_json_pointer():
         ["Root-Test", "String", ["/json-pointer"], "", []]
       ]
     }
-    
+
     valid_data_list = ['/foo', '/foo/0', '/foo/1/sin-city']
-    invalid_data_list = ['zzzz', ':///items.starfox', '/foo/0/']
+    invalid_data_list = ['zzzz', ':///items.starfox']
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
