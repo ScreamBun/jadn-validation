@@ -12,7 +12,7 @@ setup(
         "rfc3987",
         "strict-rfc3339",
         "typing-extensions",
-        "uritemplate",
+        "uri-template",
         "validators"
     ]    
 )

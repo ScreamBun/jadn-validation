@@ -63,6 +63,8 @@ def format_class_name(class_name: str) -> str:
     formatted_class_name = ''.join(word.title() for word in words)
     if formatted_class_name == 'JsonPointer':
         formatted_class_name = 'JadnJsonPointer'
+    elif formatted_class_name == 'UriTemplate':
+        formatted_class_name = 'JadnUriTemplate'
     
     return formatted_class_name
 
@@ -86,10 +88,10 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
         "JadnJsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
         "Iri" : "jadnvalidation.data_validation.formats.iri",
-        "IriRef" : "jadnvalidation.data_validation.formats.iri_ref",
+        "IriReference" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",
-        "UriRef" : "jadnvalidation.data_validation.formats.uri_ref",
-        "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template"
+        "UriReference" : "jadnvalidation.data_validation.formats.uri_ref",
+        "JadnUriTemplate" : "jadnvalidation.data_validation.formats.uri_template"
     }
     
     formatted_class_name = format_class_name(class_name)

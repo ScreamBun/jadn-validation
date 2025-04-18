@@ -1,7 +1,7 @@
-from rfc3987 import parse
-from regex import *
+from rfc3987 import *
+import re
 
-class UriRef:
+class UriReference:
     
     data: str = None
     
@@ -10,12 +10,11 @@ class UriRef:
     
     def validate(self):
         """
-        Validates if a string conforms to the RFC 3387 IRI format.
+        Validates if a string conforms to the RFC 3387 URI format.
         """
         try:
             # Parse the string using RFC 3387
-            # uri_ref = parse(self.data, rule='URI_reference')
-            if isinstance(self.data, str):
-                pass # any string passes for now
+            print(self.data)
+            assert match(self.data, rule='URI_reference')
         except ValueError:
-            raise ValueError(f"Invalid URI Reference: {self.data}")
+            raise ValueError(f"Invalid URI: {self.data}")

@@ -1,7 +1,7 @@
 import re
-from rfc3987 import parse, _iri_rules
+from rfc3987 import *
 
-class IriRef:
+class IriReference:
     
     data: str = None
     
@@ -14,8 +14,8 @@ class IriRef:
         """
         try:
             # Parse the string using RFC 3387
-            #iriRef = parse(self.data, rule='IRI_reference')
-            if isinstance(self.data, str):
-                pass # any string passes for now
+            assert match(self.data, rule='IRI_reference')
+            #if isinstance(self.data, str):
+                #pass # any string passes for now
         except ValueError:
             raise ValueError(f"Invalid IRI reference: {self.data}")
