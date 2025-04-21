@@ -3,7 +3,6 @@ from jadnvalidation.utils.general_utils import get_nested_value
 
 
 ROOT_GLOBAL_CONFIG_KEY = "root_global_config"
-# ROOT_TYPE_OPTS_KEY = "root_type_opts"
 GLOBAL_CONFIG_KEY = "global_config"
 TYPE_OPTS_KEY = "type_opts"
 ARRAY_TYPE_OPTS_KEY = "array_type_opts"

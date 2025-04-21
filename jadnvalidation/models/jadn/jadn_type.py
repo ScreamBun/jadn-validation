@@ -1,6 +1,5 @@
 from typing import Any
 
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config
 from jadnvalidation.utils.enum_utils import BaseEnum
 from jadnvalidation.utils.general_utils import is_enumerated, is_field, is_type, safe_get
 

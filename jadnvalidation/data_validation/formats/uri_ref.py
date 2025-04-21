@@ -1,5 +1,4 @@
-from rfc3987 import *
-import re
+from rfc3987 import parse
 
 class UriReference:
     
@@ -14,9 +13,7 @@ class UriReference:
         """
         if isinstance(self.data , str) and self.data.__contains__(':'):
             try:
-                # Parse the string using RFC 3387
-                print(self.data)
-                assert match(self.data, rule='URI_reference')
+                parse(self.data, rule='URI_reference')
             except ValueError:
                 raise ValueError(f"Invalid URI: {self.data}")        
         else: 

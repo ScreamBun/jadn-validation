@@ -1,6 +1,5 @@
 from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
-import base64
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
