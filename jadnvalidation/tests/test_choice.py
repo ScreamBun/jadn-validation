@@ -361,31 +361,6 @@ def test_xml_choice_allOf():
         ]
     }
     
-    valid_data_list = [
-        {
-            "field_value_1": "illum repellendus nobis",
-            "field_value_2": False      
-        }, 
-        {
-            "field_value_2": False,
-            "field_value_1": "illum repellendus nobis"            
-        }
-    ]
-    
-    invalid_data_list = [
-        {
-            "field_value_1": "illum repellendus nobis",
-            "field_value_2": True,
-            "field_value_3": "test extra field validation"
-        }, 
-        {
-            "field_value_x": "test incorrect field name"
-        },
-        {
-            "field_value_1": 123
-        }        
-    ]
-    
     valid_xml_1 = """<Root-Test>
         <field_value_1 key="1">illum repellendus nobis</field_value_1>
         <field_value_2 key="2">False</field_value_2>
@@ -464,4 +439,52 @@ def test_choice_not():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)         
+    assert err_count == len(invalid_data_list)
+    
+def test_xml_choice_not():
+    root = "Root-Test"
+
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Choice", ["X"], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_xml_1 = """<Root-Test>
+        <field_value_a>illum repellendus nobis</field_value_a>
+        <field_value_b>False</field_value_b>
+    </Root-Test>"""
+    
+    valid_xml_2 = """<Root-Test>
+        <field_value_z id="2">False</field_value_z>
+        <field_value_y key="1">illum repellendus nobis</field_value_y>  
+    </Root-Test>"""
+    
+    invalid_xml_1 = """<Root-Test>
+        <field_value_1 id="1">illum repellendus nobis</field_value_1>
+        <field_value_2 id="2">True</field_value_2>
+    </Root-Test>"""
+    
+    invalid_xml_2 = """<Root-Test>
+        <field_value_1 key="1">test incorrect field name</field_value_1>
+    </Root-Test>"""
+
+    invalid_xml_3 = """<Root-Test>
+        <field_value_2 key="2">True</field_value_2>
+    </Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3]    
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)          
