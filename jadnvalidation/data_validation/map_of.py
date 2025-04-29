@@ -93,12 +93,20 @@ class MapOf:
             ref_ktype = get_reference_type(self.j_schema, ktype)
             ktype_obj = build_j_type(ref_ktype)
             ktype = ktype_obj.base_type
+        elif is_primitive(ktype):
+            ktype_obj = Jadn_Type(self.j_type.type_name.lower() + "_" + ktype.lower(), ktype)
+        else:
+            raise ValueError(f"Invalid MapOf ktype: {ktype}")
         
         vtype_obj = None    
         if vtype_user_defined:
             ref_vtype = get_reference_type(self.j_schema, vtype)
             vtype_obj = build_j_type(ref_vtype)
-            vtype = vtype_obj.base_type     
+            vtype = vtype_obj.base_type
+        elif is_primitive(vtype):
+            vtype_obj = Jadn_Type(self.j_type.type_name.lower() + "_" + vtype.lower(), vtype)            
+        else:
+            raise ValueError(f"Invalid MapOf vtype: {vtype}")
         
         # Data is JSON object / dict,  if ktype is a String or User Defined type
         #  {"key1": value1, "key2": value2, ...}.
@@ -127,7 +135,7 @@ class MapOf:
                 kv_type = None
                 
                 if is_even(i):
-                    self.check_for_duplicate_key(self, ktype, keys_set, data_item)
+                    self.check_for_duplicate_key(ktype, keys_set, data_item)
                     kv_type = ktype_obj
                 else:
                     kv_type = vtype_obj
@@ -137,7 +145,7 @@ class MapOf:
         # TODO: JSON null if vtype is null      
                   
         else:
-            raise ValueError(f"Unknown mapof ktype: {ktype}")
+            raise ValueError(f"invalid mapof ktype: {ktype}")
         
     def validate(self):
         
