@@ -78,9 +78,6 @@ class MapOf:
             raise ValueError(f"{ktype} contains duplicate key: {key}")
         
     def check_key_value_types(self):
-        
-        # Type options?
-        
         if self.data is None:
             if not is_optional(self.j_type):
                 self.errors.append(f"Map of '{self.j_type.type_name}' missing data")
