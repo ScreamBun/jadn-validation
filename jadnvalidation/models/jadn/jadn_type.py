@@ -89,6 +89,12 @@ def is_primitive(type: str) -> bool:
     else:
         return False
     
+def is_non_primitive(type: str) -> bool:
+    if type in Structure or type in Enumeration or type in Specilization:
+        return True
+    else:
+        return False
+    
 def is_record_or_map(jadn_type: Jadn_Type) -> bool:
     if jadn_type.base_type == Base_Type.RECORD.value or jadn_type.base_type == Base_Type.MAP.value:
         return True

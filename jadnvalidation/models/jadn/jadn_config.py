@@ -77,4 +77,4 @@ def check_type_name(j_type_name, j_config_type_name_reg: str):
 def check_field_name(j_field_name, j_config_field_name_reg: str):
     match = re.fullmatch(j_config_field_name_reg, j_field_name)
     if not match:
-        raise ValueError(f"Invalid Type Name {j_field_name} per regex pattern {j_config_field_name_reg}")        
+        raise ValueError(f"Invalid Field Name {j_field_name} per regex pattern {j_config_field_name_reg}")        

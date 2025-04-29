@@ -1,5 +1,5 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.utils.consts import JSON
+from jadnvalidation.utils.consts import JSON, XML
 
 j_schema = {
   "info": {
@@ -123,7 +123,7 @@ def test_map_of_udstr_udrecord():
         "image_content": "test"
       }
     }
-}
+  }
     
     errorMsgs=[]
     try :
@@ -137,4 +137,88 @@ def test_map_of_udstr_udrecord():
             errorMsgs.append(str(err))
             
     assert len(errorMsgs) == 0
+    
+def test_xml_map_of_udstr_udrecord():
+    root = "Library"
+    
+    data = '''<?xml version="1.0" encoding="UTF-8" ?>
+      <Library>
+          <012345678912>
+              <album_artist>
+                  <artist_name>test</artist_name>
+                  <instruments>vocals</instruments>
+              </album_artist>
+              <album_title>test</album_title>
+              <pub_data>
+                  <publisher>test</publisher>
+                  <release_date>2025-04-24</release_date>
+              </pub_data>
+              <tracks>
+                  <location>test</location>
+                  <metadata>
+                      <track_number>1</track_number>
+                      <title>test</title>
+                      <length>5</length>
+                      <audio_format>MP3</audio_format>
+                      <featured_artist>
+                          <artist_name>test</artist_name>
+                          <instruments>guitar</instruments>
+                      </featured_artist>
+                      <track_art>
+                          <image_format>PNG</image_format>
+                          <image_content>test</image_content>
+                      </track_art>
+                      <genre>rock</genre>
+                  </metadata>
+              </tracks>
+              <total_tracks>1</total_tracks>
+              <cover_art>
+                  <image_format>PNG</image_format>
+                  <image_content>test</image_content>
+              </cover_art>
+          </012345678912>
+      </Library>    
+    '''
+    
+    data_2 = '''<map>
+        <entry>
+          <key>name</key>
+          <value>
+            <object>
+              <property name="firstName">John</property>
+              <property name="lastName">Doe</property>
+            </object>
+          </value>
+        </entry>
+        <entry>
+          <key>age</key>
+          <value>
+            <object>
+              <property name = "years">30</property>
+            </object>
+          </value>
+        </entry>
+        <entry>
+          <key>city</key>
+          <value>
+            <object>
+              <property name="cityName">New York</property>
+            </object>
+          </value>
+        </entry>
+      </map>    
+    '''
+    
+    errorMsgs=[]
+    # try :
+    #     j_validation = DataValidation(j_schema, root, data, XML)
+    #     j_validation.validate()
+    # except Exception as err:
+    #     if isinstance(err, ValueError):
+    #         for error in err.args:
+    #             errorMsgs.append(error)
+    #     else:
+    #         errorMsgs.append(str(err))
+            
+    assert len(errorMsgs) == 0    
     

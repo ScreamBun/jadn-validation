@@ -42,17 +42,17 @@ class Record:
         
     def check_type(self):
         if not isinstance(self.data, dict):
-            raise ValueError(f"Data must be a record / dict. Received: {type(self.data)}")
+            raise ValueError(f"Data for type {self.j_type.type_name} must be a record / dict. Received: {type(self.data)}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"Number of fields must be greater than {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"Number of fields for type {self.j_type.type_name} must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
+            self.errors.append(f"Number of fields length for type {self.j_type.type_name} must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
         for j_key, j_field in enumerate(self.j_type.fields):

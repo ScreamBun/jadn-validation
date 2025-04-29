@@ -44,10 +44,10 @@ class Enumerated:
             use_ids = use_field_ids(self.j_type.type_options)
             if use_ids:
                 if not isinstance(self.data, int):
-                    raise ValueError(f"Data must be an integer. Received: {type(self.data)}")
+                    raise ValueError(f"Data for type {self.j_type.type_name} must be an integer. Received: {type(self.data)}")
             else:
                 if not isinstance(self.data, str):
-                    raise ValueError(f"Data must be a string. Received: {type(self.data)}")
+                    raise ValueError(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")
             
     def xml_check_type(self):
         if self.data:
@@ -57,13 +57,13 @@ class Enumerated:
                     try:
                         self.data = int(self.data)
                     except ValueError as e:
-                        raise ValueError(f"Unable to serialize data into an type integer. Received: {type(self.data)}")
+                        raise ValueError(f"Unable to serialize data for type {self.j_type.type_name} into an type integer. Received: {type(self.data)}")
                 
                 if not isinstance(self.data, int):
-                    raise ValueError(f"Data must be of type integer. Received: {type(self.data)}")
+                    raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
             else:
                 if not isinstance(self.data, str):
-                    raise ValueError(f"Data must be a string. Received: {type(self.data)}")            
+                    raise ValueError(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")            
             
     def check_enumeration(self):
         use_ids = use_field_ids(self.j_type.type_options)

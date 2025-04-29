@@ -95,7 +95,7 @@ class Integer:
     def json_check_type(self):
         if self.data:
             if not isinstance(self.data, int):
-                raise ValueError(f"Data must be of type integer. Received: {type(self.data)}")
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
             
     def xml_check_type(self):
         if self.data:
@@ -106,17 +106,17 @@ class Integer:
                     raise ValueError(f"Unable to serialize data into an type integer. Received: {type(self.data)}")
             
             if not isinstance(self.data, int):
-                raise ValueError(f"Data must be of type integer. Received: {type(self.data)}")
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
                         
     def check_min_val(self):
         min_val = get_min_length(self.j_type)
         if min_val is not None and self.data < min_val:
-            self.errors.append(f"Integer must be greater than {min_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_max_val(self):
         max_val = get_max_length(self.j_type, self.j_config)
         if max_val is not None and self.data > max_val:
-            self.errors.append(f"Integer must be less than {max_val}. Received: {len(self.data)}")           
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
         
     def validate(self):
         

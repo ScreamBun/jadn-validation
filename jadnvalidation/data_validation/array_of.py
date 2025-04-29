@@ -42,21 +42,21 @@ class ArrayOf:
         
     def check_type(self):
         if not isinstance(self.data, list):
-            raise ValueError(f"Data must be a list. Received: {type(self.data)}")
+            raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
         
     def check_max_elements(self):
         if self.data and len(self.data) > self.j_config.MaxElements:
-            raise ValueError(f"Data items exceed the maximum limit of {self.j_config.MaxElements}")
+            raise ValueError(f"Data items for type {self.j_type.type_name} exceed the maximum limit of {self.j_config.MaxElements}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"Array length must be greater than {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"Array length for type {self.j_type.type_name} must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"Array length must be less than {max_length}. Received: {len(self.data)}")
+            self.errors.append(f"Array length for type {self.j_type.type_name} must be less than {max_length}. Received: {len(self.data)}")
         
     def check_vtype(self):
         vtype = get_vtype(self.j_type)
