@@ -1,3 +1,5 @@
+import hashlib
+import json
 import re
 import sys
 import importlib
@@ -116,6 +118,33 @@ def convert_list_to_dict(lst):
 def create_dynamic_union(*types):
     return Union[types]
 
+def generate_sha256(data):
+    """
+    Generates a SHA256 hash of any variable type.
+
+    Args:
+        data: The variable to hash.
+
+    Returns:
+        The SHA256 hash as a hexadecimal string.
+    """
+    data_type = type(data)
+    
+    if data_type in (int, float, bool):
+        data_string = str(data)
+    elif data_type == str:
+      data_string = data
+    elif data_type in (list, dict, tuple):
+        data_string = json.dumps(data, sort_keys=True)
+    elif data is None:
+        data_string = 'None'
+    else:
+        data_string = str(data)
+
+    encoded_data = data_string.encode('utf-8')
+    sha256_hash = hashlib.sha256(encoded_data).hexdigest()
+    return sha256_hash
+
 def get_data_by_id(data: dict, id: int):
     return data.get(str(id))
 
@@ -203,7 +232,6 @@ def get_j_field(j_field_list, data_key, is_using_ids):
             
     return j_field_found             
         
-
 def get_map_of_data_content(data: dict):
     '''
     MapOf Data Example:
@@ -243,49 +271,11 @@ def get_nested_value(data, keys, default=None):
             return default
     return current
 
-def get_reference_type(jschema, type_name):
-    j_types = jschema.get('types')
-    ref_type = get_schema_type_by_name(j_types, type_name)
-    if not ref_type:
-        raise ValueError(f"Unknown type {type_name} referenced" )
-    return ref_type
-
-def get_schema_type_by_name(j_types: list, name: str):
-    type_list = [j_type for j_type in j_types if j_type[0] == name]
-    type = None
-    
-    if type_list == None or get_item_safe_check(type_list, 0) == None:
-        return None
-    else:
-        type = get_item_safe_check(type_list, 0)
-    
-    return type
-
-def get_schema_types(j_types: list, base_type: str):
-    return [j_type for j_type in j_types if j_type[1] == base_type]
-
 def is_even(n):
     return n % 2 == 0
 
 def is_odd(n):
     return n % 2 != 0
-
-def is_enumerated(jadn_type: list[any]):
-    if len(jadn_type) == 3:
-            return True
-    return False
-
-def is_field(jadn_type: list[any]):
-    if len(jadn_type) > 0:
-        if isinstance(jadn_type[0], int):
-            return True
-    return False
-
-def is_type(jadn_type: list[any]):
-    if len(jadn_type) > 0:
-        if isinstance(jadn_type[0], str):
-            return True
-    return False
 
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.

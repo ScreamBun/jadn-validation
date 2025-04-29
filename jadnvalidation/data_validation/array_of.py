@@ -3,8 +3,9 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_reference_type
+from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_vtype, is_optional
+from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "type": "check_type",
