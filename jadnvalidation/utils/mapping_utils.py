@@ -120,9 +120,7 @@ def get_min_max(global_configs, type_opts): #sword of damocles for deprecation
 def get_opts(j_type: Jadn_Type):
     opts = []
     
-    # TODO: Not sure why this isn't working.....safer to do an instance check here.
-    # if isinstance(j_type, Jadn_Type):
-    if j_type:
+    if isinstance(j_type, Jadn_Type):
         opts = j_type.type_options
         
     # Check if opts is None or contains an empty string
