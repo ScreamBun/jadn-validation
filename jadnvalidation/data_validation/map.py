@@ -90,7 +90,6 @@ class Map:
             
     def check_extra_fields(self):
         # Check if data has more fields than schema
-        # TODO: Add logic to check if extra fields are allowed
         if len(self.data) > len(self.j_type.fields):
             raise ValueError(f"Data has more fields ({len(self.data)}) than allowed ({len(self.j_type.fields)})")
         
