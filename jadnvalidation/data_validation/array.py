@@ -43,12 +43,12 @@ class Array:
         
     def check_type(self):
         if not isinstance(self.data, list):
-            raise ValueError(f"Data for type {self.j_type} must be a list. Received: {type(self.data)}")
+            raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
         if min_length is not None and len(self.data) < min_length:
-            self.errors.append(f"Array length for type {self.j_type} must be greater than {min_length}. Received: {len(self.data)}")
+            self.errors.append(f"Array length for type {self.j_type.type_name} must be greater than {min_length}. Received: {len(self.data)}")
         
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
@@ -57,7 +57,7 @@ class Array:
             max_length = len(self.j_type.fields)
         
         if max_length is not None and len(self.data) > max_length:
-            self.errors.append(f"Array length for type {self.j_type} must be less than {max_length}. Received: {len(self.data)}")
+            self.errors.append(f"Array length for type {self.j_type.type_name} must be less than {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
         # TODO: IPV formats...
@@ -73,7 +73,7 @@ class Array:
                 if is_optional(j_field_obj):
                     continue
                 else:
-                    self.errors.append(f"Missing required field '{j_field[1]}' for array type {self.j_type}")
+                    raise ValueError(f"Missing required field '{j_field[1]}' for array type {self.j_type.type_name}")
         
             if not is_primitive(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)

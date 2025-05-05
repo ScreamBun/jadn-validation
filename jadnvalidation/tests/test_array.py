@@ -293,13 +293,13 @@ def test_forward_ref():
     }
     
     valid_data_list = [
-            [['Anytown', 'Any String']],
-            [['123', '']]
+            [['Any String']],
+            [['123']]
         ]
     
     invalid_data_list = [
             [[123, 'Any String']],
-            [True, False]
+            [True]
         ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
