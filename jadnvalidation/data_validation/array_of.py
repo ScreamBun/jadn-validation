@@ -10,9 +10,9 @@ from jadnvalidation.utils.type_utils import get_reference_type
 common_rules = {
     "type": "check_type",
     "max_elements": "check_max_elements",
-    "fields": "check_vtype",
     "{": "check_min_length",
-    "}": "check_max_length"
+    "}": "check_max_length",    
+    "fields": "check_vtype"
 }
 
 json_rules = {}
