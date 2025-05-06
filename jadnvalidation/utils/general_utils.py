@@ -91,7 +91,10 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "IriReference" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",
         "UriReference" : "jadnvalidation.data_validation.formats.uri_ref",
-        "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template"
+        "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template",
+        "Token" : "jadnvalidation.data_validation.formats.token",
+        "Name" : "jadnvalidation.data_validation.formats.name",
+        "NormalizedString" : "jadnvalidation.data_validation.formats.normalized_string"
     }
     
     formatted_class_name = format_class_name(class_name)

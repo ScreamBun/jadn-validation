@@ -17,4 +17,4 @@ class IriReference:
             except ValueError:
                 raise ValueError(f"Invalid IRI reference: {self.data}")        
         else: 
-            raise ValueError(f"Invalid URI template: {self.data}")
+            raise ValueError(f"Invalid IRI reference: {self.data}")

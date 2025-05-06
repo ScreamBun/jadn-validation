@@ -15,6 +15,6 @@ class UriReference:
             try:
                 parse(self.data, rule='URI_reference')
             except ValueError:
-                raise ValueError(f"Invalid URI: {self.data}")        
+                raise ValueError(f"Invalid URI reference: {self.data}")        
         else: 
-            raise ValueError(f"Invalid URI template: {self.data}")
+            raise ValueError(f"Invalid URI reference: {self.data}")

@@ -3,6 +3,59 @@ from datetime import datetime
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
 
+def test_string_normalized_string():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/normalizedString"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['a'] #'letter', 'Capital', ':colon', '_underscore', 'intermed-hyphen', 'period.'
+    invalid_data_list = [' start', 'end ', 'space between']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_name():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/name"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['letter', 'Capital' ':colon', '_underscore', 'intermed-hyphen', 'period.']
+    invalid_data_list = [' start', 'end ', '1one', '-hypnenStart', '.periodStart']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_token():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/token"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['Milwaukee', 'hello world', 'one1 two2 three3']
+    invalid_data_list = [' start', 'end ']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
 
 def test_string_regex():
     root = "Root-Test"
