@@ -94,7 +94,9 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "UriTemplate" : "jadnvalidation.data_validation.formats.uri_template",
         "Token" : "jadnvalidation.data_validation.formats.token",
         "Name" : "jadnvalidation.data_validation.formats.name",
-        "NormalizedString" : "jadnvalidation.data_validation.formats.normalized_string"
+        "QName" : "jadnvalidation.data_validation.formats.qname",
+        "NormalizedString" : "jadnvalidation.data_validation.formats.normalized_string",
+        "Language" : "jadnvalidation.data_validation.formats.language"
     }
     
     formatted_class_name = format_class_name(class_name)

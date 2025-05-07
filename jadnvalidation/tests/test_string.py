@@ -3,6 +3,42 @@ from datetime import datetime
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
 
+def test_string_language():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/language"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['en', 'en-US', 'multiple-small-parts', 'i-navajo', 'custom']
+    invalid_data_list = ['hasmoreThan8Chars', '', 'a:colon', 'space bad']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_qname():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/QName"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['w:q', 'www.example.com:Homepage']
+    invalid_data_list = [':no_start', 'no_end:', 'no_colon']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
 def test_string_normalized_string():
     root = "Root-Test"
   
@@ -12,7 +48,7 @@ def test_string_normalized_string():
       ]
     }
     
-    valid_data_list = ['a'] #'letter', 'Capital', ':colon', '_underscore', 'intermed-hyphen', 'period.'
+    valid_data_list = ['letter', 'Capital', ':colon', '_underscore', 'intermed-hyphen', 'period.']
     invalid_data_list = [' start', 'end ', 'space between']
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
