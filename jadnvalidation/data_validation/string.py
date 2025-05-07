@@ -40,30 +40,38 @@ class String:
         self.errors = []
         
     def check_format(self):
-        format = get_format(self.j_type)
-        if format is not None:
-            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
-            fmt_clz_instance.validate()
+        if self.data is not None:
+            format = get_format(self.j_type)
+            if format is not None:
+                fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+                fmt_clz_instance.validate()
             
     def check_pattern(self):
-        pattern = get_pattern(self.j_type)
-        if pattern is not None and self.data:
-            pattern_instance = Pattern(self.data, pattern)
-            pattern_instance.validate()        
+        if self.data is not None:
+            pattern = get_pattern(self.j_type)
+            if pattern is not None and self.data:
+                pattern_instance = Pattern(self.data, pattern)
+                pattern_instance.validate()        
         
     def check_type(self):
-        if not isinstance(self.data, str):
-            self.errors.append(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")
+        if self.data is not None:
+            if not isinstance(self.data, str):
+                raise ValueError(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")
+        else:  
+            pass
                         
     def check_min_length(self):
-        min_length = get_min_length(self.j_type)
-        if min_length is not None and len(self.data) < min_length:
+        min_length = get_min_length(self.j_type)    
+        if min_length is not None and self.data is None: 
+            raise ValueError(f"A String value for type {self.j_type.type_name} is required. Received: None")
+        elif min_length is not None and len(self.data) < min_length:
             self.errors.append(f"String for type {self.j_type.type_name} length must be greater than {min_length}. Received: {len(self.data)}")
         
-    def check_max_length(self):   
-        max_length = get_max_length(self.j_type, self.j_config)
-        if len(self.data) > max_length:
-            self.errors.append(f"String for type {self.j_type.type_name} length must be less than {max_length}. Received: {len(self.data)}")
+    def check_max_length(self): 
+        if self.data is not None:  
+            max_length = get_max_length(self.j_type, self.j_config)
+            if len(self.data) > max_length:
+                self.errors.append(f"String for type {self.j_type.type_name} length must be less than {max_length}. Received: {len(self.data)}")
             
     def validate(self):
         

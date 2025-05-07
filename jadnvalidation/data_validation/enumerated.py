@@ -40,7 +40,7 @@ class Enumerated:
         self.errors = []
         
     def json_check_type(self):
-        if self.data:
+        if self.data is not None:
             use_ids = use_field_ids(self.j_type.type_options)
             if use_ids:
                 if not isinstance(self.data, int):
@@ -50,7 +50,7 @@ class Enumerated:
                     raise ValueError(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")
             
     def xml_check_type(self):
-        if self.data:
+        if self.data is not None:
             use_ids = use_field_ids(self.j_type.type_options)
             if use_ids:
                 if isinstance(self.data, str):

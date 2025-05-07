@@ -67,5 +67,4 @@ class DataValidation:
                 clz_instance.validate()            
             
         except Exception as err:
-            errs = get_err_msgs(err)       
-            raise ValueError(errs)
+            raise ValueError(err)

@@ -75,30 +75,34 @@ class Integer:
                 return None         
         
     def check_format(self):
-
         val = None
+        
         opts = get_opts(self.j_type)
         for opt in opts:
             opt_key, opt_val = split_on_first_char(opt)
+            
             if "/" == opt_key:
-
                 val = opt_val
                 format_min = None
                 format_max = None
                 format_min = self.give_format_constraint(val, 0)
                 format_max = self.give_format_constraint(val, 1)
+                
                 if self.data > format_max:
-                    self.errors.append(f"Data exceeds allowed format length: {format_max}")
+                    self.errors.append(f"Data for ype {self.j_type} exceeds allowed format length: {format_max}")
+                    
                 if self.data < format_min:
-                    self.errors.append(f"Data does not meet minimum format length: {format_min}")
+                    self.errors.append(f"Data for ype {self.j_type} does not meet minimum format length: {format_min}")
 
     def json_check_type(self):
-        if self.data:
+        if self.data is not None:
+            
+            # TODO: Boolean check needed, True = 1, False = 0 in python
             if not isinstance(self.data, int):
-                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
             
     def xml_check_type(self):
-        if self.data:
+        if self.data is not None:
             if isinstance(self.data, str):
                 try:
                     self.data = int(self.data)
@@ -110,13 +114,16 @@ class Integer:
                         
     def check_min_val(self):
         min_val = get_min_length(self.j_type)
-        if min_val is not None and self.data < min_val:
+        if min_val is not None and self.data is None: 
+            raise ValueError(f"An Integer value for type {self.j_type.type_name} is required. Received: None")        
+        elif min_val is not None and self.data < min_val:
             self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_val}. Received: {len(self.data)}")
         
     def check_max_val(self):
-        max_val = get_max_length(self.j_type, self.j_config)
-        if max_val is not None and self.data > max_val:
-            self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
+        if self.data is not None: 
+            max_val = get_max_length(self.j_type, self.j_config)
+            if max_val is not None and self.data > max_val:
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
         
     def validate(self):
         

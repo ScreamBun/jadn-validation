@@ -48,12 +48,12 @@ class Number:
         tbd = ""          
         
     def json_check_type(self):
-        if self.data:   
+        if self.data is not None:   
             if not isinstance(self.data, float):
                 self.errors.append(f"Data must be a float. Received: {type(self.data)}")        
         
     def xml_check_type(self):
-        if self.data:
+        if self.data is not None:
             if isinstance(self.data, str):
                 try:
                     self.data = float(self.data)
