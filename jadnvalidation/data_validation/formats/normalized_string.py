@@ -9,7 +9,7 @@ class NormalizedString:
     
     def validate(self):
         """
-        XML normalized strings conform to certain charracteristics.
+        XML normalized strings conform to certain characteristics.
         """
         if isinstance(self.data , str):
             try:
