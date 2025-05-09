@@ -87,7 +87,9 @@ class Integer:
                     outside the usual size or value constraint paradigm for integer formats. 
                     Think Dates; LogicalIntegers the user may attempt to represent with... 
                     let us be charitable and say UNIQUE formatting applied to them"""
-                    create_fmt_clz_instance(opt_val)
+                    cls = create_fmt_clz_instance(opt_val, self.data)
+                    cls.validate()
+                    break
                 else:
 
                     val = opt_val
@@ -113,16 +115,18 @@ class Integer:
 
     def json_check_type(self):
         if self.data is not None:
-            if isinstance(self.data, bool):
-                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
+                  
             
             # TODO: Boolean check needed, True = 1, False = 0 in python
             if not isinstance(self.data, int):
-                opts = get_opts(self.j_type)
-                if (any( all(v in value for v in ('/date','date-time','/gYear','gMonthDay','gYearMonth'))) for value in opts):                    
+                opts = get_opts(self.j_type)                
+                if isinstance(self.data, bool):
+                    raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer, not Boolean. Received: {type(self.data)}")  
+                elif (any( all(v in value for v in ('/date','date-time','/gYear','gMonthDay','gYearMonth'))) for value in opts):                    
                     """Specific formats may allow users to enter formatted strings in place of integers. this is their enumeration in this check."""
                     if not isinstance(self.data, str):
                         raise ValueError(f"Data for type {self.j_type.type_name} not a parseable type. Received: {type(self.data)}")
+
                 else: raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
                 raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
             
