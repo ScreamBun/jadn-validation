@@ -12,7 +12,7 @@ def test_type_int():
     }
       
     valid_data_list = [1, 0, -1, 1000, -1000]      
-    invalid_data_list = [1.75, "one", "1.7z5"]
+    invalid_data_list = [1.75, "one", "1.7z5", True, False]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

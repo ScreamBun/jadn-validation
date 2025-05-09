@@ -113,6 +113,8 @@ class Integer:
 
     def json_check_type(self):
         if self.data is not None:
+            if isinstance(self.data, bool):
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
             
             # TODO: Boolean check needed, True = 1, False = 0 in python
             if not isinstance(self.data, int):
