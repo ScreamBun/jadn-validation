@@ -206,7 +206,6 @@ def get_item_safe_check(my_list, index):
         return my_list[index]
     return None  # Or any other default value
 
-# TODO: We might be able to generalize this function
 def get_choice_data_content(data: dict):
     '''
     Choice Data Example:

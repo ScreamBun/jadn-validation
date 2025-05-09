@@ -34,7 +34,7 @@ class Boolean:
         self.errors = []         
         
     def check_type(self):  
-        if self.data:
+        if self.data is not None:
             
             if isinstance(self.data, str):
                 if (self.data.lower() in ['true', '1', 'y', 'yes']):

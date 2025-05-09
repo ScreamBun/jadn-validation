@@ -47,7 +47,7 @@ class MapOf:
             raise ValueError(f"Data must be a list / dict / object / record that contains an iterable structure. Received: {type(self.data)}")
         
     def check_max_elements(self):
-        if self.data:
+        if self.data is not None:
             if isinstance(self.data, list):
                 if len(self.data) > self.j_config.MaxElements * 2:
                     raise ValueError(f"Data items exceed the maximum limit of {self.j_config.MaxElements}")

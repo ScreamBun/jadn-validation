@@ -31,6 +31,68 @@ def test_array():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
     
+def test_array_2():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "Integer", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            [1], 
+            [-1], 
+            [0],
+            [True],
+            [False]
+        ]
+    
+    invalid_data_list = [
+            ["Test"], 
+            [1.2], 
+            ["1"],
+            [0, 1, 2]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+    
+def test_array_field_max_occurs():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1", "String", ["]3"], ""]
+            ]]
+        ]
+    }
+            
+    valid_data_list = [
+            [["test 1", "test 2", "test 3"]],
+            [["test 1", "test 2"]] 
+        ]
+    
+    invalid_data_list = [
+            [["test 1", "test 2", "test 3", "test 4", "test 5"]], 
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)       
+    
 def test_xml_array():
     root = "Root-Test"    
     
@@ -231,13 +293,13 @@ def test_forward_ref():
     }
     
     valid_data_list = [
-            [['Anytown', 'Any String']],
-            [['123', '']]
+            [['Any String']],
+            [['123']]
         ]
     
     invalid_data_list = [
             [[123, 'Any String']],
-            [True, False]
+            [True]
         ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

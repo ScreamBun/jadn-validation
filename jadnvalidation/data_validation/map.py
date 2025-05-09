@@ -25,7 +25,8 @@ class Map:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The map data only
-    data_format: str = None    
+    data_format: str = None
+    use_ids: bool = False
     errors = []
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
@@ -37,6 +38,8 @@ class Map:
         self.j_type = j_type
         self.data = data
         self.data_format = data_format         
+        
+        self.use_ids = use_field_ids(self.j_type.type_options)
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
@@ -56,7 +59,6 @@ class Map:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
-        use_ids = use_field_ids(self.j_type.type_options)
         for j_key, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
             
@@ -64,7 +66,7 @@ class Map:
             check_field_name(j_field_obj.type_name, self.j_config.FieldName)
             
             field_data = None
-            if use_ids:
+            if self.use_ids:
                 field_data = get_data_by_id(self.data, j_field_obj.id)
             else:
                 field_data = get_data_by_name(self.data, j_field_obj.type_name)
@@ -89,10 +91,23 @@ class Map:
             clz_instance.validate()
             
     def check_extra_fields(self):
-        # Check if data has more fields than schema
-        # TODO: Add logic to check if extra fields are allowed
-        if len(self.data) > len(self.j_type.fields):
-            raise ValueError(f"Data has more fields ({len(self.data)}) than allowed ({len(self.j_type.fields)})")
+        # Check if data has any unknown fields
+        if self.data is not None:
+            
+            if len(self.data) > len(self.j_type.fields):
+                raise ValueError(f"Data has more fields ({len(self.data)}) than allowed ({len(self.j_type.fields)})")
+            
+            for data_key in self.data.keys():
+                is_found = False
+                for j_field in self.j_type.fields:
+                    if self.use_ids:
+                        if data_key == str(j_field[0]):
+                            is_found = True
+                    elif data_key == j_field[1]:
+                        is_found = True
+                        
+                if not is_found:
+                    raise ValueError(f"Data field '{data_key}' is not defined in schema")
         
     def validate(self):
         
