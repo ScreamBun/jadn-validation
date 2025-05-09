@@ -45,16 +45,16 @@ def test_array_2():
     valid_data_list = [
             [1], 
             [-1], 
-            [0],
-            [True],
-            [False]
+            [0]
         ]
     
     invalid_data_list = [
             ["Test"], 
             [1.2], 
             ["1"],
-            [0, 1, 2]
+            [0, 1, 2],
+            [True],
+            [False]
         ]
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -277,6 +277,40 @@ def test_array_min_max_occurs():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)   
+    
+    
+# def test_array_max_occurs():
+#     root = "Root-Test"    
+    
+#     j_schema = {
+#         "info": {
+#             "package": "http://example.fake/",
+#             "exports": ["Root-Test"]
+#         },
+#         "types": [
+#             ["Root-Test", "Array", ["}2"], "", [
+#                 [1, "field_value_1", "String", ["[2"], ""],
+#                 [2, "field_value_2", "String", ["[0"], ""],
+#                 [3, "field_value_3", "String", ["[0"], ""]
+#             ]]
+#         ]
+#     } 
+
+#     valid_data_list = [
+#             ["test 1", [["test 1", "test 2", "test 3"]], "test 2", "test 3"],
+#         ]
+    
+#     invalid_data_list = [
+#             ["test 1", [True, False, True], [1, 2, 3]],
+#             ["test 1", [True], [1, 2, 3]],
+#             ["test 1", [True, False, True], [1, 2, 3, 4]]
+#         ]
+        
+#     err_count = validate_valid_data(j_schema, root, valid_data_list)    
+#     assert err_count == 0
+        
+    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    # assert err_count == len(invalid_data_list) 
     
 def test_forward_ref():
     root = "Root-Test"

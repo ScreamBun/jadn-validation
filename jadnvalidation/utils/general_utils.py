@@ -62,7 +62,7 @@ def format_class_name(class_name: str) -> str:
     words = class_name.replace("_", " ").replace("-", " ").split()
    
     # Title each word and concatenate them into one word
-    formatted_class_name = ''.join(word.title() for word in words)
+    formatted_class_name = ''.join(word[0].upper() + word[1:] for word in words)
     if formatted_class_name == 'JsonPointer':
         formatted_class_name = 'JadnJsonPointer'
     
