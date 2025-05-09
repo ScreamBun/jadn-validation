@@ -13,6 +13,7 @@ setup(
         "strict-rfc3339",
         "typing-extensions",
         "uri-template",
-        "validators"
+        "validators",
+        "iso8601"
     ]    
 )

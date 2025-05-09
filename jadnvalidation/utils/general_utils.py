@@ -96,7 +96,10 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Name" : "jadnvalidation.data_validation.formats.name",
         "QName" : "jadnvalidation.data_validation.formats.qname",
         "NormalizedString" : "jadnvalidation.data_validation.formats.normalized_string",
-        "Language" : "jadnvalidation.data_validation.formats.language"
+        "Language" : "jadnvalidation.data_validation.formats.language",
+        "GYear" : "jadnvalidation.data_validation.formats.gdate",
+        "GYearMonth" : "jadnvalidation.data_validation.formats.gdate",
+        "GMonthDay" : "jadnvalidation.data_validation.formats.gdate"
     }
     
     formatted_class_name = format_class_name(class_name)
