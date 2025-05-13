@@ -199,8 +199,9 @@ def test_type_int_gYear():
         ["Root-Test", "Integer", ["/gYear"], "", []]
       ]
     }
-      
-    valid_data_list = [1999, 0000, -1000, "1999", "0000", "-0010", "2025Z", "2024-05:00"]      
+    # python is "helpful" about truncating zeroes in integers. integer-formatted 0000 0r -0010 
+    # will be made unusable. we plan to have the UI give these as formatted strings, but have some tests to handle int entries.  
+    valid_data_list = [1999, -1000, "1999", "0000", "-0010", "2025Z", "2024-05:00"]      
     invalid_data_list = [1.75, "one", "1.7z5", 93, 444, "90", "100"]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -236,8 +237,8 @@ def test_type_int_gMonthDay():
       ]
     }
       
-    valid_data_list = [1, 0, -1, 1000, -1000]      
-    invalid_data_list = [1.75, "one", "1.7z5"]
+    valid_data_list = ["--04-12", "--04-12Z", "--04-12-01:00"]      
+    invalid_data_list = [1.75, "one", "1.7z5", "--4-6", "04-12"]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

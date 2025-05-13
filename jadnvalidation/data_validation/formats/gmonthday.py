@@ -1,11 +1,13 @@
-from iso8601 import iso8601
-from datetime import datetime     
+#from iso8601 import iso8601
+#from datetime import datetime   
+import re  
         
 class GMonthDay:
     
     # Allow different formats?  See date.py
-    date_entry: str = None
-    datetime_converted: datetime = None
+    date_int: int = None
+    date_str: str = None
+    #datetime_converted: datetime = None
     
     def __init__(self, date_entry: any = None):
         if isinstance(date_entry, str):
@@ -20,8 +22,13 @@ class GMonthDay:
         """
         Validates if a string conforms to the RFC 3339 date-time format.
         """
-        try:
-            # Parse the string using ISO 8601 format
-            datetime_converted = iso8601.parse_date(self.date_str)
-        except ValueError:
-            raise ValueError(f"Invalid date-time format: {self.date_entry}")
+        if self.date_str:
+            try:
+                if re.fullmatch("^--((0[1-9])|10|11|12)-((0[1-9])|[1-2][1-9]|3[1-2])((-[0-9]{2}:[0-9]{2})|Z)?$", self.date_str, flags=0): 
+                    pass
+                else: 
+                    raise ValueError(f"Entry does not match gMonthDay: {self.date_str}")  
+            except ValueError:
+                raise ValueError(f"Invalid gMonthDay: {self.date_str}")        
+        else: 
+            raise ValueError(f"Could not parse gMonthDay from: {self.date_str}")

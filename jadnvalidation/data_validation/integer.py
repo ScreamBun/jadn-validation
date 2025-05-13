@@ -76,13 +76,16 @@ class Integer:
         
     def check_format(self):
         # val = None
+
+
+        opts = get_opts(self.j_type)
         
         format = get_format(self.j_type)
         if format is not None:
             fmt_clz_instance = create_fmt_clz_instance(format, self.data)
             fmt_clz_instance.validate()        
           
-        # opts = get_opts(self.j_type)
+        opts = get_opts(self.j_type)
         # for opt in opts:
         #     opt_key, opt_val = split_on_first_char(opt)
             
