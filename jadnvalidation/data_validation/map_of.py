@@ -140,9 +140,7 @@ class MapOf:
                 else:
                     kv_type = vtype_obj
                 
-                self.validate_type(kv_type, data_item)              
-
-        # TODO: JSON null if vtype is null      
+                self.validate_type(kv_type, data_item) 
                   
         else:
             raise ValueError(f"invalid mapof ktype: {ktype}")
