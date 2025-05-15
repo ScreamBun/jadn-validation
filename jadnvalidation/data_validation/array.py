@@ -4,16 +4,16 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_item_safe_check
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "type": "check_type",
-    "fields": "check_fields",
     "/": "check_format",
     "{": "check_min_length",
-    "}": "check_max_length"
+    "}": "check_max_length",
+    "fields": "check_fields"
 }
 
 json_rules = {}
@@ -27,6 +27,7 @@ class Array:
     data: any = None # The array's data only
     data_format: str = None    
     errors = []
+    continue_checks = True
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
         self.j_schema = j_schema
@@ -60,9 +61,12 @@ class Array:
             self.errors.append(f"Array length for type {self.j_type.type_name} must be less than {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
-        # TODO: IPV formats...
-        tbd = ""
-        pass
+        if self.data is not None:
+            format = get_format(self.j_type)
+            if format is not None:
+                fmt_clz_instance = create_fmt_clz_instance(format, self.j_schema, self.j_type, self.data, self.data_format)
+                fmt_clz_instance.validate()
+                self.continue_checks = False
         
     def check_fields(self):
         for j_index, j_field in enumerate(self.j_type.fields):
@@ -96,15 +100,18 @@ class Array:
         # Check data against rules
         rules = json_rules
         if self.data_format == XML:
-            rules = xml_rules
+            if self.continue_checks:
+                rules = xml_rules
        
        # Data format specific rules
         for key, function_name in rules.items():
-            getattr(self, function_name)()
+            if self.continue_checks:
+                getattr(self, function_name)()
             
         # Common rules across all data formats
         for key, function_name in common_rules.items():
-            getattr(self, function_name)()            
+            if self.continue_checks:
+                getattr(self, function_name)()            
             
         if len(self.errors) > 0:
             raise ValueError(self.errors)  

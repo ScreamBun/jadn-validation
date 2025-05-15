@@ -375,4 +375,70 @@ def test_forward_ref():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == len(invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+    
+def test_ipv4net():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["/ipv4-net", "{1", "}2"], "", [
+                [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1", "[1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+                [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["127.0.0.1", 5],
+            ["127.0.0.1"],
+            [b"127.0.0.1", 1]
+        ]
+    
+    invalid_data_list = [
+            [123, 'Any String'],
+            [True]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+    
+def test_ipv6net():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["/ipv6-net", "{2", "}2"], "", [
+                [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1", "[1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+                [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["2001:db8:3333:4444:5555:6666:1.2.3.4", 5],
+            ["2001:db8:3333:4444:5555:6666:1.2.3.4"],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 1]
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)         
