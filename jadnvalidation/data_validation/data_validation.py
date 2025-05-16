@@ -3,7 +3,7 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.utils.consts import CBOR, JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_err_msgs
+from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnxml.builder.xml_builder import build_py_from_xml
 
 from jadnvalidation.utils.type_utils import get_schema_type_by_name

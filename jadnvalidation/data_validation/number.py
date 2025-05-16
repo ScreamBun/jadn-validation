@@ -2,15 +2,16 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.mapping_utils import get_max_exclusive, get_max_inclusive, get_min_exclusive, get_min_inclusive
+from jadnvalidation.utils.general_utils import create_fmt_clz_instance
+from jadnvalidation.utils.mapping_utils import get_format, get_max_exclusive, get_max_inclusive, get_min_exclusive, get_min_inclusive
 
 
 common_rules = {
-    "/": "check_format",
     "w": "check_min_inclusive",
     "x": "check_max_inclusive",
     "y": "check_min_exclusive",
     "z": "check_max_exclusive",
+    "/": "check_format"
 }
 
 json_rules = {
@@ -28,7 +29,8 @@ class Number:
     j_type: Union[list, Jadn_Type] = None
     data: float = None # The number data only
     data_format: str = None
-    errors = []   
+    errors: list = []
+    continue_checks: bool = True
     
     def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: list = [], data_format = JSON):
         self.j_schema = j_schema
@@ -41,11 +43,16 @@ class Number:
         self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema) 
-        self.errors = []   
+        self.errors = []
+        self.continue_checks = True
         
     def check_format(self):
-        # TODO: formats...
-        tbd = ""          
+        if self.data is not None:
+            format = get_format(self.j_type)
+            if format is not None:
+                fmt_clz_instance = create_fmt_clz_instance(format, self.j_schema, self.j_type, self.data, self.data_format)
+                fmt_clz_instance.validate()
+                self.continue_checks = False 
         
     def json_check_type(self):
         if self.data is not None:   
