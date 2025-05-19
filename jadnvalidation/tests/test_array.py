@@ -235,11 +235,14 @@ def test_array_max_occurs():
     }
     
     valid_data_list = [
-            ["test 1", [True, False], [1, 2, 3]]
+            ["test 1", [True, False], [1, 2, 3]],
+            ["test 1", [True], [1, 2, 3]],
+            ["test 1", [True, False], [1]]
         ]
     
     invalid_data_list = [
             ["test 1", [True, False, True], [1, 2, 3]],
+            [["test 1", "test2"], [True, False, True], [1, 2, 3]],
             ["test 1", [True, False, True], [1, 2, 3, 4]]
         ]
         
@@ -255,20 +258,24 @@ def test_array_min_max_occurs():
     j_schema = {
         "types": [
             ["Root-Test", "Array", [], "", [
-                [1, "field_value_1", "String", ["[1", "]1"], ""],
-                [2, "field_value_2", "Boolean", ["[2", "]2"], ""],
-                [3, "field_value_3", "Integer", ["[3", "]3"], ""]
+                [1, "field_value_1", "String", ["[0", "]1"], ""],
+                [2, "field_value_2", "Boolean", ["[1", "]2"], ""],
+                [3, "field_value_3", "Integer", ["[2", "]3"], ""]
             ]]
         ]
     }
     
     valid_data_list = [
-            ["test 1", [True, False], [1, 2, 3]]
+            ["test 1", [True, False], [1, 2, 3]],
+            [None, [True, False], [1, 2, 3]],
+            ["test 1", [True], [1, 2, 3]],
+            ["test 1", [True, False], [1, 2]]
         ]
     
     invalid_data_list = [
             ["test 1", [True, False, True], [1, 2, 3]],
-            ["test 1", [True], [1, 2, 3]],
+            [["test 1", "test2"], [True], [1, 2, 3]],
+            [[True, False], [1, 2, 3]],
             ["test 1", [True, False, True], [1, 2, 3, 4]]
         ]
         
