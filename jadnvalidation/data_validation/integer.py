@@ -2,8 +2,8 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.mapping_utils import get_max_length, get_min_length, get_opts
-from jadnvalidation.utils.general_utils import split_on_first_char
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_opts
+from jadnvalidation.utils.general_utils import split_on_first_char, create_fmt_clz_instance
 
 
 common_rules = {
@@ -75,32 +75,28 @@ class Integer:
                 return None         
         
     def check_format(self):
-        val = None
-        
-        opts = get_opts(self.j_type)
-        for opt in opts:
-            opt_key, opt_val = split_on_first_char(opt)
-            
-            if "/" == opt_key:
-                val = opt_val
-                format_min = None
-                format_max = None
-                format_min = self.give_format_constraint(val, 0)
-                format_max = self.give_format_constraint(val, 1)
-                
-                if self.data > format_max:
-                    self.errors.append(f"Data for ype {self.j_type} exceeds allowed format length: {format_max}")
-                    
-                if self.data < format_min:
-                    self.errors.append(f"Data for ype {self.j_type} does not meet minimum format length: {format_min}")
+        format = get_format(self.j_type)
+        if format is not None:
+            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+            fmt_clz_instance.validate()        
 
     def json_check_type(self):
         if self.data is not None:
-            if isinstance(self.data, bool):
-                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
+            format = get_format(self.j_type)
             
-            elif not isinstance(self.data, int):
-                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")        
+            if isinstance(self.data, bool):
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer, not Boolean. Received: {type(self.data)}")  
+            
+            elif isinstance(self.data, int):
+                pass
+            
+            elif isinstance(self.data, str) and format in ['date','date-time','gYear','gMonthDay','gYearMonth']:
+                """ Note: Specific formats may allow users to enter formatted strings in place of integers. 
+                    This is their enumeration in this check."""    
+                pass
+            
+            else: 
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
             
     def xml_check_type(self):
         if self.data is not None:
