@@ -50,7 +50,7 @@ class F16:
         
         if self.data is not None:
             
-            if np.isfinite(self.data) or np.isnan(self.data):
+            if np.isinf(self.data) or np.isnan(self.data):
                 raise ValueError(f"Data {self.data} for Type {self.j_type.type_name} is not a valid 16-bit float representation.")            
                      
             # Approximate limits for f16
