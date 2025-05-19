@@ -46,7 +46,6 @@ def test_xml_type_int():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)  
 
-# TODO: Add duration formatting?
 def test_type_int_duration():
     root = "Root-Test"
     
@@ -146,8 +145,8 @@ def test_type_int_i8():
       ]
     }
     
-    valid_data_list = [0, 1]      
-    invalid_data_list = [5555, -3333, "thirteen-teen"] 
+    valid_data_list = [-128, 127, 0]      
+    invalid_data_list = [-129, 128, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -164,8 +163,8 @@ def test_type_int_i16():
       ]
     }
     
-    valid_data_list = [0, 1]      
-    invalid_data_list = [555555, -333333, "four-teen"] 
+    valid_data_list = [-32768, 32767, 0]      
+    invalid_data_list = [-32769, 32768, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -182,14 +181,32 @@ def test_type_int_i32():
       ]
     }
     
-    valid_data_list = [0, 1]      
-    invalid_data_list = [5555555555, -3333333333, "dozen dozen"] 
+    valid_data_list = [-2147483648, 2147483647, 0]      
+    invalid_data_list = [-2147483649, 2147483648, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_type_int_i64():
+    root = "Root-Test"    
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/i64"], "", []]
+      ]
+    }
+    
+    valid_data_list = [-9223372036854775808, 9223372036854775807, 0]      
+    invalid_data_list = [-9223372036854775809, 9223372036854775808, "1"] 
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)    
 
 def test_type_int_gYear():
     root = "Root-Test"

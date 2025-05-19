@@ -73,6 +73,7 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     modules = {
         "Date" : "jadnvalidation.data_validation.formats.date",
         "DateTime" : "jadnvalidation.data_validation.formats.date_time",
+        "Duration" : "jadnvalidation.data_validation.formats.duration",
         "Time" : "jadnvalidation.data_validation.formats.time",
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv4Addr" : "jadnvalidation.data_validation.formats.ipv4",
@@ -87,6 +88,10 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Regex" : "jadnvalidation.data_validation.formats.regex",
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
         "JadnJsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
+        "I8" : "jadnvalidation.data_validation.formats.i8",
+        "I16" : "jadnvalidation.data_validation.formats.i16",
+        "I32" : "jadnvalidation.data_validation.formats.i32",
+        "I64" : "jadnvalidation.data_validation.formats.i64",
         "Iri" : "jadnvalidation.data_validation.formats.iri",
         "IriReference" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",
