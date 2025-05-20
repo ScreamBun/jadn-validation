@@ -76,7 +76,7 @@ class Integer:
             elif isinstance(self.data, int):
                 pass
             
-            elif isinstance(self.data, str) and format in ['date','date-time','gYear','gMonthDay','gYearMonth']:
+            elif isinstance(self.data, str) and format in ['date','date-time','gYear','gMonthDay','gYearMonth', 'yearMonthDuration', 'dayTimeDuration']:
                 """ Note: Specific formats may allow users to enter formatted strings in place of integers. 
                     This is their enumeration in this check."""    
                 pass                  
