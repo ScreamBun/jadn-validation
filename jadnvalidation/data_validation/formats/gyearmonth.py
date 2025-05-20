@@ -31,6 +31,6 @@ class GYearMonth:
             except ValueError:
                 raise ValueError(f"Invalid gYearMonth: {self.date_str}")        
         else: 
-            raise ValueError(f"Could not parse gYearMonth from: {self.date_str}")
+            raise ValueError(f"Could not parse gYearMonth")
         
         

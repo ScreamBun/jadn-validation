@@ -24,11 +24,11 @@ class GMonthDay:
         """
         if self.date_str:
             try:
-                if re.fullmatch("^--((04|06|09|11)-((0[1-9])|[1-2][0-9]|30))|((01|03|05|07|08|10|12)-((0[1-9])|[1-2][0-9]|30|31))|(02-((0[1-9])|1[0-9]|2[0-8]))|((02-29)((-[0-9]{2}:[0-9]{2})|Z)?$", self.date_str, flags=0): 
+                if re.fullmatch("^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$", self.date_str, flags=0): 
                     pass
                 else: 
                     raise ValueError(f"Entry does not match gMonthDay: {self.date_str}")  
             except ValueError:
                 raise ValueError(f"Invalid gMonthDay: {self.date_str}")        
         else: 
-            raise ValueError(f"Could not parse gMonthDay from: {self.date_str}")
+            raise ValueError(f"Could not parse gMonthDay")
