@@ -293,3 +293,39 @@ def test_type_int_gMonthDay():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_type_int_yearMonthDuration():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/yearMonthDuration"], "", []]
+      ]
+    }
+      
+    valid_data_list = ["P1Y11M", "P17M", "-P11Y"]      
+    invalid_data_list = [1.75, "one", "1.7z5", "P", "P3Y6M7DT23H01M30S", "P2DT3H"]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_type_int_dayTimeDuration():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/dayTimeDuration"], "", []]
+      ]
+    }
+      
+    valid_data_list = ["P2DT3H", "PT30M", "PT10000M"]      
+    invalid_data_list = [1.75, "one", "1.7z5", "P3Y6M7DT23H01M30S"]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)

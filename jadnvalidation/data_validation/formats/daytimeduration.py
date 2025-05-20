@@ -18,7 +18,8 @@ class DayTimeDuration:
         """
         if self.date_str:
             try:
-                if re.fullmatch("^-?P((([0-9]+Y)([0-9]+M)?)|([0-9]+M))$", self.date_str, flags=0): 
+                # slightly too broad a regex: allows "P" as all pieces are optional instead of requiring one digit and one designator.
+                if re.fullmatch("^-?P(([0-9]+D)?T?([0-9]+H)?([0-9]+M)?([0-9]+S)?)$", self.date_str, flags=0): 
                     pass
                 else: 
                     raise ValueError(f"Entry does not match dayTimeDuration: {self.date_str}")  
