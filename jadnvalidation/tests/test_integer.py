@@ -293,3 +293,34 @@ def test_type_int_gMonthDay():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_xml_type_int_gMonthDay():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/gMonthDay"], "", []]
+      ]
+    }
+      
+    valid_data_list = ["--04-12", "--04-12Z", "--04-12-01:00"]      
+    invalid_data_list = [1.75, "one", "1.7z5", "--4-6", "04-12"]
+  
+    valid_xml_1 = """<Root-Test>--04-12</Root-Test>""" 
+    valid_xml_2 = """<Root-Test>--04-12Z</Root-Test>""" 
+    valid_xml_3 = """<Root-Test>--04-12-01:00</Root-Test>""" 
+
+    invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+    invalid_xml_3 = """<Root-Test>1.7z5</Root-Test>"""
+    invalid_xml_4 = """<Root-Test>--4-6"</Root-Test>""" 
+    invalid_xml_5 = """<Root-Test>04-12</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4, invalid_xml_5]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)     
