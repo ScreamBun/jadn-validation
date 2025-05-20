@@ -21,5 +21,6 @@ class GYearMonth:
                     raise ValueError(f"Entry does not match gYearMonth: {self.data}")  
             except ValueError:
                 raise ValueError(f"Invalid gYearMonth: {self.data}")
+        else: raise ValueError("Invalid gYearMonth: must not be empty")
         
         
