@@ -28,9 +28,6 @@ def test_xml_type_int():
         ["Root-Test", "Integer", [], "", []]
       ]
     }
-      
-    valid_data_list = [1, 0, -1, 1000, -1000]      
-    invalid_data_list = [1.75, "one", "1.7z5"]
   
     valid_xml_1 = """<Root-Test>1</Root-Test>"""
     valid_xml_2 = """<Root-Test>-1</Root-Test>"""
@@ -226,6 +223,40 @@ def test_type_int_gYear():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_xml_type_int_gYear():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/gYear"], "", []]
+      ]
+    }
+    
+    valid_xml_1 = """<Root-Test>2004</Root-Test>"""  # 2004
+    valid_xml_2 = """<Root-Test>2004-05:00</Root-Test>""" # 2004, US Eastern Standard Time
+    valid_xml_3 = """<Root-Test>12004</Root-Test>""" # 	the year 12004
+    valid_xml_4 = """<Root-Test>0922</Root-Test>""" # the year 922
+    valid_xml_5 = """<Root-Test>-0045</Root-Test>""" # 45 BC
+    invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+    invalid_xml_3 = """<Root-Test>1.7z5</Root-Test>"""
+    invalid_xml_4 = """<Root-Test>99</Root-Test>""" # the century must not be truncated
+    invalid_xml_5 = """<Root-Test>444</Root-Test>"""
+
+    # valid_data_list = [valid_xml_1]
+    # valid_data_list = [valid_xml_1, valid_xml_2]
+    # valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
+    # valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3, valid_xml_4]
+    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3, valid_xml_4, valid_xml_5]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4, invalid_xml_5]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)      
+   
 
 def test_type_int_gYearMonth():
     root = "Root-Test"

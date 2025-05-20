@@ -2,8 +2,8 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_opts
-from jadnvalidation.utils.general_utils import split_on_first_char, create_fmt_clz_instance
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
+from jadnvalidation.utils.general_utils import create_fmt_clz_instance
 
 
 common_rules = {
@@ -40,39 +40,7 @@ class Integer:
         self.data_format = data_format
         
         self.j_config = get_j_config(self.j_schema)
-        self.errors = []       
-        
-    def give_format_constraint(self, format: str, option_index: int):
-            format_designator, designated_value = split_on_first_char(format) 
-            
-            if format == 'duration':
-                constraint_vals = [0, None]
-                
-                return constraint_vals[option_index]
-
-            elif format_designator == 'i':            
-                try:
-                    signed_value = int(designated_value) -1
-                    unsig_min = pow(-2,signed_value) - 1
-                    unsig_max = pow(2,signed_value) -1
-                    struct = [unsig_min, unsig_max]
-                    
-                    return struct[option_index]
-                except ValueError as e:
-                    raise ValueError(f"i<n> format requires a numeric component following signed signifier. {e}")
-
-            elif format_designator == "u":
-                try:
-                    unsigned_value = int(designated_value)
-                    unsig_min = 0
-                    unsig_max = pow(2,unsigned_value)
-                    struct = [unsig_min, unsig_max]
-                    
-                    return struct[option_index]
-                except ValueError as e:
-                    raise ValueError(f"u<n> format requires a numeric component following unsigned signifier. {e}")
-            else: 
-                return None         
+        self.errors = []             
         
     def check_format(self):
         format = get_format(self.j_type)
@@ -100,13 +68,26 @@ class Integer:
             
     def xml_check_type(self):
         if self.data is not None:
-            if isinstance(self.data, str):
+            format = get_format(self.j_type)
+            
+            if isinstance(self.data, bool):
+                raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer, not Boolean. Received: {type(self.data)}")            
+            
+            elif isinstance(self.data, int):
+                pass
+            
+            elif isinstance(self.data, str) and format in ['date','date-time','gYear','gMonthDay','gYearMonth']:
+                """ Note: Specific formats may allow users to enter formatted strings in place of integers. 
+                    This is their enumeration in this check."""    
+                pass                  
+            
+            elif isinstance(self.data, str):
                 try:
                     self.data = int(self.data)
                 except ValueError as e:
                     raise ValueError(f"Unable to serialize data into an type integer. Received: {type(self.data)}")
             
-            if not isinstance(self.data, int):
+            else:
                 raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
                         
     def check_min_val(self):
