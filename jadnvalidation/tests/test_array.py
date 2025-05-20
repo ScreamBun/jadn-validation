@@ -235,11 +235,14 @@ def test_array_max_occurs():
     }
     
     valid_data_list = [
-            ["test 1", [True, False], [1, 2, 3]]
+            ["test 1", [True, False], [1, 2, 3]],
+            ["test 1", [True], [1, 2, 3]],
+            ["test 1", [True, False], [1]]
         ]
     
     invalid_data_list = [
             ["test 1", [True, False, True], [1, 2, 3]],
+            [["test 1", "test2"], [True, False, True], [1, 2, 3]],
             ["test 1", [True, False, True], [1, 2, 3, 4]]
         ]
         
@@ -255,20 +258,24 @@ def test_array_min_max_occurs():
     j_schema = {
         "types": [
             ["Root-Test", "Array", [], "", [
-                [1, "field_value_1", "String", ["[1", "]1"], ""],
-                [2, "field_value_2", "Boolean", ["[2", "]2"], ""],
-                [3, "field_value_3", "Integer", ["[3", "]3"], ""]
+                [1, "field_value_1", "String", ["[0", "]1"], ""],
+                [2, "field_value_2", "Boolean", ["[1", "]2"], ""],
+                [3, "field_value_3", "Integer", ["[2", "]3"], ""]
             ]]
         ]
     }
     
     valid_data_list = [
-            ["test 1", [True, False], [1, 2, 3]]
+            ["test 1", [True, False], [1, 2, 3]],
+            [None, [True, False], [1, 2, 3]],
+            ["test 1", [True], [1, 2, 3]],
+            ["test 1", [True, False], [1, 2]]
         ]
     
     invalid_data_list = [
             ["test 1", [True, False, True], [1, 2, 3]],
-            ["test 1", [True], [1, 2, 3]],
+            [["test 1", "test2"], [True], [1, 2, 3]],
+            [[True, False], [1, 2, 3]],
             ["test 1", [True, False, True], [1, 2, 3, 4]]
         ]
         
@@ -375,4 +382,70 @@ def test_forward_ref():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
-    assert err_count == len(invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+    
+def test_ipv4net():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["/ipv4-net", "{1", "}2"], "", [
+                [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1", "[1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+                [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["127.0.0.1", 5],
+            ["127.0.0.1"],
+            [b"127.0.0.1", 1]
+        ]
+    
+    invalid_data_list = [
+            [123, 'Any String'],
+            [True]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+    
+def test_ipv6net():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["/ipv6-net", "{2", "}2"], "", [
+                [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1", "[1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+                [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            ["2001:db8:3333:4444:5555:6666:1.2.3.4", 5],
+            ["2001:db8:3333:4444:5555:6666:1.2.3.4"],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 1]
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)         
