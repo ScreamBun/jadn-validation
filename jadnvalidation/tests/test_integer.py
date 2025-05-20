@@ -275,6 +275,40 @@ def test_type_int_gYearMonth():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_xml_type_int_gYearMonth():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/gYearMonth"], "", []]
+      ]
+    }
+      
+    valid_data_list = ["1000-12", "-1000-05", "1000-12-05:00", "-1000-05Z"]      
+    invalid_data_list = ["one", "1.7z5", 99, 1.750, 1000, "1000", "01-01", "1999-99", ""]
+
+    valid_xml_1 = """<Root-Test>1000-12</Root-Test>""" 
+    valid_xml_2 = """<Root-Test>-1000-05</Root-Test>""" 
+    valid_xml_3 = """<Root-Test>1000-12-05:00</Root-Test>""" 
+    valid_xml_4 = """<Root-Test>-1000-05Z</Root-Test>""" 
+
+    invalid_xml_1 = """<Root-Test>one</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>1.7z5</Root-Test>"""
+    invalid_xml_3 = """<Root-Test>99</Root-Test>"""
+    invalid_xml_4 = """<Root-Test>1.750</Root-Test>""" 
+    invalid_xml_5 = """<Root-Test>1000</Root-Test>"""
+    invalid_xml_6 = """<Root-Test>01-01</Root-Test>"""
+    invalid_xml_7 = """<Root-Test>1999-99</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3, valid_xml_4]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4, invalid_xml_5, invalid_xml_6, invalid_xml_7]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)   
 
 def test_type_int_gMonthDay():
     root = "Root-Test"
@@ -302,9 +336,6 @@ def test_xml_type_int_gMonthDay():
         ["Root-Test", "Integer", ["/gMonthDay"], "", []]
       ]
     }
-      
-    valid_data_list = ["--04-12", "--04-12Z", "--04-12-01:00"]      
-    invalid_data_list = [1.75, "one", "1.7z5", "--4-6", "04-12"]
   
     valid_xml_1 = """<Root-Test>--04-12</Root-Test>""" 
     valid_xml_2 = """<Root-Test>--04-12Z</Root-Test>""" 
@@ -313,7 +344,7 @@ def test_xml_type_int_gMonthDay():
     invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
     invalid_xml_2 = """<Root-Test>one</Root-Test>"""
     invalid_xml_3 = """<Root-Test>1.7z5</Root-Test>"""
-    invalid_xml_4 = """<Root-Test>--4-6"</Root-Test>""" 
+    invalid_xml_4 = """<Root-Test>--4-6</Root-Test>""" 
     invalid_xml_5 = """<Root-Test>04-12</Root-Test>"""
 
     valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
