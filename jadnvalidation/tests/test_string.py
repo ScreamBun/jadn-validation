@@ -435,6 +435,30 @@ def test_string_datetime():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_xml_string_datetime():
+    root = "Root-Test"   
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/date-time"], "", []]
+      ]
+    }
+        
+    valid_xml_1 = """<Root-Test>2023-08-13T16:07:54Z</Root-Test>"""
+    valid_xml_2 = """<Root-Test>2023-08-13T16:07:54+02:00</Root-Test>"""
+    valid_xml_3 = """<Root-Test>2023-08-13 16:07:54Z</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>hfdkjlajfdkl</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>yy2024-01-01zz</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)    
   
 def test_str():
     root = "Root-Test"
