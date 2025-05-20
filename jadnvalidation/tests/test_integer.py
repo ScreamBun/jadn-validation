@@ -244,10 +244,6 @@ def test_xml_type_int_gYear():
     invalid_xml_4 = """<Root-Test>99</Root-Test>""" # the century must not be truncated
     invalid_xml_5 = """<Root-Test>444</Root-Test>"""
 
-    # valid_data_list = [valid_xml_1]
-    # valid_data_list = [valid_xml_1, valid_xml_2]
-    # valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
-    # valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3, valid_xml_4]
     valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3, valid_xml_4, valid_xml_5]
     invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4, invalid_xml_5]
   
