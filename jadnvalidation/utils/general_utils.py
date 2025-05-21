@@ -296,6 +296,14 @@ def is_even(n):
 def is_odd(n):
     return n % 2 != 0
 
+def is_arg_format(format):
+    if format:
+        split_format = split_on_first_char(format)
+        if (split_format[0] in ["i", "u"]) & (isinstance(split_format[1], int)):
+            return True
+    else: return False
+
+
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.
 

@@ -44,7 +44,10 @@ class Integer:
         
     def check_format(self):
         format = get_format(self.j_type)
-        if format is not None:
+        if format is not None: # add is_arg_format(), 
+            # if true send these values into the format, or pull them, then run minv and maxv checks in validate
+            # then make clz instance with args passed.
+            # else:
             fmt_clz_instance = create_fmt_clz_instance(format, self.data)
             fmt_clz_instance.validate()        
 
