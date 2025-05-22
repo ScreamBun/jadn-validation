@@ -111,7 +111,9 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Language" : "jadnvalidation.data_validation.formats.language",
         "GYear" : "jadnvalidation.data_validation.formats.gyear",
         "GYearMonth" : "jadnvalidation.data_validation.formats.gyearmonth",
-        "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday"
+        "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
+        "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer.py",
+        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer.py"
     }
     
     formatted_class_name = format_class_name(class_name)
@@ -303,6 +305,21 @@ def is_arg_format(format):
             return True
     else: return False
 
+def give_format_constraint(format: str, option_index: int):
+    # the frankenstein logic from before was a larger version of this; its moved into the formats now, 
+    # but if you want one here, itll be like this
+
+    format_designator, designated_value = split_on_first_char(format)    
+    # if you need to differentiate by format designator: a holdover         
+    try:
+        unsigned_value = int(designated_value)
+        print("uN value is 2^"+str(unsigned_value))
+        unsig_min = 0
+        unsig_max = pow(2,unsigned_value)
+        struct = [unsig_min, unsig_max]
+        return struct[option_index]
+    except ValueError as e:
+        print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
 
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.

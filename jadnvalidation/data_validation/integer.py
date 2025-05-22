@@ -3,7 +3,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
-from jadnvalidation.utils.general_utils import create_fmt_clz_instance
+from jadnvalidation.utils.general_utils import create_fmt_clz_instance, split_on_first_char, is_arg_format
 
 
 common_rules = {
@@ -45,11 +45,24 @@ class Integer:
     def check_format(self):
         format = get_format(self.j_type)
         if format is not None: # add is_arg_format(), 
-            # if true send these values into the format, or pull them, then run minv and maxv checks in validate
-            # then make clz instance with args passed.
-            # else:
-            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
-            fmt_clz_instance.validate()        
+            if is_arg_format(format):
+                format_split = split_on_first_char(format)
+                format_designator = format_split[0]
+                if format_designator == 'i':
+                    format = "SignedInteger"
+                elif format_designator == 'u':
+                    format = "UnsignedInteger"
+                format_restriction = format_split[1] 
+                fmt_clz_instance = create_fmt_clz_instance(format, self.data, format_restriction)
+                fmt_clz_instance.validate()        
+
+                # i think we still need a check to set the constraints of the validation based on user input,
+                # so it will look at format options over jadn defaults from the default config
+                # but im out of time before my trip... i can get it later, if its still here when i get back (probably fixed by then)
+
+            else:
+                fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+                fmt_clz_instance.validate()        
 
     def json_check_type(self):
         if self.data is not None:
@@ -106,6 +119,9 @@ class Integer:
             if max_val is not None and self.data > max_val:
                 self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
         
+    def give_format_constraint(format: str, option_index: int):
+        format_designator, designated_value = split_on_first_char(format) 
+
     def validate(self):
         
         # Check data against rules
