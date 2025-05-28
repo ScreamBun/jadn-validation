@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
-from jadnvalidation.utils.consts import XML
+from jadnvalidation.utils.consts import CBOR, XML
 
 def test_string_language():
     root = "Root-Test"
@@ -477,6 +477,24 @@ def test_str():
               
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_cbor_str():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["{4", "}12"], "", []]
+      ]
+    }
+
+    valid_data_list = ['6b7465737420737472696e67']
+    invalid_data_list = ['1910e3', '627a7a', '6e74657374696e6720737472696e67']
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, CBOR)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, CBOR)
+    assert err_count == len(invalid_data_list)    
     
 def test_xml_str():
     root = "Root-Test"

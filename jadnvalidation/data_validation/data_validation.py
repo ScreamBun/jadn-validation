@@ -4,7 +4,8 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name,
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.utils.consts import CBOR, JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
-from jadnxml.builder.xml_builder import build_py_from_xml
+from jadncbor.builder import convert_cbor_to_json
+from jadnxml.builder.xml_builder import build_py_from_xml, valid_xml_from_string
 
 from jadnvalidation.utils.type_utils import get_schema_type_by_name
 
@@ -23,22 +24,24 @@ class DataValidation:
         self.data_format = data_format
         self.j_config = get_j_config(self.j_schema)        
         
-    def validate(self):
+    def validate(self):     
         
         try:
             
             if self.data_format == JSON:
-                # TODO: Move str to json conversion here
-                # self.data = 
-                pass             
-            
+                pass
+                        
             elif self.data_format == XML:
+                isvalid = valid_xml_from_string(self.data)
+                if not isvalid:
+                    raise ValueError("Invalid XML Data")
+                
                 self.data = build_py_from_xml(self.j_schema, self.root, self.data)
                 
             elif self.data_format == CBOR:
-                # TODO: Move str to cbor conversion here
-                # self.data = 
-                pass
+                self.data = convert_cbor_to_json(self.data)
+                self.data_format == JSON
+                
             else:
                 raise ValueError(f"Invalid Data Format: {self.data_format}")
             
@@ -49,8 +52,10 @@ class DataValidation:
             roots: list = []
             if isinstance(self.root, str):
                 roots.append(self.root)
+                
             elif isinstance(self.root, list):
                 roots = self.root
+                
             else:
                 raise ValueError(f"Invalid Root Type")
             
