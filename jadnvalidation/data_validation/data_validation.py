@@ -1,9 +1,10 @@
+import json
 from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.utils.consts import CBOR, JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance
+from jadnvalidation.utils.general_utils import create_clz_instance, detect_json_format
 from jadncbor.builder import convert_cbor_to_json
 from jadnxml.builder.xml_builder import build_py_from_xml, valid_xml_from_string
 
@@ -29,7 +30,14 @@ class DataValidation:
         try:
             
             if self.data_format == JSON:
-                pass
+                
+                if isinstance(self.data, str):
+                    try:
+                        detection_result = detect_json_format(self.data)
+                        if detection_result == JSON:
+                            self.data = json.loads(self.data)
+                    except Exception as err:
+                        raise ValueError(f"Invalid JSON Data: {err}")
                         
             elif self.data_format == XML:
                 isvalid = valid_xml_from_string(self.data)

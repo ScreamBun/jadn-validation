@@ -347,3 +347,22 @@ def test_record_max_occurs():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_record_str_conversion():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", ["{2", "}2"], "", [
+                [1, "field_value_1a", "String", [], ""],
+                [2, "field_value_2a", "String", [], ""]
+            ]]          
+        ]
+    }  
+    
+    valid_data_list = [
+        '{"field_value_1a": "test field", "field_value_2a": "Anytown"}'
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0

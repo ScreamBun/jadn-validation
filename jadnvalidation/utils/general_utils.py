@@ -6,6 +6,8 @@ import importlib
 
 from typing import Callable, Union
 
+from jadnvalidation.utils.consts import JSON, UNKNOWN, XML
+
 def addKey(d: dict, k: str = None) -> Callable:
     """
     Decorator to append a function to a dict, referencing the function name or given key as the key in the dict
@@ -52,6 +54,31 @@ def create_clz_instance(class_name: str, *args, **kwargs):
     cls = getattr(module, class_name)
     
     return cls(*args, **kwargs)
+
+def detect_json_format(data: str) -> str: 
+    """
+    Detects the format of a JSON string and returns the format type.
+    
+    Args:
+        data (str): The JSON string to check.
+        convert (bool): If True, converts the string to a valid JSON format if it is not already.
+        
+    Returns:
+        str: The detected format type ('JSON', 'CBOR', 'XML', or 'Unknown').
+    """
+    if isinstance(data, str):
+        data = data.strip()
+        
+        if data.startswith('{') and data.endswith('}'):
+            return JSON
+        elif data.startswith('<') and data.endswith('>'):
+            return XML
+        elif data.startswith('[') and data.endswith(']'):
+            return JSON
+        else:
+            return UNKNOWN
+    
+    return UNKNOWN
 
 def format_class_name(class_name: str) -> str:
     """
