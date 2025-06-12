@@ -52,7 +52,7 @@ class Integer:
                     format = "SignedInteger"
                 elif format_designator == 'u':
                     format = "UnsignedInteger"
-                format_restriction = format_split[1] 
+                format_restriction = int(format_split[1]) 
                 fmt_clz_instance = create_fmt_clz_instance(format, self.data, format_restriction)
                 fmt_clz_instance.validate()        
 

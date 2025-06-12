@@ -142,7 +142,7 @@ def test_type_int_i8():
       ]
     }
     
-    valid_data_list = [-128, 127, 0]      
+    valid_data_list = [-128, 127, 0, 1]      
     invalid_data_list = [-129, 128, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -204,6 +204,42 @@ def test_type_int_i64():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)    
+
+def test_type_int_u8():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/u8"], "", []]
+      ]
+    }
+    
+    valid_data_list = [127, 0, 1]      
+    invalid_data_list = [-129, 128, -1, "1"] 
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_type_int_u16():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/u16"], "", []]
+      ]
+    }
+    
+    valid_data_list = [32767, 0, 1]      
+    invalid_data_list = [-32769, 32768, -1, "1"] 
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
 
 def test_type_int_gYear():
     root = "Root-Test"

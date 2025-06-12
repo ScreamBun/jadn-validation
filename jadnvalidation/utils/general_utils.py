@@ -95,10 +95,6 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Regex" : "jadnvalidation.data_validation.formats.regex",
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
         "JadnJsonPointer" : "jadnvalidation.data_validation.formats.json_pointer",
-        "I8" : "jadnvalidation.data_validation.formats.i8",
-        "I16" : "jadnvalidation.data_validation.formats.i16",
-        "I32" : "jadnvalidation.data_validation.formats.i32",
-        "I64" : "jadnvalidation.data_validation.formats.i64",
         "Iri" : "jadnvalidation.data_validation.formats.iri",
         "IriReference" : "jadnvalidation.data_validation.formats.iri_ref",
         "Uri" : "jadnvalidation.data_validation.formats.uri",
@@ -112,8 +108,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "GYear" : "jadnvalidation.data_validation.formats.gyear",
         "GYearMonth" : "jadnvalidation.data_validation.formats.gyearmonth",
         "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
-        "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer.py",
-        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer.py"
+        "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
+        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer"
     }
     
     formatted_class_name = format_class_name(class_name)
@@ -301,7 +297,7 @@ def is_odd(n):
 def is_arg_format(format):
     if format:
         split_format = split_on_first_char(format)
-        if (split_format[0] in ["i", "u"]) & (isinstance(split_format[1], int)):
+        if (split_format[0] in ["i", "u"]) & ((split_format[1]).isdigit()):
             return True
     else: return False
 
