@@ -249,6 +249,7 @@ def test_type_int_u8():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
 def test_xml_type_int_u8():
     root = "Root-Test"
     
@@ -341,7 +342,6 @@ def test_xml_type_int_gYear():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)      
    
-
 def test_type_int_gYearMonth():
     root = "Root-Test"
     
