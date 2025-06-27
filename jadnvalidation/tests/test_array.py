@@ -449,3 +449,31 @@ def test_ipv6net():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)         
+    
+def test_empty_array():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["}0"], "", []
+            ]]
+    }
+    
+    valid_data_list = [
+            []
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129], "",
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)         

@@ -9,7 +9,7 @@ from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "type": "check_type",
-    "choice": "check_choice",
+    "choice": "check_choice"
 }
 
 json_rules = {}
@@ -102,6 +102,13 @@ class Choice:
             
             if j_field:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
+           
+    def process_tagID(self, use_ids):
+        for key, choice_data in self.data.items():
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            
+            if j_field:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
         
     def process_one_of(self, use_ids):
 
@@ -142,6 +149,8 @@ class Choice:
                 self.process_any_of(use_ids)
             case Choice_Consts.CHOICE_NOT:
                 self.process_not(use_ids)
+            case Choice_Consts.CHOICE_TAG_ID:
+                self.process_tag_id(use_ids)
             case _:
                 self.process_one_of(use_ids)
                                 

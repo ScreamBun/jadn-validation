@@ -231,3 +231,72 @@ def test_array_of_arrays():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+
+def test_array_of_arrays_2():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Sub-Array", "{1", "}3"], ""], 
+            ["Sub-Array", "Array", [], "", [
+                [1, "test_field_1", "Integer", ["[0"], ""],
+                [2, "test_field_2", "String", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            [[1, "Hello"],[2, "World"]],
+            [[1, "Hello"]],
+            [[1, "Hello"],[2, "World"], [0, "yup"]]
+        ]
+    
+    invalid_data_list = [
+            ["1", 1, 11],
+            ["test"],
+            [[1, "Hello"],[2, "World"], [0, "yup"], [4, "This is too long"]]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+
+def test_array_of_choice():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Choice-List", "{1", "}3"], ""], 
+            ["Choice-List", "Choice", [], "", [
+                [1, "test_field_1", "Integer", [], ""],
+                [2, "test_field_2", "String", [], ""],
+                [2, "test_field_3", "ArrayOf", ["*String"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        [{"test_field_2": "illum repellendus nobis"}], 
+        [{"test_field_3": ["illum repellendus nobis"]}] 
+        ]
+    
+    invalid_data_list = [
+
+            [[1, "Hello"],[2, "World"], [0, "yup"], [4, "This is too long"]]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
