@@ -3,7 +3,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field
-from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids
+from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids, get_vtype
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -28,6 +28,8 @@ class Choice:
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
+
+            #if get_vtype(self.j_type): see if this goes here shortly
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
@@ -40,6 +42,18 @@ class Choice:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
+        
+    def check_tagID(self, use_ids):
+        tag_opt = self.j_type.fields[1]
+        # TODO this is getting moved into mapping utils i think, brb
+
+        for key, choice_data in self.data.items():
+            # this instead needs to be looking for a specified field value
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            # 
+            if j_field:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but needs {tag_opt} tagID")
+       
         
     def process_any_of(self, use_ids):
         
@@ -103,13 +117,7 @@ class Choice:
             if j_field:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
            
-    def process_tagID(self, use_ids):
-        for key, choice_data in self.data.items():
-            j_field = get_j_field(self.j_type.fields, key, use_ids)
-            
-            if j_field:
-                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
-        
+ 
     def process_one_of(self, use_ids):
 
         # only one choice is allowed        

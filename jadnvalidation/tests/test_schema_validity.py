@@ -152,8 +152,8 @@ def test_metadata_validity():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
-def test_types_validity(): 
-    root = "Type-Array"    
+def test_total_validity(): 
+    root = "Schema"    
   
     j_schema = {
     "info": {
@@ -161,20 +161,18 @@ def test_types_validity():
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
       "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
       "license": "CC-BY-4.0",
-      "exports": ["Type-Array"],
+      "exports": ["Metadata"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
     },
 
     "types": [
-
       ["Schema", "Record", [], "Definition of a JADN package", [
-        [1, "info", "Metadata", ["[0"], "Information about this package"],
+        [1, "info", "String", ["[0"], "Information about this package"],
         [2, "types", "Type", ["[1", "]-1"], "Types defined in this package"]
       ]],
-
-      ["Type-Array", "ArrayOf", ["*Type", "[1", "]-1"], "TODO REMOVE THIS AND MERGE BACK INTO ONE DOC", []],
+      
 
       ["Metadata", "Map", [], "Information about this package", [
         [1, "package", "Namespace", [], "Unique name/version of this package"],
@@ -216,11 +214,11 @@ def test_types_validity():
       ["TypeRef", "String", [], "Reference to a type, matching ($NSID ':')? $TypeName"],
 
       ["Type", "Array", [], "", [
-        [1, "type_name", "TypeName"],
-        [2, "core_type", "JADN-Type-Enum"],
-        [3, "type_options", "Options", ["[0"]],
+        [1, "type_name", "TypeName", [], ""],
+        [2, "core_type", "JADN-Type-Enum", []],
+        [3, "type_options", "Options", ["[0"], ""],
         [4, "type_description", "Description", ["[0"]],
-        [5, "fields", "JADN-Type", ["[0"]]
+        [5, "fields", "ArrayOf", ["*JADN-Type", "[0"]]
       ]],
 
       ["JADN-Type-Enum", "Enumerated", [], "", [
@@ -238,22 +236,22 @@ def test_types_validity():
         [12, "Record"]
       ]],
 
-      ["JADN-Type", "Choice", ["O"], "", [
-        [1, "Binary", "Empty"],
-        [2, "Boolean", "Empty"],
-        [3, "Integer", "Empty"],
-        [4, "Number", "Empty"],
-        [5, "String", "Empty"],
-        [6, "Enumerated", "Items"],
-        [7, "Choice", "Fields"],
-        [8, "Array", "Fields"],
-        [9, "ArrayOf", "Empty"],
-        [10, "Map", "Fields"],
-        [11, "MapOf", "Empty"],
-        [12, "Record", "Fields"]
+      ["JADN-Type", "Choice", [], "", [
+        [1, "Binary", "Empty", [], ""],
+        [2, "Boolean", "Empty", [], ""],
+        [3, "Integer", "Empty", [], ""],
+        [4, "Number", "Empty", [], ""],
+        [5, "String", "Empty", [], ""],
+        [6, "Enumerated", "Items", [], ""],
+        [7, "Choice", "Fields", [], ""],
+        [8, "Array", "Fields", [], ""],
+        [9, "ArrayOf", "Empty", [], ""],
+        [10, "Map", "Fields", [], ""],
+        [11, "MapOf", "Empty", [], ""],
+        [12, "Record", "Fields", [], ""]
       ]],
 
-      ["Empty", "Array", ["}0"]],
+      ["Empty", "Array", ["}0"], "", []],
 
       ["Items", "ArrayOf", ["*Item"]],
 
@@ -283,15 +281,66 @@ def test_types_validity():
     ]
   }
     
-    valid_data_1 = [["Record-Name", "Record", [], "", [
-        {"Fields":[1, "field_value_1", "String", [], ""]},
-        {"Fields":[2, "field_value_2", "Integer", [], ""]}
-      ]]]
-    valid_data_2 = [["String-Name", "String", [], ""]]
     
+    valid_data_list = [ 
+        {
+          "info" : "Hello, World",
+          "types": ["String-Name", "String"]
+        }
+    ]
+    invalid_data_list = [
+
+         {'SuitEnum': 10},'Aces', 10
+         
+         ]
     
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
+
+
+"""
+def test_types_validity(): 
+    root = "Type"    
+  
+    j_schema = {
+    "info": {
+      "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
+      "exports": ["Types-Map"],
+      "config": {
+        "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
+      }
+    },
+    "types": [
+      ["Types-Map", "MapOf", ["+String", "*Type-Array"], "TODO REMOVE THIS AND MERGE BACK INTO ONE DOC", []],
+      ["Type-Array", "ArrayOf", ["*Type"], "TODO REMOVE THIS AND MERGE BACK INTO ONE DOC", []],
+      ["Type", "Array", [], "", [
+        [1, "type_name", "String"],
+        [2, "core_type", "String"]
+      ]],
+
+    ]
+  }
     
-    valid_data_list = [ valid_data_1, valid_data_2 ]
+    valid_data_1 = {"types": [["Record-Name", "Record", [], "", [
+        {"Fields": [1, "field_value_1", "String", [], ""]},
+        {"Fields": [2, "field_value_2", "Integer", [], ""]}
+      ]]]}
+    valid_data_2 = {"types": [["String-Name", "String", [], "", {"String":[]}]]}
+    valid_data_3 = {"types": [["String-Name", "String", {"String": ["Hello-World"]}]]}
+    
+    valid_data_4 = {"types": [["String-Name", "String", []]]}
+    
+    valid_data_list = [
+    {
+    "types" : [["String-Name", "String"]]
+    }, 
+    ["String-Name", "String"]
+    ]
+
+    #valid_data_list = [ valid_data_1, valid_data_2, valid_data_3, valid_data_4 ]
     invalid_data_list = [
 
          {'SuitEnum': 10},'Aces', 10
@@ -307,7 +356,7 @@ def test_types_validity():
 
   
 
-"""
+
 {
   "info": {
     "title": "Music Library",

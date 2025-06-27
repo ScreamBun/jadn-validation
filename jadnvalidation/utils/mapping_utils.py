@@ -23,6 +23,10 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     
     return j_field_obj
 
+def use_tag_ID(j_type_opts: List[str]) -> str:
+    tag_id = Jadn_Type.fields[1]
+    # todo more here, brb
+
 def get_choice_type(j_type_opts: List[str]) -> str:
     choice_type = Choice_Consts.CHOICE_ONE_OF
     
