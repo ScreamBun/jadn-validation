@@ -79,7 +79,89 @@ def test_type_int_date():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
 
-def test_xml_type_int():
+def test_type_int_date_time():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/date-time"], "", []]
+      ]
+    }
+      
+    valid_data_list = [1751677200]      
+    invalid_data_list = [-1.57]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_xml_type_int_date_time():
+    root = "Root-Test"
+
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/date-time"], "", []]
+      ]
+    }
+
+    valid_xml_1 = """<Root-Test>1751677200</Root-Test>"""
+    valid_xml_2 = """<Root-Test>0</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>-1.57</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)
+    assert err_count == 0
+
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)
+
+def test_type_int_time():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/time"], "", []]
+      ]
+    }
+      
+    valid_data_list = [1751677200]      
+    invalid_data_list = [-1.57]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_xml_type_time():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/time"], "", []]
+      ]
+    }
+  
+    valid_xml_1 = """<Root-Test>1751677200</Root-Test>"""
+    valid_xml_2 = """<Root-Test>0</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>-1.57</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)
+
+def test_xml_type_int_date():
     root = "Root-Test"
     
     j_schema = {
@@ -89,7 +171,7 @@ def test_xml_type_int():
     }
   
     valid_xml_1 = """<Root-Test>101924</Root-Test>"""
-    valid_xml_2 = """<Root-Test></Root-Test>"""
+    valid_xml_2 = """<Root-Test>105</Root-Test>"""
     invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
     invalid_xml_2 = """<Root-Test>one</Root-Test>"""
 
