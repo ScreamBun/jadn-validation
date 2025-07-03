@@ -12,7 +12,15 @@ class Time:
         self.time = time
     
     def validate(self):
-        try:
-            datetime.strptime(self.time, self.time_format)
-        except ValueError:
-            raise ValueError(f"Incorrect time format, should be {self.time_format}.  Recieved {self.time}")
+        if isinstance(self.time, str):
+            try:
+                datetime.strptime(self.time, self.time_format)
+            except ValueError:
+                raise ValueError(f"Incorrect time format, should be {self.time_format}.  Recieved {self.time}")
+        elif isinstance(self.time, int):
+            try:
+                datetime.fromtimestamp(self.time)
+            except ValueError:
+                raise ValueError(f"Invalid timestamp value: {self.time}")
+        else:
+            raise ValueError(f"Time must be a string or an integer (timestamp). Received: {type(self.time)}")
