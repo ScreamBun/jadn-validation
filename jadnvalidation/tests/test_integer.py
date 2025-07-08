@@ -184,41 +184,74 @@ def test_xml_type_int_date():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)  
 
-def test_type_int_day_time_duration():
+def test_xml_type_int_day_time_duration():
     root = "Root-Test"
     
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", [], "", []]
+        ["Root-Test", "Integer", ["/dayTimeDuration"], "", []]
       ]
     }
-      
-    valid_data_list = [1, 0, -1, 1000, -1000]      
-    invalid_data_list = [1.75, "one", "1.7z5"]
   
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    assert err_count == 0
-        
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+    valid_xml_1 = """<Root-Test>P3DT4H30M15S</Root-Test>"""
+    valid_xml_2 = """<Root-Test>P3DT4H30M10S</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
 
-def test_type_int_year_month_duration():
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)  
+
+def test_xml_type_int_duration():
     root = "Root-Test"
     
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", [], "", []]
+        ["Root-Test", "Integer", ["/duration"], "", []]
       ]
     }
-      
-    valid_data_list = [1, 0, -1, 1000, -1000]      
-    invalid_data_list = [1.75, "one", "1.7z5"]
   
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    valid_xml_1 = """<Root-Test>101924</Root-Test>"""
+    valid_xml_2 = """<Root-Test>105</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0
-        
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)  
+
+def test_xml_type_int_year_month_duration():
+    root = "Root-Test"
+    
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["/yearMonthDuration"], "", []]
+      ]
+    }
+
+    valid_xml_1 = """<Root-Test>P2Y6M</Root-Test>"""
+    valid_xml_2 = """<Root-Test>P2Y7M</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>1.75</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>one</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)  
 
 def test_type_int_min():
     root = "Root-Test"
