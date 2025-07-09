@@ -2,7 +2,7 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
@@ -79,11 +79,20 @@ class Array:
                 else:
                     raise ValueError(f"Missing required field '{j_field[1]}' for array type {self.j_type.type_name}")
         
-            if not is_primitive(j_field_obj.base_type):
-                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type)
-                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                j_field_obj = ref_type_obj
+            if not is_primitive(j_field_obj.base_type): #TODO here is where we need to also include a "build structured types" option
+                """
+                if j_field_obj.base_type in ["ArrayOf", "MapOf"]:
+                    print(f"type found {j_field_obj.base_type}, field found {j_field_obj.fields}")
+                    ref_type_obj = build_jadn_type_obj(j_field_obj.base_type)
+                    j_field_obj = ref_type_obj
+                else:
+                    """
+                    
+                if is_user_defined(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                    ref_type_obj = build_j_type(ref_type)
+                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    j_field_obj = ref_type_obj
                 
             min_occurs = get_min_occurs(j_field_obj)
             max_occurs = get_max_occurs(j_field_obj, self.j_config)

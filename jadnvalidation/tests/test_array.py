@@ -383,6 +383,67 @@ def test_forward_ref():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+
+def test_forward_ref_2():
+    root = "Root-Test"
+    
+    j_schema =   {  
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1a", "ArrayName2", [], ""],
+                [2, "field_value_1b", "ArrayName2", [], ""]
+            ]],
+            ["ArrayName2", "Array", [], "", [
+                [1, "field_value_2a", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            [['Any String'], ["AnyString2"]],
+            [['123'], ['HelloWorld']]
+        ]
+    
+    invalid_data_list = [
+            [[123, 'Any String']],
+            [True], [['Hi im one item']]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+
+def test_forward_ref_toOf():
+    root = "Root-Test"
+    
+    j_schema =   {  
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1a", "ArrayName2", [], ""],
+                [2, "field_value_1b", "ArrayOf", ["*String"], ""]
+            ]],
+            ["ArrayName2", "ArrayOf", ["*String"], ""
+            ]
+        ]
+    }
+    
+    valid_data_list = [
+            [['Any String'], ["AnyString2"]],
+            [['123'], ['HelloWorld']]
+        ]
+    
+    invalid_data_list = [
+            [[123, 'Any String']],
+            [True], [['Hi im one item']]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
     
 def test_ipv4net():
     root = "Root-Test"
@@ -477,3 +538,125 @@ def test_empty_array():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)         
+
+def test_nested_array_array_enum():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["}0"], "", [
+                [1, "string-name", "String", [], ""],
+                [2, "enum", "Enum-Ex", [], ""]
+            ]],
+            ["Enum-Ex", "Enumerated", [], "", [
+                 [1, "First", ""],
+                 [2, "Second", ""]
+            ]]
+            ]
+    }
+    
+    valid_data_list = [
+            ["Hello", "First"]
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129], "",
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)    
+
+def test_nested_array_complex():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", ["}0"], "", [
+                [1, "enum", "Enums", [], ""],
+                [2, "string-name", "String", [], ""]
+            ]],
+            ["Enums", "ArrayOf", ["*Enum-Ex"], "", [
+                [1, "enum1", "Enum-Ex", [], ""],
+                [2, "enum2", "Enum-Ex", [], ""]
+            ]],
+            ["Enum-Ex", "Enumerated", [], "", [
+                 [1, "First", ""],
+                 [2, "Second", ""]
+            ]]
+            ]
+    }
+    
+    valid_data_list = [
+            [["First", "First"], "AnyString"]
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129], "",
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)    
+
+def test_nested_array_complex_2():
+    root = "Root-Test"
+    
+    j_schema =   {
+        "info": {
+            "package": "http://test/v1.0",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Array", [], "", [
+              [1, "type_name", "String", [], ""],
+              [2, "core_type", "Enum-Ex", [], ""],
+              [3, "type_options", "String", ["[0"], ""],
+              [4, "type_description", "String", ["[0"], ""],
+              [5, "fields", "ArrayOf", ["*Choice-List", "[0"], ""]
+            ]],
+            ["Enums", "ArrayOf", ["*Enum-Ex"], "", [
+                [1, "enum1", "Enum-Ex", [], ""],
+                [2, "enum2", "Enum-Ex", [], ""]
+            ]],
+            ["Enum-Ex", "Enumerated", [], "", [
+                 [1, "First", ""],
+                 [2, "Second", ""]
+            ]],
+            ["Choice-List", "Choice", [], "", [
+                [1, "enum1", "Enum-Ex", [], ""],
+                [2, "enum2", "Enum-Ex", [], ""]
+            ]],
+            ]
+    }
+    
+    valid_data_list = [
+            ["String", "First", "String", "String", ["First"]]
+        ]
+    
+    invalid_data_list = [
+            ["http://www.example.com", 80],
+            [b"2001:db8:3333:4444:5555:6666:1.2.3.4", 129], "",
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)    
+
+                

@@ -42,7 +42,7 @@ class Choice:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
-        
+    """    
     def check_tagID(self, use_ids):
         tag_opt = self.j_type.fields[1]
         # TODO this is getting moved into mapping utils i think, brb
@@ -53,7 +53,7 @@ class Choice:
             # 
             if j_field:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but needs {tag_opt} tagID")
-       
+       """
         
     def process_any_of(self, use_ids):
         

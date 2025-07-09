@@ -312,22 +312,120 @@ def test_array_of_choice_2():
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 
+
+            ["Array-Defined", "Array", [], "", [
+                [1, "array_field_1", "Integer", [], ""],
+                [2, "array_field_2", "String", [], ""],
+                [3, "array_field_3", "Choice-List", [], ""]
+            ]],                     
             ["Choice-List", "Choice", [], "", [
                 [1, "choice_field_1", "Integer", [], ""],
                 [2, "choice_field_2", "String", [], ""],
                 [3, "choice_field_3", "Tiny-Array", [], ""]
             ]],
-            ["Array-Defined", "Array", [], "", [
-                [1, "array_field_1", "Integer", [], ""],
-                [2, "array_field_2", "String", [], ""],
-                [3, "array_field_3", "Choice-List", [], ""]]],
             ["Tiny-Array", "Array", [], "", [
                 [1, "tiny_field_1", "String", [], ""]]]
         ]
     }
     
     valid_data_list = [
-        [[999, "Array-def-Name(ANY STRING)", {"choice_field_3": ["illum repellendus nobis"]}]]
+        [[
+            999, "ANY STRING", {
+                "choice_field_3": ["illum repellendus nobis"]
+                }
+            ]]
+        ]
+    
+    invalid_data_list = [
+
+            [[1, "Hello"],[2, "World"], [0, "yup"], [4, "This is too long"]]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+
+def test_array_of_choice_3():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 
+
+            ["Array-Defined", "Array", [], "", [
+                [1, "array_field_1", "Integer", [], ""],
+                [2, "array_field_2", "String", [], ""],
+                [3, "array_field_3", "Choice-Array-Of", [], ""]
+            ]],    
+            ["Choice-Array-Of", "ArrayOf", ["*Choice-List"], ""],                   
+            ["Choice-List", "Choice", [], "", [
+                [1, "choice_field_1", "Integer", [], ""],
+                [2, "choice_field_2", "String", [], ""],
+                [3, "choice_field_3", "Tiny-Array", [], ""]
+            ]],
+            ["Tiny-Array", "Array", [], "", [
+                [1, "tiny_field_1", "String", [], ""]]]
+        ]
+    }
+    
+    valid_data_list = [
+        [[
+            999, "ANY STRING", [{
+                "choice_field_3": ["illum repellendus nobis"]
+                }]
+            ]]
+        ]
+    
+    invalid_data_list = [
+
+            [[1, "Hello"],[2, "World"], [0, "yup"], [4, "This is too long"]]
+        ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
+
+def test_array_of_choice_3_copy():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "info": {
+            "package": "http://www.test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 
+
+            ["Array-Defined", "Array", [], "", [
+                [1, "array_field_1", "Integer", [], ""],
+                [2, "array_field_2", "String", [], ""],
+                [3, "array_field_3", "Choice-Array-Of", [], ""]
+            ]],    
+            ["Choice-Array-Of", "ArrayOf", ["*Choice-List"], ""],                   
+            ["Choice-List", "Choice", [], "", [
+                [1, "choice_field_1", "Integer", [], ""],
+                [2, "choice_field_2", "String", [], ""],
+                [3, "choice_field_3", "Tiny-Array", [], ""]
+            ]],
+            ["Tiny-Array", "Array", [], "", [
+                [1, "tiny_field_1", "String", [], ""]]]
+        ]
+    }
+    
+    valid_data_list = [
+        [[
+            999, "ANY STRING", [{
+                "choice_field_3": ["illum repellendus nobis"]
+                }]
+            ]]
         ]
     
     invalid_data_list = [
