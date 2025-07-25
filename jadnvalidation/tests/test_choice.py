@@ -186,7 +186,7 @@ def test_choice_anyOf():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["O"], "", [
+            ["Root-Test", "Choice", ["CO"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -233,7 +233,7 @@ def test_xml_choice_anyOf():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["O"], "", [
+            ["Root-Test", "Choice", ["CO"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -306,7 +306,7 @@ def test_choice_allOf():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["A"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -354,7 +354,7 @@ def test_xml_choice_allOf():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["A"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -404,7 +404,7 @@ def test_choice_not():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["X"], "", [
+            ["Root-Test", "Choice", ["CX"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -450,7 +450,7 @@ def test_xml_choice_not():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["X"], "", [
+            ["Root-Test", "Choice", ["CX"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -487,4 +487,92 @@ def test_xml_choice_not():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
-    assert err_count == len(invalid_data_list)          
+    assert err_count == len(invalid_data_list)    
+
+def test_choice_as_field():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Choice-Test", [], ""]
+            ]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "choice_value_1", "Integer", [], ""],
+                [2, "choice_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+
+    valid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": {"choice_value_1": 1}
+        }
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)      
+
+def test_choice_as_field_multiple():
+    root = "Root-Test"
+    
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Choice-Test", ["]-1"], ""]
+            ]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "choice_value_1", "Integer", [], ""],
+                [2, "choice_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+
+    valid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": [{"choice_value_1": 1}, {"choice_value_2": True}]
+        }
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)   

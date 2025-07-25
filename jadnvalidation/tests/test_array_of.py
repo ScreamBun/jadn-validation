@@ -379,6 +379,11 @@ def test_array_of_choice_3():
             999, "ANY STRING", [{
                 "choice_field_3": ["illum repellendus nobis"]
                 }]
+            ]],
+        [[
+            999, "ANY STRING", [{
+                "choice_field_3": ["illum repellendus nobis"], "choice_field_3": ["hahaha"]
+                }]
             ]]
         ]
     

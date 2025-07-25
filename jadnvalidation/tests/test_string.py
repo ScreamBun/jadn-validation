@@ -420,14 +420,20 @@ def test_string_datetime():
     }
 
     valid_data_list = [
-            '2023-08-13T16:07:54Z',
+            
             '2023-08-13T16:07:54+02:00',
-            '2023-08-13 16:07:54Z'
+            '2023-08-13T16:07:54-02:00',
+            '2023-08-13t16:07:54-02:00',
+            '2023-08-13 16:07:54-02:00'
         ]
-    
+    # current spec writing points to RFC9557 IXDTF as the time standard for JADN. 
+    # it is currently best used from a Rust Crate... it validates options outside ISO 8601 and RFC 3339
+    # so these libraries alone are not sufficient to validate all possible options
     invalid_data_list = [
+            '2023-08-13T16:07:54Z',
             'hfdkjlajfdkl',
-            'yy2024-01-01zz'
+            'yy2024-01-01zz',           
+            '2023-08-13 16:07:54Z'
         ]
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

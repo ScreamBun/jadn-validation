@@ -103,12 +103,12 @@ class Array:
                     
 
                     of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                    clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, field_data, self.data_format)
+                    clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
                     clz_instance.validate()
 
 
-                    ref_type_obj = build_j_type(j_field_obj.base_type, )
-                    j_field_obj = ref_type_obj
+                    #ref_type_obj = build_j_type(j_field_obj.base_type, ) ##HERE
+                    #j_field_obj = ref_type_obj
 
                 if j_field_obj.base_type == "MapOf":
                     
@@ -130,7 +130,7 @@ class Array:
             max_occurs = get_max_occurs(j_field_obj, self.j_config)
             if min_occurs > 1 or max_occurs > 1:
                 j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
-            elif max_occurs > 1:
+            elif max_occurs < 0: # examine multiplicity checks here - Kevin
                 j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)

@@ -129,8 +129,8 @@ def build_j_type(j_type: list) -> Jadn_Type | None:
         jadn_type_obj = Jadn_Type(
                 type_name=j_type[0], 
                 base_type=j_type[1], 
-                type_options=j_type[2], 
-                type_description=j_type[3],
+                type_options=safe_get(j_type, 2, []), 
+                type_description=safe_get(j_type, 3, ""),
                 fields=safe_get(j_type, 4, []))   
     else:
         raise ValueError("Invalid jadn type")

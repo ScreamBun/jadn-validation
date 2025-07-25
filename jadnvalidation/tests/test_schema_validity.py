@@ -363,7 +363,7 @@ def test_jadn_renamed():
               [2, "core_type", "JADN-Type-Enum", [], ""],
               [3, "type_options", "Options", ["[0"], ""],
               [4, "type_description", "Description", ["[0"], ""],
-              [5, "fields", "ArrayOf", ["*JADN-Type", "[0"], ""]
+              [5, "fields", "JADN-Type", ["[0", "]-1"], ""]
             ]],
 
             ["JADN-Type-Enum", "Enumerated", [], "", [
@@ -426,38 +426,29 @@ def test_jadn_renamed():
     }  
     
     valid_data_list = [
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Enumerated", [], "", {"Enumerated": [[1, "AnyString"], [2, "otherString"]]}]       
-        },           
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", [{"Binary": []}]]    
-        },           
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", [{"MapOf": []}]]     
-        },           
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", {"ArrayOf": []}]       
-        },           
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", {"Number": []}]       
-        },           
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", {"String": []}]       
-        },                        
-        {
-            "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", {"Integer": []}]       
-        },
+
         {
             "info" : {"package" : "http://example.fake"},
             "types" : ["Typename", "Binary", [], ""]        
+        },        
+        {
+            "info" : {"package" : "http://example.fake"},
+            "types" : ["Typename", "String", ["[0"], "", []]        
+        },        
+        {
+            "info" : {"package" : "http://example.fake"},
+            "types" : ["Typename", "ArrayOf", ["*Integer"], ""]        
+        },         
+        {
+            "info" : {"package" : "http://example.fake"},
+            "types" : ["Typename", "Array", [], "", [{
+                "Array": [1, "Thing1", "String", [], ""],
+                "Array": [2, "Thing2", "Integer", [], ""]}
+
+            ]]        
         }
+
+        
       ]
     
     invalid_data_list = [

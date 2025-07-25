@@ -161,15 +161,15 @@ def test_map_of_string_complex():
         "types": [
             ["Root-Test", "MapOf", ["+String", "*Type-Array"], ""],
             ["Type-Array", "ArrayOf", ["*Type", "{1", "}3"], ""], 
+            ["Type", "Array", [], "", [
+                [1, "array_field_1", "Integer", [], ""],
+                [2, "array_field_2", "String", [], ""],
+                [3, "array_field_3", "Choice-List", ["[0"], ""]]],
             ["Choice-List", "Choice", ["[0"], "", [
                 [1, "choice_field_1", "Integer", [], ""],
                 [2, "choice_field_2", "String", [], ""],
                 [3, "choice_field_3", "Tiny-Array", [], ""]
             ]],
-            ["Type", "Array", [], "", [
-                [1, "array_field_1", "Integer", [], ""],
-                [2, "array_field_2", "String", [], ""],
-                [3, "array_field_3", "Choice-List", ["[0"], ""]]],
             ["Tiny-Array", "Array", [], "", [
                 [1, "tiny_field_1", "String", [], ""]]]
         ]
