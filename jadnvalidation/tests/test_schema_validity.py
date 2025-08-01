@@ -2,17 +2,14 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
 
-
-def test_metadata_validity(): 
-    root = "Metadata"    
   
-    j_schema = {
-    "info": {
+j_meta_schema = {
+    "meta": {
       "title": "JADN Metaschema",
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
       "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
       "license": "CC-BY-4.0",
-      "exports": ["Metadata"],
+      "roots": ["Metadata"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
@@ -20,11 +17,10 @@ def test_metadata_validity():
 
     "types": [
       ["Schema", "Record", [], "Definition of a JADN package", [
-        [1, "info", "Metadata", ["[0"], "Information about this package"],
+        [1, "meta", "Metadata", ["[0"], "Information about this package"],
         [2, "types", "Type", ["[1", "]-1"], "Types defined in this package"]
       ]],
       
-
       ["Metadata", "Map", [], "Information about this package", [
         [1, "package", "Namespace", [], "Unique name/version of this package"],
         [2, "version", "String", ["{1", "[0"], "Incrementing version within package"],
@@ -33,8 +29,8 @@ def test_metadata_validity():
         [5, "comment", "String", ["{1", "[0"], "Comment"],
         [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
         [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
-        [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
-        [9, "exports", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
+        [8, "namespaces", "PrefixNs", ["[0", "]-1"], "Referenced packages"],
+        [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
         [10, "config", "Config", ["[0"], "Configuration variables"],
         [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
       ]],
@@ -131,25 +127,52 @@ def test_metadata_validity():
       ["Description", "String"]
     ]
   }
+
+
+def test_metadata(): 
+    root = "Metadata"    
+    
+    # valid_data = {
+    #   "package": "http://example.fake",
+    #   "roots": "Record-Name"
+    # }
     
     valid_data = {
-    "package": "http://example.fake",
-    "exports": "Record-Name"
-  }
-
-    
+        "package": "http://example.fake",
+        "version": "1.0.0",
+        "title": "Test Title",
+        "description": "Test Description",
+        "comment": "Test Comment",
+        "copyright": "Test Copyright",
+        "license": "CC-BY-4.0",
+        "namespaces": [ 
+            ["ex", "http://example.fake/ns"]
+        ]
+        # "roots": ["RootType1", "RootType2"],
+        # "config": {
+        #     "$MaxBinary": 255,
+        #     "$MaxString": 255,
+        #     "$MaxElements": 255,
+        #     "$Sys": ".",
+        #     "$TypeName": "^[A-Z][-.A-Za-z0-9]{0,63}$",
+        #     "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+        #     "$NSID": "^([A-Za-z][A-Za-z0-9]{0,7})?$"
+        # },
+        # "jadn_version": "http://oasis-open.org/openc2/jadn/v2.0/schema"
+    }    
     
     valid_data_list = [ valid_data ]
-    invalid_data_list = [
-
-         {'SuitEnum': 10},'Aces', 10
-         
-         ]
     
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    invalid_data_list = [
+         {'SuitEnum': 10},
+         'Aces', 
+         10     
+    ]
+    
+    err_count = validate_valid_data(j_meta_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    err_count = validate_invalid_data(j_meta_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
 def test_total_validity(): 
