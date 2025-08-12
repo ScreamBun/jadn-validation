@@ -4,7 +4,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -17,6 +17,7 @@ common_rules = {
 
 json_rules = {}
 xml_rules = {}
+
 
 class Record:
     
@@ -72,7 +73,9 @@ class Record:
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
+                j_field_obj.type_options = opts
                 
             min_occurs = get_min_occurs(j_field_obj)
             max_occurs = get_max_occurs(j_field_obj, self.j_config)
