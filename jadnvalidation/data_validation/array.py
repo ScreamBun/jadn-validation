@@ -4,7 +4,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, split_on_first_char
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, split_on_first_char
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional, get_ktype, get_vtype, get_opts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -85,8 +85,12 @@ class Array:
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                     j_field_obj = ref_type_obj
-
+                    j_field_obj.type_options = opts
+                    
+                    if not is_primitive(ref_type_obj.base_type):
+                        j_field_obj.base_type = ref_type_obj.type_name                    
 
                 elif j_field_obj.base_type == "ArrayOf":
                     
