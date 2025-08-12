@@ -258,12 +258,30 @@ def test_type_int_min():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["{2"], "", []]
+        ["Root-Test", "Integer", ["w2"], "", []]
+      ]
+    }
+      
+    valid_data_list = [2, 3, 55]      
+    invalid_data_list = [1, 0, -1]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_type_int_minExclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["y2"], "", []]
       ]
     }
       
     valid_data_list = [3, 55]      
-    invalid_data_list = [1, 0, -1]
+    invalid_data_list = [1, 0, -1, 2]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -276,12 +294,30 @@ def test_type_int_max():
   
     j_schema = {
       "types": [
-        ["Root-Test", "Integer", ["}2"], "", []]
+        ["Root-Test", "Integer", ["x2"], "", []]
       ]
     }
       
-    valid_data_list = [1, 2]      
+    valid_data_list = [1, 2, 0, -33]      
     invalid_data_list = [3, 5] 
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_type_int_maxExclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Integer", ["z2"], "", []]
+      ]
+    }
+      
+    valid_data_list = [1, 0, -1]      
+    invalid_data_list = [2, 3, 5] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

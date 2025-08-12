@@ -2,14 +2,16 @@ from typing import Union
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
+from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length, get_max_exclusive, get_max_inclusive, get_min_exclusive, get_min_inclusive
 from jadnvalidation.utils.general_utils import create_fmt_clz_instance, split_on_first_char, is_arg_format
 
 
 common_rules = {
     "/": "check_format",
-    "{": "check_min_val",
-    "}": "check_max_val"    
+    "w": "check_min_inclusive",
+    "x": "check_max_inclusive",
+    "y": "check_min_exclusive",
+    "z": "check_max_exclusive",  
 }
 
 json_rules = {
@@ -105,7 +107,7 @@ class Integer:
             
             else:
                 raise ValueError(f"Data for type {self.j_type.type_name} must be of type integer. Received: {type(self.data)}")
-                        
+        """             
     def check_min_val(self):
         min_val = get_min_length(self.j_type)
         if min_val is not None and self.data is None: 
@@ -118,6 +120,30 @@ class Integer:
             max_val = get_max_length(self.j_type, self.j_config)
             if max_val is not None and self.data > max_val:
                 self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
+        """           
+    def check_min_inclusive(self):
+        min_inclusive = get_min_inclusive(self.j_type)
+        if self.data is not None and min_inclusive is not None: 
+            if self.data < min_inclusive:
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_inclusive}. Received: {len(self.data)}")
+            
+    def check_min_exclusive(self):
+        min_exclusive = get_min_exclusive(self.j_type)
+        if self.data is not None: 
+            if min_exclusive is not None and self.data < (min_exclusive+1):
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_exclusive+1}. Received: {len(self.data)}")
+        
+    def check_max_inclusive(self):
+        max_inclusive = get_max_inclusive(self.j_type)
+        if self.data is not None and max_inclusive is not None: 
+            if self.data > max_inclusive:
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_inclusive}. Received: {len(self.data)}")           
+                
+    def check_max_exclusive(self):
+        max_exclusive = get_max_exclusive(self.j_type)
+        if self.data is not None and max_exclusive is not None : 
+            if self.data > (max_exclusive-1):
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_exclusive-1}. Received: {len(self.data)}")           
         
     def give_format_constraint(format: str, option_index: int):
         format_designator, designated_value = split_on_first_char(format) 
