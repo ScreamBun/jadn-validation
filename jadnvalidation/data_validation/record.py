@@ -77,6 +77,9 @@ class Record:
                 j_field_obj = ref_type_obj
                 j_field_obj.type_options = opts
                 
+                if not is_primitive(ref_type_obj.base_type):
+                    j_field_obj.base_type = ref_type_obj.type_name
+                
             min_occurs = get_min_occurs(j_field_obj)
             max_occurs = get_max_occurs(j_field_obj, self.j_config)
             if min_occurs > 1 or max_occurs > 1 or max_occurs < 0:

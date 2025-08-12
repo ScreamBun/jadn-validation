@@ -119,7 +119,7 @@ def test_ref_int_field_multiplicity():
     assert err_count == len(invalid_data_list)
     
     
-def test_ref_string_field_multiplicity():
+def test_ref_array_field_multiplicity():
     root = "Root-Test"
     
     j_schema = {
@@ -127,9 +127,11 @@ def test_ref_string_field_multiplicity():
             ["Root-Test", "Record", ["{1", "}10"], "", [
                 [1, "field_value_1", "String", ["]1"], ""],
                 [2, "field_value_2", "String", ["[0"], ""],
-                [2, "field_value_3", "RefString", ["]3"], ""]
+                [2, "field_value_3", "RefArray", ["]3"], ""]
             ]],
-            ["RefString", "String", [], "", []]
+            ["RefArray", "Array", [], "", [
+                [1, "field_value_1", "String", [], ""]
+            ]]
         ]
     }  
     
@@ -137,18 +139,14 @@ def test_ref_string_field_multiplicity():
         {
             "field_value_1": "darth mekhis",
             "field_value_2": "darth bane",
-            "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
-        },
-        {
-            "field_value_1": "darth mekhis",
-            "field_value_3": ["darth nihilus", "darth malgus", "darth revan"]
+            "field_value_3": [["darth nihilus"], ["darth malgus"], ["darth revan"]]
         }
     ]
     
     invalid_data_list = [
         {
             "field_value_2": "test 2",
-            "field_value_3": ["darth nihilus", "darth malgus", "darth revan", "darth mekhis"]
+            "field_value_3": [["darth nihilus"], ["darth malgus"], ["darth revan"], ["darth mekhis"]]
         }
     ]
         
