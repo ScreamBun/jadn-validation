@@ -42,18 +42,17 @@ class Choice:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
-    """    
-    def check_tagID(self, use_ids):
+        
+    def process_tagID(self, tag_id):
         tag_opt = self.j_type.fields[1]
-        # TODO this is getting moved into mapping utils i think, brb
 
         for key, choice_data in self.data.items():
             # this instead needs to be looking for a specified field value
-            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            j_field = get_j_field(self.j_type.fields, key, tag_id)
             # 
             if j_field:
                 raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but needs {tag_opt} tagID")
-       """
+       
         
     def process_any_of(self, use_ids):
         
@@ -145,6 +144,20 @@ class Choice:
             
             break # Only one choice is allowed.        
                         
+    def get_tagid_field(j_field_list, data_key, is_using_ids):
+        j_field_found = None
+        
+        for j_field in j_field_list:
+            if is_using_ids:
+                if j_field[0] == int(data_key):
+                    j_field_found = j_field
+                    break
+            else:
+                if j_field[1] == data_key:
+                    j_field_found = j_field
+                    break
+                
+        return j_field_found 
             
     def check_choice(self):
         use_ids = use_field_ids(self.j_type.type_options)

@@ -175,6 +175,58 @@ def test_xml_choice_id():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)  
+
+def test_choice_tagid():
+    root = "Root-Test"
+        
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "field_value_1", "Enum-Example", [], ""],
+                [2, "field_value_2", "Choice-Test", ["&1"], ""]
+            ]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "field_value_1", "String", ["%^a$"], ""],
+                [2, "field_value_2", "String", ["%^b$"], ""]
+            ]],
+            ["Enum-Example", "Enum", [], "", [
+                [1, "one", [], ""],
+                [2, "two", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        {
+            "field_value_1": "one",
+            "field_value_2": {"one": "a"}
+        }, 
+        {
+            "field_value_1": "two",
+            "field_value_2": {"two": "b"}
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }       
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
     
 def test_choice_anyOf():

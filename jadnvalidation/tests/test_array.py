@@ -444,6 +444,36 @@ def test_forward_ref_toOf():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+
+def test_forward_ref_toOf_implied():
+    root = "Root-Test"
+    
+    j_schema =   {  
+        "types": [
+            ["Root-Test", "Array", [], "", [
+                [1, "field_value_1a", "String", [], ""],
+                [2, "field_value_1b", "ArrayName2", ["]4"], ""]
+            ]],
+            ["ArrayName2", "ArrayOf", ["*String"], ""
+            ]
+        ]
+    }
+    
+    valid_data_list = [
+            ['Any String', [["AnyString2"]]],
+            ['123', [['HelloWorld', 'this', 'is', 'Strings']]]
+        ]
+    
+    invalid_data_list = [
+            [[123, 'Any String']],
+            [True], [['Hi im one item']]
+        ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)
     
 def test_ipv4net():
     root = "Root-Test"

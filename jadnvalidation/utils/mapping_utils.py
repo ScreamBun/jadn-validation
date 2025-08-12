@@ -24,6 +24,22 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     return j_field_obj
 
 
+def derive_enum(j_type_obj: Jadn_Type, min_occurs, max_occurs):
+    """
+    Field type changes to an array of that type; array length equals max occurs.
+    """
+    enum_vtype = "*" + j_type_obj.base_type
+    array_min_len = "{" + str(min_occurs)
+    array_max_len = "}" + str(max_occurs)
+    
+    j_field_obj = Jadn_Type(j_type_obj.type_name, Base_Type.ARRAY_OF.value)
+    j_field_obj.type_options = []
+    j_field_obj.type_options.append(array_vtype)
+    j_field_obj.type_options.append(array_min_len)
+    j_field_obj.type_options.append(array_max_len)    
+    
+    return j_field_obj
+
 def get_choice_type(j_type_opts: List[str]) -> str:
     choice_type = Choice_Consts.CHOICE_ONE_OF
     

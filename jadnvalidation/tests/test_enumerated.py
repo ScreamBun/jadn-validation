@@ -129,4 +129,29 @@ def test_xml_enum_ids():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
-    assert err_count == len(invalid_data_list)       
+    assert err_count == len(invalid_data_list)     
+
+def test_enum_derived(): 
+    root = "Root-Test"    
+  
+    j_schema = {
+        "types": [
+            ["Root-Test", "Enumerated", ["#Suits"], "", 
+            ],
+            ["SuitList", "Array", [], "", [
+                [1, "clubs", "String"],
+                [2, "diamonds", "String"],
+                [3, "hearts", "String"],
+                [4, "spades", "String"]
+            ]]
+        ]
+    }
+    
+    valid_data_list = ['clubs','spades']
+    invalid_data_list = ['asdfghjklasdfghjkl', {'SuitList': 'clubs'}, {'SuitList': 1},'asdfghjklasdfghjkl', ['clubs'], 10]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
