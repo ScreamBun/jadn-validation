@@ -81,7 +81,18 @@ def is_field(jadn_type: list[any]):
     if len(jadn_type) > 0:
         if isinstance(jadn_type[0], int):
             return True
-    return False    
+    return False
+
+def is_field_multiplicity(opts: list) -> bool:
+    """
+    Checks if any option in the opts list indicates field multiplicity.
+    Returns True if any option starts with '[' or ']' and the second character is a digit >= 2.
+    """
+    if opts:
+        for opt in opts:
+            if len(opt) >= 2 and (opt[0] in ['[', ']']) and opt[1].isdigit() and int(opt[1]) >= 2:
+                return True
+    return False
 
 def is_primitive(type: str) -> bool:
     if type in Primitive:

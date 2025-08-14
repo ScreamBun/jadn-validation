@@ -1,9 +1,10 @@
 from typing import Union
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
+from build.lib.jadnvalidation.utils.mapping_utils import get_max_occurs, get_min_occurs
+from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_user_defined
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field
-from jadnvalidation.utils.mapping_utils import get_choice_type, use_field_ids, get_vtype
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, use_field_ids
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -60,6 +61,7 @@ class Choice:
         # At least one field must be present
         num_of_choices = len(self.data)
         num_of_fields = len(self.j_type.fields)
+        
         if num_of_choices > num_of_fields:
             raise ValueError(f"At least one field must be present, but no more {num_of_fields}.  Received: {num_of_choices}.")     
         
@@ -73,7 +75,10 @@ class Choice:
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
             check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
-            if not is_primitive(j_field_obj.base_type):
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))        
+        
+            elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
@@ -84,10 +89,10 @@ class Choice:
         
     def process_all_of(self, use_ids):
         
-        # TODO: Needs tests more, may be too simple. 
         # All fields must be present
         num_of_choices = len(self.data)
         num_of_fields = len(self.j_type.fields)
+        
         if num_of_choices != num_of_fields:
             raise ValueError(f"Choice '{self.j_type.type_name}' must have exactly {num_of_fields} choices. Received: {num_of_choices}")
         
@@ -101,7 +106,10 @@ class Choice:
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
             check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
-            if not is_primitive(j_field_obj.base_type):
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))        
+        
+            elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
@@ -134,7 +142,10 @@ class Choice:
             check_sys_char(j_field_obj.type_name, self.j_config.Sys)
             check_field_name(j_field_obj.type_name, self.j_config.FieldName)
         
-            if not is_primitive(j_field_obj.base_type):
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+        
+            elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
