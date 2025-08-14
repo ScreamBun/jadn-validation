@@ -548,8 +548,8 @@ def test_nested_array_arrayof():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Array", ["}0"], "", [
-                [1, "string-name", "Integer", [], ""],
+            ["Root-Test", "Array", ["{0"], "", [
+                [1, "string_name", "Integer", [], ""],
                 [2, "nested_arrayOf", "ArrayOf", ["*String"], ""]
             ]]
             ]
