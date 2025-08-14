@@ -136,7 +136,8 @@ def test_enum_derived():
   
     j_schema = {
         "types": [
-            ["Root-Test", "Enumerated", ["#Suits"], "", 
+            ["Root-Test", "Record", [], "", [
+             [1, "suit_list", "Enumerated", ["#SuitList"], ""]]
             ],
             ["SuitList", "Array", [], "", [
                 [1, "clubs", "String"],
@@ -147,8 +148,8 @@ def test_enum_derived():
         ]
     }
     
-    valid_data_list = ['clubs','spades']
-    invalid_data_list = ['asdfghjklasdfghjkl', {'SuitList': 'clubs'}, {'SuitList': 1},'asdfghjklasdfghjkl', ['clubs'], 10]
+    valid_data_list = [{'suit_list': 'clubs'},{'suit_list': 'spades'}]
+    invalid_data_list = ['asdfghjklasdfghjkl', 'clubs', {'Root-Test': 'clubs'}, {'SuitList': 1},'asdfghjklasdfghjkl', ['clubs'], 10]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0

@@ -24,19 +24,13 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     return j_field_obj
 
 
-def derive_enum(j_type_obj: Jadn_Type, min_occurs, max_occurs):
+def derive_enum(j_type_obj: Jadn_Type):
     """
-    Field type changes to an array of that type; array length equals max occurs.
+    Field type changes to an enum of that type; id, value from fieldname, and description remain.
     """
-    enum_vtype = "*" + j_type_obj.base_type
-    array_min_len = "{" + str(min_occurs)
-    array_max_len = "}" + str(max_occurs)
     
-    j_field_obj = Jadn_Type(j_type_obj.type_name, Base_Type.ARRAY_OF.value)
+    j_field_obj = Jadn_Type(j_type_obj.type_name, Base_Type.ENUMERATED)
     j_field_obj.type_options = []
-    j_field_obj.type_options.append(array_vtype)
-    j_field_obj.type_options.append(array_min_len)
-    j_field_obj.type_options.append(array_max_len)    
     
     return j_field_obj
 
@@ -230,3 +224,15 @@ def use_field_ids(j_type_opts: List[str]) -> bool:
                 break   
     
     return use_id
+
+def is_derived_from(j_type_opts: List[str]) -> bool:
+    derived_from = None
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "#":
+                derived_from = opt_val
+                break   
+    
+    return derived_from
