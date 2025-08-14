@@ -657,7 +657,7 @@ def test_nested_array_complex_2():
             ["Root-Test", "Array", [], "", [
               [1, "type_name", "String", [], ""],
               [2, "core_type", "Enum-Ex", [], ""],
-              [3, "type_options", "String", ["[0", "]-2"], ""],
+              [3, "type_options", "String", ["[0", "]2"], ""],
               [4, "type_description", "String", ["[0"], ""],
               [5, "fields", "ArrayOf", ["*Choice-List", "[0"], ""]
             ]],
