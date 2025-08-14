@@ -581,7 +581,7 @@ def test_nested_array_array_enum():
         },
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
-                [1, "string-name", "String", [], ""],
+                [1, "string_name", "String", [], ""],
                 [2, "enum", "Enum-Ex", [], ""]
             ]],
             ["Enum-Ex", "Enumerated", [], "", [
@@ -617,7 +617,7 @@ def test_nested_array_complex():
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
                 [1, "enum", "Enums", [], ""],
-                [2, "string-name", "String", [], ""]
+                [2, "string_name", "String", [], ""]
             ]],
             ["Enums", "ArrayOf", ["*Enum-Ex"], "", [
                 [1, "enum1", "Enum-Ex", [], ""],
