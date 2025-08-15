@@ -531,7 +531,8 @@ def test_choice_as_field():
     assert err_count == 0
         
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list)      
+    assert err_count == len(invalid_data_list)  
+        
 
 def test_choice_as_field_multiple():
     root = "Root-Test"

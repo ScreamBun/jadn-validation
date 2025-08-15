@@ -85,8 +85,6 @@ class Array:
         
             if is_field_multiplicity(j_field_obj.type_options):
                 j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-        
-            # elif not is_primitive(j_field_obj.base_type): #TODO here is where we need to also include a "build structured types" option
                                     
             elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
