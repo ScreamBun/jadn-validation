@@ -134,7 +134,7 @@ def test_metadata_validity():
     
     valid_data = {
     "package": "http://example.fake",
-    "exports": "Record-Name"
+    "exports": ["Record-Name"]
   }
 
     
@@ -284,7 +284,7 @@ def test_total_validity():
     valid_data_list = [ 
         {
             "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], "", {"String": []}]       
+            "types" : [["Typename", "Binary", [], "", [{"String": []}]]]    
         }
     ]
     invalid_data_list = [
@@ -528,21 +528,20 @@ def test_jadn_renamed():
     
            {
             "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Binary", [], ""]        
+            "types" : [["Typename", "Binary", [], ""]]        
         },        
         {
             "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "String", ["[0"], "", []]        
+            "types" : [["Typename", "String", ["[0"], "", []]]        
         },        
         {
             "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "ArrayOf", ["*Integer"], ""]        
+            "types" : [["Typename", "ArrayOf", ["*Integer"], ""]]        
         },         
         {
             "info" : {"package" : "http://example.fake"},
-            "types" : ["Typename", "Array", [], "", [{
-                "Array": [1, "Thing1", "String", [], ""],
-                "Array": [2, "Thing2", "Integer", [], ""]}
+            "types" : [["Typename", "Array", [], "", [{
+                "Array": [1, "Thing1", "String", [], ""]}]
 
             ]]        
         } 
