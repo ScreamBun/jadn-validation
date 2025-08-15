@@ -1,8 +1,9 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
+from build.lib.jadnvalidation.models.jadn.jadn_config import check_type_name
+from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional, use_field_ids
@@ -62,30 +63,29 @@ class Map:
         for j_key, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
             
-            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
-            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
-            
             field_data = None
             if self.use_ids:
                 field_data = get_data_by_id(self.data, j_field_obj.id)
             else:
-                field_data = get_data_by_name(self.data, j_field_obj.type_name)
+                field_data = get_data_by_name(self.data, j_field_obj.type_name)                
             
             if field_data is None:
                 if is_optional(j_field_obj):
                     continue
                 else:
                     raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
-
-            if not is_primitive(j_field_obj.base_type):
-                if is_user_defined(j_field_obj.base_type):
-                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                    j_field_obj = build_j_type(ref_type)
                 
-            min_occurs = get_min_occurs(j_field_obj)
-            max_occurs = get_max_occurs(j_field_obj, self.j_config)
-            if min_occurs > 1 or max_occurs > 1:
-                j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)                
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)                
+
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+
+            elif is_user_defined(j_field_obj.base_type):
+                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
             clz_instance.validate()

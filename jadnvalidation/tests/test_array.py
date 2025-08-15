@@ -578,8 +578,8 @@ def test_nested_array_arrayof():
             "exports": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Array", ["}0"], "", [
-                [1, "string-name", "Integer", [], ""],
+            ["Root-Test", "Array", ["{0"], "", [
+                [1, "string_name", "Integer", [], ""],
                 [2, "nested_arrayOf", "ArrayOf", ["*String"], ""]
             ]]
             ]
@@ -611,7 +611,7 @@ def test_nested_array_array_enum():
         },
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
-                [1, "string-name", "String", [], ""],
+                [1, "string_name", "String", [], ""],
                 [2, "enum", "Enum-Ex", [], ""]
             ]],
             ["Enum-Ex", "Enumerated", [], "", [
@@ -647,7 +647,7 @@ def test_nested_array_complex():
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
                 [1, "enum", "Enums", [], ""],
-                [2, "string-name", "String", [], ""]
+                [2, "string_name", "String", [], ""]
             ]],
             ["Enums", "ArrayOf", ["*Enum-Ex"], "", [
                 [1, "enum1", "Enum-Ex", [], ""],
@@ -687,7 +687,7 @@ def test_nested_array_complex_2():
             ["Root-Test", "Array", [], "", [
               [1, "type_name", "String", [], ""],
               [2, "core_type", "Enum-Ex", [], ""],
-              [3, "type_options", "String", ["[0", "]-2"], ""],
+              [3, "type_options", "String", ["[0", "]2"], ""],
               [4, "type_description", "String", ["[0"], ""],
               [5, "fields", "ArrayOf", ["*Choice-List", "[0"], ""]
             ]],

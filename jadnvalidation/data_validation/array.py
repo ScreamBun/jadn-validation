@@ -1,10 +1,11 @@
 from typing import Union
 
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
+from build.lib.jadnvalidation.models.jadn.jadn_config import check_sys_char
+from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, split_on_first_char
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, split_on_first_char
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional, get_ktype, get_vtype, get_opts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -78,63 +79,69 @@ class Array:
                     continue
                 else:
                     raise ValueError(f"Missing required field '{j_field[1]}' for array type {self.j_type.type_name}")
+                
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)                            
         
-            if not is_primitive(j_field_obj.base_type): #TODO here is where we need to also include a "build structured types" option
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
                                     
-                if is_user_defined(j_field_obj.base_type):
-                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                    ref_type_obj = build_j_type(ref_type)
-                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                    j_field_obj = ref_type_obj
-
-
-                elif j_field_obj.base_type == "ArrayOf":
+            elif is_user_defined(j_field_obj.base_type):
+                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                j_field_obj = ref_type_obj
+                
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
+            clz_instance.validate()                
                     
-                    vtype = None
-                    opts = get_opts(j_field_obj)
-                    for opt in opts:
-                        opt_key, opt_val = split_on_first_char(opt)
-                        if "*" == opt_key:
-                            vtype = opt_val
-                        break
+                    # if not is_primitive(ref_type_obj.base_type):
+                    #     j_field_obj.base_type = ref_type_obj.type_name                    
+
+                # elif j_field_obj.base_type == "ArrayOf":
+                    
+                #     vtype = None
+                #     opts = get_opts(j_field_obj)
+                #     for opt in opts:
+                #         opt_key, opt_val = split_on_first_char(opt)
+                #         if "*" == opt_key:
+                #             vtype = opt_val
+                #         break
 
 
-                    print(f"type found {j_field_obj.base_type}, field found {vtype}")
+                #     print(f"type found {j_field_obj.base_type}, field found {vtype}")
                     
 
-                    of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                    clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
-                    clz_instance.validate()
+                #     of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
+                #     clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
+                #     clz_instance.validate()
 
 
                     #ref_type_obj = build_j_type(j_field_obj.base_type, ) ##HERE
                     #j_field_obj = ref_type_obj
 
-                if j_field_obj.base_type == "MapOf":
+                # elif j_field_obj.base_type == "MapOf":
                     
-                    ktype = get_ktype
-                    vtype = get_vtype
-                    print(f"type found {j_field_obj.base_type}, field found {ktype, vtype}")
+                #     ktype = get_ktype
+                #     vtype = get_vtype
+                #     print(f"type found {j_field_obj.base_type}, field found {ktype, vtype}")
                     
 
-                    of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                    clz_instance = create_clz_instance(ktype, vtype, self.j_schema, of_jtype, field_data, self.data_format)
-                    clz_instance.validate()
+                #     of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
+                #     clz_instance = create_clz_instance(ktype, vtype, self.j_schema, of_jtype, field_data, self.data_format)
+                #     clz_instance.validate()
 
 
-                    ref_type_obj = build_j_type(j_field_obj.base_type, )
-                    j_field_obj = ref_type_obj
+                #     ref_type_obj = build_j_type(j_field_obj.base_type, )
+                #     j_field_obj = ref_type_obj
             
                 
-            min_occurs = get_min_occurs(j_field_obj)
-            max_occurs = get_max_occurs(j_field_obj, self.j_config)
-            if min_occurs > 1 or max_occurs > 1:
-                j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
-            elif max_occurs < 0: # examine multiplicity checks here - Kevin
-                j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
-                
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
-            clz_instance.validate()
+            # min_occurs = get_min_occurs(j_field_obj)
+            # max_occurs = get_max_occurs(j_field_obj, self.j_config)
+            # if min_occurs > 1 or max_occurs > 1:
+            #     j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
+            # elif max_occurs < 0: # examine multiplicity checks here - Kevin
+            #     j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
         
     def validate(self):
         

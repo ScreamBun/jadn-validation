@@ -70,7 +70,6 @@ class ArrayOf:
                 of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
                 clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item, self.data_format)
                 clz_instance.validate()
-                
             else:                
                 ref_type = get_reference_type(self.j_schema, vtype)
                 ref_type_obj = build_j_type(ref_type)

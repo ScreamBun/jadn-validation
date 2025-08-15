@@ -94,6 +94,7 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
         max_val = global_config.MaxElements
     elif max_val == -2:
         max_val = sys.maxsize
+    else: raise ValueError("MaxOccurs givin improper opt_val: " + {max_val})
         
     return max_val
 

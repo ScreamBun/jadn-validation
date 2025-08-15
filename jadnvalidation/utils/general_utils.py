@@ -320,6 +320,39 @@ def give_format_constraint(format: str, option_index: int):
         return struct[option_index]
     except ValueError as e:
         print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
+        
+        
+def merge_opts(opts1: list, opts2: list) -> list:
+    """
+    Merge two lists of option strings, ensuring each item in the result has a unique first character.
+    If duplicates (by first character) are found, the first occurrence is kept and the duplicate is logged and removed.
+
+    Args:
+        opts1 (list): First list of option strings.
+        opts2 (list): Second list of option strings.
+
+    Returns:
+        list: Merged list with unique first characters.
+    """
+    merged = []
+    seen = {}
+    duplicates = []
+
+    for opt in (opts1 or []) + (opts2 or []):
+        if not opt:
+            continue
+        first_char = opt[0]
+        if first_char not in seen:
+            seen[first_char] = opt
+            merged.append(opt)
+        else:
+            duplicates.append(opt)
+
+    if duplicates:
+        print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
+
+    return merged     
+        
 
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.
