@@ -144,20 +144,6 @@ class Choice:
             
             break # Only one choice is allowed.        
                         
-    def get_tagid_field(j_field_list, data_key, is_using_ids):
-        j_field_found = None
-        
-        for j_field in j_field_list:
-            if is_using_ids:
-                if j_field[0] == int(data_key):
-                    j_field_found = j_field
-                    break
-            else:
-                if j_field[1] == data_key:
-                    j_field_found = j_field
-                    break
-                
-        return j_field_found 
             
     def check_choice(self):
         use_ids = use_field_ids(self.j_type.type_options)

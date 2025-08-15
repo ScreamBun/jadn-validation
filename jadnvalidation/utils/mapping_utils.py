@@ -236,3 +236,30 @@ def is_derived_from(j_type_opts: List[str]) -> bool:
                 break   
     
     return derived_from
+
+    """
+    TagID is an option that applies to Choice types in fields of other structures.
+    it changes the regular display of choice data from a key - value pair of 
+    the choice fieldname and the data type of its associated fieldtype, to instead
+    treating another field in its structure AS THOUGH it housed this key. 
+    Effectively, these options always appear alongside some field with an Enumeration
+    and this field dictates the datatype of the field with the TagID option.
+    once again, it does NOT have the traditional structure, and the "Associated Key" is
+    simply the Value of another field in the containing structure.
+    """
+
+
+def get_tagid_field(j_field_list, data_key, is_using_ids):
+        j_field_found = None
+        # holding pattern for tagid logic
+        for j_field in j_field_list:
+            if is_using_ids:
+                if j_field[0] == int(data_key):
+                    j_field_found = j_field
+                    break
+            else:
+                if j_field[1] == data_key:
+                    j_field_found = j_field
+                    break
+                
+        return j_field_found 

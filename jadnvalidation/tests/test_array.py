@@ -693,7 +693,7 @@ def test_nested_array_complex_2():
             ]],
             ["Enum-Ex", "Enumerated", [], "", [
                  [1, "First", ""],
-                 [2, "Second", ""]
+                 [3, "Second", ""]
             ]],
             ["Choice-List", "Choice", [], "", [
                 [1, "enum1", "Enum-Ex", [], ""],

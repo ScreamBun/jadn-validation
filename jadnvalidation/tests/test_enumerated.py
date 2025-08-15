@@ -32,7 +32,8 @@ def test_enum_multiple():
     j_schema = {
         "types": [
             ["Root-Test", "Record", [], "", [
-                [1, "suit", "Enum-Test", ["[2", "]2"], ""]
+                [1, "name", "String", [], ""],
+                [2, "suit", "Enum-Test", ["[2", "]2"], ""]
             ]],
             ["Enum-Test", "Enumerated", [], "", [
                 [10, "clubs", ""],
@@ -43,7 +44,14 @@ def test_enum_multiple():
         ]
     }
     
-    valid_data_list = [{'suit': ['clubs','spades']}, {'suit':['clubs', 'hearts']}]
+    valid_data_list = [
+        {   'name': 'string',
+            'suit': ['clubs','spades']},
+        {   'name': 'string',
+            'suit':['clubs', 'hearts']}
+        ]
+
+
     invalid_data_list = [{'suit': 'clubs'}, {'suit': 'asdfghjklasdfghjkl'}, {'suit': 'Aces'}, {'SuitEnum': 10},'asdfghjklasdfghjkl', 'Aces', 10]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
