@@ -318,7 +318,7 @@ def test_record_max_occurs():
             ["Root-Test", "Record", ["{1", "}10"], "", [
                 [1, "field_value_1", "String", ["]1"], ""],
                 [2, "field_value_2", "String", ["[0"], ""],
-                [2, "field_value_3", "String", ["]3"], ""]
+                [3, "field_value_3", "String", ["]3"], ""]
             ]]          
         ]
     }  
