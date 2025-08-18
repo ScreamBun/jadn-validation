@@ -188,6 +188,18 @@ def get_vtype(j_obj: Jadn_Type):
         
     return val
 
+def is_derived_enumeration(j_type_opts: List[str]) -> str:
+    derived_val = None
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "#":
+                derived_val = opt_val
+                break
+    
+    return derived_val
+
 # Note: A separate function may be needed for optional structures
 # This function is geared towards fields
 def is_optional(j_type: Jadn_Type) -> bool: 

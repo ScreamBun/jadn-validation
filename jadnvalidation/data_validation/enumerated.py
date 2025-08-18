@@ -3,7 +3,8 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
-from jadnvalidation.utils.mapping_utils import use_field_ids
+from jadnvalidation.utils.mapping_utils import is_derived_enumeration, use_field_ids
+from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "value": "check_enumeration",
@@ -38,6 +39,25 @@ class Enumerated:
         
         self.j_config = get_j_config(self.j_schema) 
         self.errors = []
+ 
+    def build_derived_enumeration(self, derived_enum_val: str = None) -> Jadn_Type:
+        return_j_type = self.j_type
+        
+        if derived_enum_val:
+            ref_type = get_reference_type(self.j_schema, derived_enum_val)
+            if ref_type is None:
+                raise ValueError(f"Unknown derived enumeration type {derived_enum_val} referenced in {return_j_type.type_name}.")
+            ref_type_obj = build_j_type(ref_type)
+            
+            if ref_type_obj.base_type in [Base_Type.ENUMERATED.value, Base_Type.MAP.value, Base_Type.RECORD.value, Base_Type.CHOICE.value]:
+                # TODO: May need to remove dervived enum type from j_type options
+                return_j_type.fields = ref_type_obj.fields           
+            else:
+                raise ValueError(f"Derived enumeration type {derived_enum_val} is not a valid enumeration type for {return_j_type.type_name}.")
+        else:
+            raise ValueError(f"Derived enumeration type not specified for {return_j_type.type_name}.") 
+        
+        return return_j_type
         
     def json_check_type(self):
         if self.data is not None:
@@ -66,6 +86,10 @@ class Enumerated:
                     raise ValueError(f"Data for type {self.j_type.type_name} must be a string. Received: {type(self.data)}")            
             
     def check_enumeration(self):
+        derived_enum_val = is_derived_enumeration(self.j_type.type_options)
+        if derived_enum_val:
+            self.j_type = self.build_derived_enumeration(derived_enum_val)
+                
         use_ids = use_field_ids(self.j_type.type_options)
         
         j_field_match = None
