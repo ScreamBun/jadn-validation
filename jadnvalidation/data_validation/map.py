@@ -14,7 +14,7 @@ common_rules = {
     "{": "check_min_length",
     "}": "check_max_length",
     "fields": "check_fields",
-    "extra_fields": "check_extra_fields",
+    "extra_fields": "check_extra_fields"
 }
 
 json_rules = {}

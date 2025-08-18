@@ -15,6 +15,7 @@ common_rules = {
     "{": "check_min_length",
     "}": "check_max_length",
     "fields": "check_fields"
+    # "extra_fields": "check_extra_fields"
 }
 
 json_rules = {}
@@ -93,55 +94,21 @@ class Array:
                 j_field_obj = ref_type_obj
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
-            clz_instance.validate()                
-                    
-                    # if not is_primitive(ref_type_obj.base_type):
-                    #     j_field_obj.base_type = ref_type_obj.type_name                    
+            clz_instance.validate()
 
-                # elif j_field_obj.base_type == "ArrayOf":
-                    
-                #     vtype = None
-                #     opts = get_opts(j_field_obj)
-                #     for opt in opts:
-                #         opt_key, opt_val = split_on_first_char(opt)
-                #         if "*" == opt_key:
-                #             vtype = opt_val
-                #         break
-
-
-                #     print(f"type found {j_field_obj.base_type}, field found {vtype}")
-                    
-
-                #     of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                #     clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
-                #     clz_instance.validate()
-
-
-                    #ref_type_obj = build_j_type(j_field_obj.base_type, ) ##HERE
-                    #j_field_obj = ref_type_obj
-
-                # elif j_field_obj.base_type == "MapOf":
-                    
-                #     ktype = get_ktype
-                #     vtype = get_vtype
-                #     print(f"type found {j_field_obj.base_type}, field found {ktype, vtype}")
-                    
-
-                #     of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                #     clz_instance = create_clz_instance(ktype, vtype, self.j_schema, of_jtype, field_data, self.data_format)
-                #     clz_instance.validate()
-
-
-                #     ref_type_obj = build_j_type(j_field_obj.base_type, )
-                #     j_field_obj = ref_type_obj
-            
+    # TODO            
+    # def check_extra_fields(self):
+    #     # Check if data has any unknown fields
+    #     if self.data is not None:
+    #         for data_key in self.data.keys():
+    #             is_found = False
+    #             for j_field in self.j_type.fields:
+    #                 if data_key == j_field[1]:
+    #                     is_found = True
+    #                     break
                 
-            # min_occurs = get_min_occurs(j_field_obj)
-            # max_occurs = get_max_occurs(j_field_obj, self.j_config)
-            # if min_occurs > 1 or max_occurs > 1:
-            #     j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
-            # elif max_occurs < 0: # examine multiplicity checks here - Kevin
-            #     j_field_obj = flip_to_array_of(j_field_obj, min_occurs, max_occurs)
+    #             if is_found == False:
+    #                 self.errors.append(f"Unknown data {data_key}.")            
         
     def validate(self):
         

@@ -1,11 +1,11 @@
 from typing import Union
 
 from build.lib.jadnvalidation.models.jadn.jadn_type import is_user_defined
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
+from jadnvalidation.models.jadn.jadn_type import build_j_type, build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name, merge_opts
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -13,7 +13,8 @@ common_rules = {
     "type": "check_type",
     "{": "check_min_length",
     "}": "check_max_length",
-    "fields": "check_fields"
+    "fields": "check_fields",
+    "extra_fields": "check_extra_fields"
 }
 
 json_rules = {}
@@ -82,18 +83,19 @@ class Record:
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
             clz_instance.validate()
             
-        # Check for unknown data
-        for data_key in self.data.keys():
-            is_found = False
-            for j_field in self.j_type.fields:
-                if data_key == j_field[1]:
-                    is_found = True
-                    break
-            
-            if is_found == False:
-                self.errors.append(f"Unknown data {data_key}.")
+    def check_extra_fields(self):
+        # Check if data has any unknown fields
+        if self.data is not None:
+            for data_key in self.data.keys():
+                is_found = False
+                for j_field in self.j_type.fields:
+                    if data_key == j_field[1]:
+                        is_found = True
+                        break
                 
-        
+                if is_found == False:
+                    self.errors.append(f"Unknown data {data_key}.")
+                
     def validate(self):
         
         # Check data against rules
