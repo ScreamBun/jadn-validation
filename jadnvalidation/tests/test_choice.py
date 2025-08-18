@@ -190,8 +190,8 @@ def test_choice_tagid():
                 [2, "field_value_2", "Choice-Test", ["&1"], ""]
             ]],
             ["Choice-Test", "Choice", [], "", [
-                [1, "field_value_1", "String", ["%^a$"], ""],
-                [2, "field_value_2", "String", ["%^b$"], ""]
+                [1, "one", "String", ["%^a$"], ""],
+                [2, "two", "String", ["%^b$"], ""]
             ]],
             ["Enum-Example", "Enum", [], "", [
                 [1, "one", [], ""],
@@ -203,11 +203,11 @@ def test_choice_tagid():
     valid_data_list = [
         {
             "field_value_1": "one",
-            "field_value_2": {"one": "a"}
+            "field_value_2": "a"
         }, 
         {
             "field_value_1": "two",
-            "field_value_2": {"two": "b"}
+            "field_value_2": "b"
         }
     ]
     
@@ -228,6 +228,52 @@ def test_choice_tagid():
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
+def test_choice_tagid_2():
+    root = "Root-Test"
+        
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Type", "Array", [], "", [
+                [1, "type_name", "String"],
+                [2, "core_type", "Enum-Example"],
+                [3, "type_options", "TypeOptions", ["[0", "&2"]]]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "one", "String", ["%^a$"], ""],
+                [2, "two", "String", ["%^b$"], ""]
+            ]],
+            ["Enum-Example", "Enum", [], "", [
+                [1, "one", [], ""],
+                [2, "two", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        ["fieldname", "one", "a"], 
+        
+        ["fieldname", "two", "b"]
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }       
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 def test_choice_anyOf():
     root = "Root-Test"

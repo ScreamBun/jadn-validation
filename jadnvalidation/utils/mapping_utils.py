@@ -253,17 +253,14 @@ def is_derived_from(j_type_opts: List[str]) -> bool:
     """
 
 
-def get_tagid_field(j_field_list, data_key, is_using_ids):
+def form_tagid_field(j_field_list, data_key, is_using_ids):
         j_field_found = None
         # holding pattern for tagid logic
         for j_field in j_field_list:
             if is_using_ids:
-                if j_field[0] == int(data_key):
+                if j_field[data_key] is not None:
                     j_field_found = j_field
                     break
             else:
-                if j_field[1] == data_key:
-                    j_field_found = j_field
-                    break
-                
+                pass
         return j_field_found 
