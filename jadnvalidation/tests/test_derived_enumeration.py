@@ -91,4 +91,19 @@ def test_derived_from_choice():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_derived_from_arrayof():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Enumerated", ["#Colors-Map"], "", []],
+            ["Colors-Map", "ArrayOf", ["*Integer", "{1", "}3"], ""]
+        ]
+    }
+    
+    invalid_data_list = [1,2,3]
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)      
