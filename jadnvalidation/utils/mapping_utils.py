@@ -159,6 +159,16 @@ def get_opt_str(key: str, j_type: Jadn_Type):
         
     return return_val
 
+def get_tagid(opts: List[str]) -> int:
+    """
+    Searches opts for a string that starts with '&'. If found, returns the integer value of the second character.
+    """
+    if opts:
+        for opt in opts:
+            if isinstance(opt, str) and len(opt) >= 2 and opt[0] == '&' and opt[1].isdigit():
+                return int(opt[1])
+    return None
+
 def get_type(j_obj: Jadn_Type):
     type = None
     if isinstance(j_obj, Jadn_Type):

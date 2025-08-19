@@ -24,10 +24,11 @@ class Enumerated:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The enumeration data only
+    tagged_data: any = None 
     data_format: str = None    
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, tagged_data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -35,6 +36,7 @@ class Enumerated:
         
         self.j_type = j_type
         self.data = data
+        self.tagged_data = tagged_data
         self.data_format = data_format        
         
         self.j_config = get_j_config(self.j_schema) 

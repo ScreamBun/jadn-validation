@@ -22,10 +22,11 @@ class Choice:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The choice data only
-    data_format: str = None    
+    tagged_data: any = None
+    data_format: str = None
     errors = []   
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, tagged_data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -35,6 +36,7 @@ class Choice:
         
         self.j_type = j_type
         self.data = data
+        self.tagged_data = tagged_data
         self.data_format = data_format          
         
         self.j_config = get_j_config(self.j_schema)
@@ -43,18 +45,6 @@ class Choice:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
-    """    
-    def check_tagID(self, use_ids):
-        tag_opt = self.j_type.fields[1]
-        # TODO this is getting moved into mapping utils i think, brb
-
-        for key, choice_data in self.data.items():
-            # this instead needs to be looking for a specified field value
-            j_field = get_j_field(self.j_type.fields, key, use_ids)
-            # 
-            if j_field:
-                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but needs {tag_opt} tagID")
-       """
         
     def process_any_of(self, use_ids):
         
