@@ -179,7 +179,12 @@ def get_tagged_data(j_field: Jadn_Type, data: any) -> any:
         if isinstance(data, list) and len(data) >= tagid:
             return data[tagid - 1]  # -1 because tagid is 1-based index
         elif isinstance(data, dict):
-            return data.get(tagid, None)
+            values_list = list(data.values())
+            # Add length checks to avoid IndexError
+            if tagid > 0 and len(values_list) >= tagid:
+                return values_list[tagid - 1]
+            else:
+                return None
     
     return None
 
