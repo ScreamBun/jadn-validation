@@ -1,7 +1,7 @@
 from typing import Union
 
 from build.lib.jadnvalidation.models.jadn.jadn_config import check_sys_char
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
+from jadnvalidation.models.jadn.jadn_type import Base_Type, build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
@@ -101,6 +101,9 @@ class Array:
             tagged_field_data = None             
             if tagid is not None:
                 tagged_field_data = get_item_safe_check(self.data, tagid - 1) # -1 because 0 is not included in the count......
+                
+                if j_field_obj.base_type is not Base_Type.CHOICE.value:
+                    raise ValueError(f"Tagged field {j_field_obj.type_name} must be of type Choice. Received: {j_field_obj.base_type}") 
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_field_data, self.data_format)
             clz_instance.validate()

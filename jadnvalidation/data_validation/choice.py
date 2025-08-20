@@ -1,15 +1,16 @@
 from typing import Union
+from build.lib.jadnvalidation.utils.general_utils import get_item_safe_check
 from build.lib.jadnvalidation.utils.mapping_utils import get_max_occurs, get_min_occurs
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_user_defined
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, use_field_ids
+from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, merge_opts
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_tagid, is_optional, use_field_ids
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
-    "type": "check_type",
+    # "type": "check_type",
     "choice": "check_choice"
 }
 
@@ -42,9 +43,9 @@ class Choice:
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
         
-    def check_type(self):
-        if not isinstance(self.data, dict):
-            raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
+    # def check_type(self):
+    #     if not isinstance(self.data, dict):
+    #         raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
         
     def process_any_of(self, use_ids):
         
@@ -144,12 +145,59 @@ class Choice:
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
             
-            break # Only one choice is allowed.        
+            break # Only one choice is allowed.
+        
+    def process_tag_id(self, use_ids):
+        
+        tagged_choice_found = False
+        for j_index, j_field in enumerate(self.j_type.fields):
+            j_field_obj = build_jadn_type_obj(j_field)
+            # field_data = get_item_safe_check(self.data, j_index)    
+            
+            # if field_data is None:
+            #     if is_optional(j_field_obj):
+            #         continue
+            #     else:
+            #         raise ValueError(f"Missing required field '{j_field[1]}' for array type {self.j_type.type_name}")
+                
+            if j_field_obj.type_name is not self.tagged_data:    
+                continue
+            else:
+                tagged_choice_found = True
+                
+                check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+                check_field_name(j_field_obj.type_name, self.j_config.FieldName)                            
+        
+                if is_field_multiplicity(j_field_obj.type_options):
+                    j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+                                        
+                elif is_user_defined(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                    ref_type_obj = build_j_type(ref_type)
+                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+                    j_field_obj = ref_type_obj
+                    j_field_obj.type_options = merged_opts
+                    
+                tagid = get_tagid(j_field_obj.type_options)
+                tagged_field_data = None             
+                if tagid is not None:
+                    tagged_field_data = get_item_safe_check(self.data, tagid - 1) # -1 because 0 is not included in the count......
+                    
+                clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, self.data, tagged_field_data, self.data_format)
+                clz_instance.validate()
+                break
+            
+        if not tagged_choice_found:
+            raise ValueError(f"Tagged choice '{self.tagged_data}' not found in choice type {self.j_type.type_name}.")
                         
             
     def check_choice(self):
         use_ids = use_field_ids(self.j_type.type_options)
-        choice_type = get_choice_type(self.j_type.type_options)
+        if self.tagged_data is not None:
+            choice_type = Choice_Consts.CHOICE_TAG_ID
+        else:
+            choice_type = get_choice_type(self.j_type.type_options)
         
         match choice_type:
             case Choice_Consts.CHOICE_ALL_OF:
