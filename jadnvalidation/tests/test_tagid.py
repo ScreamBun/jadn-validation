@@ -87,7 +87,7 @@ def test_tagid_in_record():
         "types": [
             ["Root-Test", "Record", [], "", [
                 [1, "type_name", "String", [], ""],
-                [2, "selected_type", "Selected_Type", [], ""],
+                [2, "selected_type", "Selected-Type", [], ""],
                 [3, "fields", "JADN-Type", ["&2"], ""]
             ]],    
             ["Selected-Type", "Enumerated", ["#JADN-Type"], "", []],
@@ -174,14 +174,14 @@ def test_tagid_in_record():
 def test_tagid_in_map():
     root = "Root-Test"
     
-    j_schema = {        
+    j_schema = {
         "types": [
-            ["Root-Test", "Map", [], "", [
+            ["Root-Test", "Record", [], "", [
                 [1, "type_name", "String", [], ""],
-                [2, "core_type", "Core-Types", [], ""],
+                [2, "selected_type", "Selected-Type", [], ""],
                 [3, "fields", "JADN-Type", ["&2"], ""]
             ]],    
-            ["Core-Types", "Enumerated", ["#JADN-Type"], "", []],
+            ["Selected-Type", "Enumerated", ["#JADN-Type"], "", []],
             ["JADN-Type", "Choice", [], "", [
                 [1, "string", "Array-Empty", [], ""],
                 [2, "record", "Array-Fields", [], ""],
