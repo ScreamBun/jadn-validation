@@ -152,13 +152,6 @@ class Choice:
         tagged_choice_found = False
         for j_index, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
-            # field_data = get_item_safe_check(self.data, j_index)    
-            
-            # if field_data is None:
-            #     if is_optional(j_field_obj):
-            #         continue
-            #     else:
-            #         raise ValueError(f"Missing required field '{j_field[1]}' for array type {self.j_type.type_name}")
                 
             if j_field_obj.type_name is not self.tagged_data:    
                 continue
@@ -179,12 +172,9 @@ class Choice:
                     j_field_obj = ref_type_obj
                     j_field_obj.type_options = merged_opts
                     
-                tagid = get_tagid(j_field_obj.type_options)
-                tagged_field_data = None             
-                if tagid is not None:
-                    tagged_field_data = get_item_safe_check(self.data, tagid - 1) # -1 because 0 is not included in the count......
+                # tagged_data = get_tagged_data(j_field_obj, self.data)                    
                     
-                clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, self.data, tagged_field_data, self.data_format)
+                clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, self.data, self.data_format)
                 clz_instance.validate()
                 break
             

@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_name
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, is_optional
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -80,7 +80,9 @@ class Record:
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                 j_field_obj = ref_type_obj
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, self.data_format)
+            tagged_data = get_tagged_data(j_field_obj, self.data)                
+                
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_data, self.data_format)
             clz_instance.validate()
             
     def check_extra_fields(self):

@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, split_on_first_char
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagid, is_optional, get_ktype, get_vtype, get_opts
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, get_tagid, is_optional, get_ktype, get_vtype, get_opts
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -96,16 +96,10 @@ class Array:
                 merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
                 j_field_obj.type_options = merged_opts
+
+            tagged_data = get_tagged_data(j_field_obj, self.data)
                 
-            tagid = get_tagid(j_field_obj.type_options)
-            tagged_field_data = None             
-            if tagid is not None:
-                tagged_field_data = get_item_safe_check(self.data, tagid - 1) # -1 because 0 is not included in the count......
-                
-                if j_field_obj.base_type is not Base_Type.CHOICE.value:
-                    raise ValueError(f"Tagged field {j_field_obj.type_name} must be of type Choice. Received: {j_field_obj.base_type}") 
-                
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_field_data, self.data_format)
+            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_data, self.data_format)
             clz_instance.validate()
 
     # TODO            

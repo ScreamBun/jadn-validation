@@ -169,6 +169,20 @@ def get_tagid(opts: List[str]) -> int:
                 return int(opt[1])
     return None
 
+def get_tagged_data(j_field: Jadn_Type, data: any) -> any:
+    """
+    Returns the tagged data if it exists in the data.
+    """
+    tagid = get_tagid(get_opts(j_field))
+    
+    if tagid is not None:
+        if isinstance(data, list) and len(data) >= tagid:
+            return data[tagid - 1]  # -1 because tagid is 1-based index
+        elif isinstance(data, dict):
+            return data.get(tagid, None)
+    
+    return None
+
 def get_type(j_obj: Jadn_Type):
     type = None
     if isinstance(j_obj, Jadn_Type):
