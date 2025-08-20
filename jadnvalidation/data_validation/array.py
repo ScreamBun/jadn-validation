@@ -1,12 +1,12 @@
 from typing import Union
 
 from build.lib.jadnvalidation.models.jadn.jadn_config import check_sys_char
-from jadnvalidation.models.jadn.jadn_type import Base_Type, build_jadn_type_obj, is_field_multiplicity
+from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_primitive, is_user_defined
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, split_on_first_char
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, get_tagid, is_optional, get_ktype, get_vtype, get_opts
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -27,7 +27,7 @@ class Array:
     j_config: Jadn_Config = None
     j_type: Union[list, Jadn_Type] = None
     data: any = None # The array's data only
-    tagged_data: any = None # TODO: may not need....
+    tagged_data: any = None
     data_format: str = None    
     errors = []
     continue_checks = True
@@ -98,8 +98,18 @@ class Array:
                 j_field_obj.type_options = merged_opts
 
             tagged_data = get_tagged_data(j_field_obj, self.data)
-                
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_data, self.data_format)
+            
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=field_data,
+                data_format=self.data_format
+            )
+            if tagged_data is not None:
+                clz_kwargs['tagged_data'] = tagged_data
+
+            clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
 
     # TODO            

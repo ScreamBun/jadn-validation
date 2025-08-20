@@ -5,7 +5,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -85,11 +85,23 @@ class Map:
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
+                j_field_obj.type_options = merged_opts
                 
             tagged_data = get_tagged_data(j_field_obj, self.data)
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, field_data, tagged_data, self.data_format)
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=field_data,
+                data_format=self.data_format
+            )
+            if tagged_data is not None:
+                clz_kwargs['tagged_data'] = tagged_data
+
+            clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
             
     def check_extra_fields(self):

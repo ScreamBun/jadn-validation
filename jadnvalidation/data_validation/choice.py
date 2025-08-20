@@ -73,7 +73,9 @@ class Choice:
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
+                j_field_obj.type_options = merged_opts
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
@@ -104,7 +106,9 @@ class Choice:
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
+                j_field_obj.type_options = merged_opts
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
@@ -140,7 +144,9 @@ class Choice:
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
                 check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                 j_field_obj = ref_type_obj
+                j_field_obj.type_options = merged_opts
                 
             clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
             clz_instance.validate()
