@@ -214,25 +214,10 @@ def test_total_validity():
 
       ["Type", "Array", [], "", [
         [1, "type_name", "TypeName", [], ""],
-        [2, "core_type", "JADN-Type-Enum", [], ""],
+        [2, "core_type", "Enumerated", ["#JADN-Type"], ""],
         [3, "type_options", "Options", ["[0"], ""],
         [4, "type_description", "Description", ["[0"], ""],
-        [5, "fields", "ArrayOf", ["*JADN-Type", "[0"], ""]
-      ]],
-
-      ["JADN-Type-Enum", "Enumerated", [], "", [
-        [1, "Binary", ""],
-        [2, "Boolean", ""],
-        [3, "Integer", ""],
-        [4, "Number", ""],
-        [5, "String", ""],
-        [6, "Enumerated", ""],
-        [7, "Choice", ""],
-        [8, "Array", ""],
-        [9, "ArrayOf", ""],
-        [10, "Map", ""],
-        [11, "MapOf", ""],
-        [12, "Record", ""]
+        [5, "fields", "JADN-Type", ["[0", "&2"], ""]
       ]],
 
       ["JADN-Type", "Choice", [], "", [
