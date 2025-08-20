@@ -34,12 +34,48 @@ def test_jadn_type_test_derived_enumeration():
             "my name",
             "string",
             []
-        ] 
+        ],
+        [
+            "Soliloquy",
+            "record",
+            ['row1', 'row2']
+        ],
+        [
+            "Soliloquy",
+            "enum",
+            ['val1', 'val2']
+        ]
     ]
-    # invalid_data_list = ['redd',2,'test']
+    invalid_data_list = ['redd', 2 ,'test', None,
+        [
+            "ANY_STRING",
+            "data",
+            {'string': []}
+        ],[
+            "ANY_STRING",
+            "data",
+            []
+        ],
+        [
+            "my name",
+            "string",
+            {'string': []}
+        ],
+        [
+            "Soliloquy",
+            "record",
+            {'record': ['row1', 'row2']}
+        ],
+        [
+            "Soliloquy",
+            "record",
+            {'record': ['row1', 'row2']}
+        ]
+                         
+    ]
         
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
