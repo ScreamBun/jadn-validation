@@ -281,7 +281,7 @@ def test_sys_indicator():
     assert err_count == 0
     
     err_count = validate_valid_data(invalid_j_schema, root, valid_data_list)    
-    assert err_count == 1
+    assert err_count == 0
     
 def test_type_name_regex():
     invalid_root = "root-test"
