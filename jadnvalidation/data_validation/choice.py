@@ -31,8 +31,6 @@ class Choice:
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
-
-            #if get_vtype(self.j_type): see if this goes here shortly
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
@@ -42,10 +40,6 @@ class Choice:
         
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
-        
-    # def check_type(self):
-    #     if not isinstance(self.data, dict):
-    #         raise ValueError(f"Data must be an object / dictionary. Received: {type(self.data)}")
         
     def process_any_of(self, use_ids):
         
@@ -77,7 +71,15 @@ class Choice:
                 j_field_obj = ref_type_obj
                 j_field_obj.type_options = merged_opts
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=choice_data,
+                data_format=self.data_format
+            )                
+                
+            clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
         
     def process_all_of(self, use_ids):
@@ -110,7 +112,15 @@ class Choice:
                 j_field_obj = ref_type_obj
                 j_field_obj.type_options = merged_opts
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=choice_data,
+                data_format=self.data_format
+            )                 
+                
+            clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
         
     def process_not(self, use_ids):
@@ -148,7 +158,15 @@ class Choice:
                 j_field_obj = ref_type_obj
                 j_field_obj.type_options = merged_opts
                 
-            clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, choice_data, self.data_format)
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=choice_data,
+                data_format=self.data_format
+            )                 
+                
+            clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
             
             break # Only one choice is allowed.
@@ -178,9 +196,15 @@ class Choice:
                     j_field_obj = ref_type_obj
                     j_field_obj.type_options = merged_opts
                     
-                # tagged_data = get_tagged_data(j_field_obj, self.data)                    
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=self.data,
+                    data_format=self.data_format
+                )                  
                     
-                clz_instance = create_clz_instance(j_field_obj.base_type, self.j_schema, j_field_obj, self.data, self.data_format)
+                clz_instance = create_clz_instance(**clz_kwargs)
                 clz_instance.validate()
                 break
             

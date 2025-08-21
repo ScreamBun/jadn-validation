@@ -113,7 +113,16 @@ class Enumerated:
             enum_base_type = Base_Type.INTEGER.value
             
         enum_jtype = Jadn_Type(self.j_type.type_name, enum_base_type)
-        clz_instance = create_clz_instance(enum_base_type, self.j_schema, enum_jtype, self.data)
+        
+        clz_kwargs = dict(
+            class_name=enum_base_type,
+            j_schema=self.j_schema,
+            j_type=enum_jtype,
+            data=self.data,
+            data_format=self.data_format
+        )          
+        
+        clz_instance = create_clz_instance(**clz_kwargs)
         clz_instance.validate()
 
                                 
