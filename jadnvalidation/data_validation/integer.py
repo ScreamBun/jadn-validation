@@ -59,11 +59,6 @@ class Integer:
                 format_restriction = int(format_split[1]) 
                 fmt_clz_instance = create_fmt_clz_instance(format, self.data, format_restriction)
                 fmt_clz_instance.validate()        
-
-                # i think we still need a check to set the constraints of the validation based on user input,
-                # so it will look at format options over jadn defaults from the default config
-                # but im out of time before my trip... i can get it later, if its still here when i get back (probably fixed by then)
-
             else:
                 fmt_clz_instance = create_fmt_clz_instance(format, self.data)
                 fmt_clz_instance.validate()        
@@ -147,10 +142,6 @@ class Integer:
         max_exclusive_val = get_max_exclusive(self.j_type)
         if max_exclusive_val is not None and self.data >= max_exclusive_val: 
             self.errors.append(f"Number must be less than {max_exclusive_val}. Received: {len(self.data)}")
-   
-   
-    def give_format_constraint(format: str, option_index: int):
-        format_designator, designated_value = split_on_first_char(format) 
 
     def validate(self):
         
