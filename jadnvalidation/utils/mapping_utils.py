@@ -76,18 +76,28 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
     max_val = get_opt_int("]", j_type)
     min_val = get_min_occurs(j_type)
     
-    if max_val > 1:
+    if max_val == None:
+        max_val = global_config.MaxElements  
+
+    elif max_val >= 1:
         pass
-    if min_val == None and max_val == None:
-        max_val = 1
-    elif min_val >= 0 and max_val == None:
-        max_val = min_val
+
+    # if min_val == None and max_val == None:
+    #     max_val = 1
+    # elif min_val >= 0 and max_val == None:
+    #     max_val = min_val
+    
     elif max_val == -1:
         max_val = global_config.MaxElements
+        
     elif max_val == -2:
         max_val = sys.maxsize
+        
     elif max_val < -2: 
         raise ValueError("MaxOccurs given improper opt_val: " + {max_val})
+    
+    if min_val > max_val:
+        raise ValueError("MaxOccurs cannot be less than MinOccurs: " + {max_val} + " < " + {min_val})
         
     return max_val
 

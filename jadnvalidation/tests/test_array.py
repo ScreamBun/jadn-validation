@@ -335,7 +335,7 @@ def test_array_min_max_occurs_3():
                           ]
                         ] 
                     ] 
-                    }
+                }
 
     valid_data_list = [
             [["test 1", "test 2"], "test 3"],
@@ -344,7 +344,7 @@ def test_array_min_max_occurs_3():
 
     invalid_data_list = [
             [["test 1"]],
-            [["test 1", "test 2", "test 3"]],
+            [["test 1", "test 2", "test 3"], "test 4", "test 5"],
             [["test 1", "test 2"], "test 3", "test 4"]
         ]
         

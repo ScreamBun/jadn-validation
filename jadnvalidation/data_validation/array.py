@@ -106,6 +106,7 @@ class Array:
                 data=field_data,
                 data_format=self.data_format
             )
+            
             if tagged_data is not None:
                 clz_kwargs['tagged_data'] = tagged_data
 
