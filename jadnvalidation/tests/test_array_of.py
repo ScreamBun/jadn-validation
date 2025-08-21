@@ -287,12 +287,11 @@ def test_array_of_choice():
     }
     
     valid_data_list = [
-        [{"test_field_2": "illum repellendus nobis"}], 
-        [{"test_field_3": ["illum repellendus nobis"]}] 
+            [{"test_field_2": "illum repellendus nobis"}], 
+            [{"test_field_3": ["illum repellendus nobis"]}] 
         ]
     
     invalid_data_list = [
-
             [[1, "Hello"],[2, "World"], [0, "yup"], [4, "This is too long"]]
         ]
         
