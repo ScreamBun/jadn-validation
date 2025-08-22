@@ -363,63 +363,7 @@ def test_jadn_minimalist():
     assert err_count == 0
     
 
-
-
 """
-def test_types_validity(): 
-    root = "Type"    
-  
-    j_schema = {
-    "info": {
-      "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
-      "exports": ["Types-Map"],
-      "config": {
-        "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
-      }
-    },
-    "types": [
-      ["Types-Map", "MapOf", ["+String", "*Type-Array"], "TODO REMOVE THIS AND MERGE BACK INTO ONE DOC", []],
-      ["Type-Array", "ArrayOf", ["*Type"], "TODO REMOVE THIS AND MERGE BACK INTO ONE DOC", []],
-      ["Type", "Array", [], "", [
-        [1, "type_name", "String"],
-        [2, "core_type", "String"]
-      ]],
-
-    ]
-  }
-    
-    valid_data_1 = {"types": [["Record-Name", "Record", [], "", [
-        {"Fields": [1, "field_value_1", "String", [], ""]},
-        {"Fields": [2, "field_value_2", "Integer", [], ""]}
-      ]]]}
-    valid_data_2 = {"types": [["String-Name", "String", [], "", {"String":[]}]]}
-    valid_data_3 = {"types": [["String-Name", "String", {"String": ["Hello-World"]}]]}
-    
-    valid_data_4 = {"types": [["String-Name", "String", []]]}
-    
-    valid_data_list = [
-    {
-    "types" : [["String-Name", "String"]]
-    }, 
-    ["String-Name", "String"]
-    ]
-
-    #valid_data_list = [ valid_data_1, valid_data_2, valid_data_3, valid_data_4 ]
-    invalid_data_list = [
-
-         {'SuitEnum': 10},'Aces', 10
-         
-         ]
-    
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    assert err_count == 0
-            
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
-    
-
-  
-
 
 {
   "info": {
