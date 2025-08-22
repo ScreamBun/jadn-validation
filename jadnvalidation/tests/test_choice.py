@@ -7,9 +7,9 @@ def test_choice():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", [], "", [
@@ -52,9 +52,9 @@ def test_xml_choice():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", [], "", [
@@ -95,9 +95,9 @@ def test_choice_id():
     root = "Root-Test"
         
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["="], "", [
@@ -137,9 +137,9 @@ def test_xml_choice_id():
     root = "Root-Test"
         
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["="], "", [
@@ -181,9 +181,9 @@ def test_choice_anyOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CO"], "", [
@@ -228,9 +228,9 @@ def test_xml_choice_anyOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CO"], "", [
@@ -301,9 +301,9 @@ def test_choice_allOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CA"], "", [
@@ -349,9 +349,9 @@ def test_xml_choice_allOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CA"], "", [
@@ -399,9 +399,9 @@ def test_choice_not():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CX"], "", [
@@ -445,9 +445,9 @@ def test_xml_choice_not():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["CX"], "", [
@@ -493,9 +493,9 @@ def test_choice_as_field():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Record", [], "", [
@@ -538,9 +538,9 @@ def test_choice_as_field_multiple():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Record", [], "", [

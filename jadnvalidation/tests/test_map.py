@@ -7,9 +7,9 @@ def test_map():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", [], "", [
@@ -54,9 +54,9 @@ def test_xml_map():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", [], "", [
@@ -113,9 +113,9 @@ def test_map_min_max():
     root = "Root-Test"
     
     j_schema = {
-            "info": {
+            "meta": {
                 "package": "http://test/v1.0",
-                "exports": ["Root-Test"]
+                "roots": ["Root-Test"]
             },
             "types": [
                 ["Root-Test", "Map", ["{2", "}2"], "", [
@@ -160,9 +160,9 @@ def test_map_id():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", ["="], "", [
@@ -208,9 +208,9 @@ def test_xml_map_id():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", ["="], "", [
@@ -263,9 +263,9 @@ def test_map_ref_field():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["IntegerTest", "Integer", ["{0"], ""],
@@ -312,9 +312,9 @@ def test_map_ref_record():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", [], "", [
@@ -359,9 +359,9 @@ def test_map_min_occurs():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", [], "", [
@@ -404,9 +404,9 @@ def test_map_max_occurs():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Map", [], "", [

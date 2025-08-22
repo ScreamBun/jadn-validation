@@ -3,11 +3,11 @@ from jadnvalidation.utils.consts import JSON
 
 
 j_schema = {
-  "info": {
+  "meta": {
     "package": "http://oasis-open.org/openc2/oc2ls/v1.1",
     "title": "OpenC2 Language Profile",
     "description": "Language Profile from the OpenC2 Language Specification version 1.1",
-    "exports": ["OpenC2-Command", "OpenC2-Response"]
+    "roots": ["OpenC2-Command", "OpenC2-Response"]
   },
   "types": [
     ["OpenC2-Command", "Record", [], "The Command defines an Action to be performed on a Target", [

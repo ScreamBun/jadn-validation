@@ -268,9 +268,9 @@ def test_choice_w_ref_arrayof_multiplicity():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", [], "", [

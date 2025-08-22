@@ -20,7 +20,8 @@ DEFAULT_MAX_STRING = 255
 DEFAULT_MAX_ELEMENTS = 100
 DEFAULT_SYS_IND = "$"
 DEFAULT_TYPE_NAME_REGEX = "^[A-Z][-$A-Za-z0-9]{0,63}$"
-DEFAULT_FIELD_NAME_REGEX = "^[a-z][_A-Za-z0-9]{0,63}$"
+# DEFAULT_FIELD_NAME_REGEX = "^[a-z][_A-Za-z0-9]{0,63}$"
+DEFAULT_FIELD_NAME_REGEX = "^[A-Za-z][-_A-Za-z0-9]{0,63}$"
 DEFAULT_NSID_REGEX = "^[A-Za-z][A-Za-z0-9]{0,7}$"
 
 class Jadn_Config():
@@ -59,7 +60,7 @@ def build_jadn_config_obj(j_config_data: dict) -> Jadn_Config:
 def get_j_config(j_schema: dict) -> Jadn_Config:
     j_config = Jadn_Config()
     
-    j_custom_config = get_nested_value(j_schema, ['info', 'config'], None)
+    j_custom_config = get_nested_value(j_schema, ['meta', 'config'], None)
     if j_custom_config:
         j_config = build_jadn_config_obj(j_custom_config)
     

@@ -35,9 +35,9 @@ def test_data_validation_multi_root():
     roots = ["Root-Test-1", "Root-Test-2"]
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test-1", "Root-Test-2"]
+            "roots": ["Root-Test-1", "Root-Test-2"]
         },
         "types": [
             ["Root-Test-1", "Record", [], "", [

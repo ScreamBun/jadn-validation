@@ -67,9 +67,9 @@ def test_array_field_max_occurs():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", [], "", [
@@ -290,9 +290,9 @@ def test_array_min_max_occurs_2():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", [], "", [
@@ -322,9 +322,9 @@ def test_array_min_max_occurs_3():
     root = "Root-Test"    
     
     j_schema = {
-                "info": 
+                "meta": 
                     { "package": "http://example.fake/", 
-                      "exports": ["Root-Test"] 
+                      "roots": ["Root-Test"] 
                     }, 
                     "types": [ 
                         ["Root-Test", "Array", ["}2"], "", 
@@ -449,9 +449,9 @@ def test_ipv4net():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["/ipv4-net", "{1", "}2"], "", [
@@ -482,9 +482,9 @@ def test_ipv6net():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["/ipv6-net", "{2", "}2"], "", [
@@ -515,9 +515,9 @@ def test_empty_array():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["}0"], "", []
@@ -543,9 +543,9 @@ def test_nested_array_arrayof():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["{0"], "", [
@@ -575,9 +575,9 @@ def test_nested_array_array_enum():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
@@ -610,9 +610,9 @@ def test_nested_array_complex():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", ["}0"], "", [
@@ -649,9 +649,9 @@ def test_nested_array_complex_2():
     root = "Root-Test"
     
     j_schema =   {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Array", [], "", [

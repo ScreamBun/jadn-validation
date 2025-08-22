@@ -238,9 +238,9 @@ def test_record_in_record():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Record-Test"]
+            "roots": ["Record-Test"]
         },
         "types": [
             ["Root-Test", "Record", ["{1", "}2"], "", [
@@ -355,7 +355,7 @@ def test_record_complex():
     j_schema = {
         "types": [
             ["Root-Test", "Record", [], "", [
-                [1, "info", "String", [], ""],
+                [1, "meta", "String", [], ""],
                 [2, "types", "Type", ["[1", "]-1"], ""]]],
             ["Type", "Array", [], "", [
                 [1, "array_field_1", "Integer", [], ""],
@@ -373,11 +373,11 @@ def test_record_complex():
     
     valid_data_list = [
         {
-            "info" : "string",
+            "meta" : "string",
             "types" : [[999, "Array-def-Name(ANY STRING)", {"choice_field_3": ["illum repellendus nobis"]}]]
         },        
         {
-            "info" : "fake_package.url.lol",
+            "meta" : "fake_package.url.lol",
             "types" : [[999, "Array-def-Name(ANY STRING)"]]
         }
     ]

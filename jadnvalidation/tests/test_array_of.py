@@ -6,9 +6,9 @@ def test_array_of_ints():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Integer", "{1", "}3"], ""]
@@ -35,9 +35,9 @@ def test_xml_array_of():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Integer", "{1", "}3"], ""]
@@ -83,9 +83,9 @@ def test_array_of_strs():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*String", "{1", "}3"], ""]
@@ -112,9 +112,9 @@ def test_array_of_booleans():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Boolean", "{2", "}3"], ""]
@@ -148,9 +148,9 @@ def test_array_of_records():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Record-Test", "{1", "}3"], ""],
@@ -191,9 +191,9 @@ def test_array_of_arrays():
     root = "Root-Test"    
     
     j_schema = { 
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Array-Name", "{1", "}3"], ""],
@@ -236,9 +236,9 @@ def test_array_of_arrays_2():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Sub-Array", "{1", "}3"], ""], 
@@ -271,9 +271,9 @@ def test_array_of_choice():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Choice-List", "{1", "}3"], ""], 
@@ -305,9 +305,9 @@ def test_array_of_choice_2():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 
@@ -350,9 +350,9 @@ def test_array_of_choice_3():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 
@@ -401,9 +401,9 @@ def test_array_of_choice_3_copy():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://www.test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "ArrayOf", ["*Array-Defined", "{1", "}3"], ""], 

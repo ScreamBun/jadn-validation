@@ -6,9 +6,9 @@ def test_map_of_int_string():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Integer-Name", "Integer", [], ""],
@@ -36,9 +36,9 @@ def test_xml_map_of_int_string():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Integer-Name", "Integer", [], ""],
@@ -77,9 +77,9 @@ def test_map_of_string_string():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["String-Name", "String", [], ""],
@@ -115,9 +115,9 @@ def test_xml_map_of_string_string():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "MapOf", ["+String", "*String"], ""]
@@ -154,9 +154,9 @@ def test_map_of_string_complex():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "MapOf", ["+String", "*Type-Array"], ""],

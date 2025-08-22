@@ -2,10 +2,10 @@ from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON, XML
 
 j_schema = {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
     "comment": "OSCAL Assessment Plan Model: JSON Schema",
-    "exports": ["Root"],
+    "roots": ["Root"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
@@ -1002,10 +1002,10 @@ j_schema = {
 }
 
 j_schema_back_matter = {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
     "comment": "OSCAL Assessment Plan Model: JSON Schema",
-    "exports": ["Root"],
+    "roots": ["Root"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
@@ -1018,7 +1018,7 @@ j_schema_back_matter = {
   },
   "types": [
     ["Root", "Record", [], "", [
-        [1, "back-matter", "Back-matter", ["[0"], "A collection of resources that may be referenced from within the OSCAL document instance."]
+        [1, "back_matter", "Back-matter", ["[0"], "A collection of resources that may be referenced from within the OSCAL document instance."]
       ]],
     ["Back-matter", "Record", [], "A collection of resources that may be referenced from within the OSCAL document instance.", [
         [1, "resources", "Resources", ["[0"], "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources."]
@@ -1032,11 +1032,53 @@ j_schema_back_matter = {
 }
 
 
+def test_field_name_validation():
+    root = "Root"
+    
+    data = {
+      "assessment-plan": {
+        "uuid": "5Da8BBB7-eCa8-489b-AC6b-cB3d0Fd4dFde",
+        "metadata" : {
+          "title" : "metadata title",
+          "last-modified" : "1955-11-18T13:32:30Z",
+          "version" : "1.1.1",
+          "oscal-version" : "1.1.1"
+        },	
+        "import-ssp" : {
+          "href" : "https://www.example.com/index.html"
+        },
+        "reviewed-controls" : {
+          "control-selections" : [
+            {
+              "description": "test control"
+            },
+            {
+              "description": "test control"
+            }			
+          ]
+        }
+      }
+    }
+    
+    errorMsgs=[]
+    try :
+        j_validation = DataValidation(j_schema, root, data, JSON)
+        j_validation.validate()
+    except Exception as err:
+        if isinstance(err, ValueError):
+            for error in err.args:
+                errorMsgs.append(error)
+        else:
+            errorMsgs.append(str(err))
+            
+    assert len(errorMsgs) == 0
+
+
 def test_back_matter():
     root = "Root"
     
     data = {
-        "back-matter": {
+        "back_matter": {
             "resources": [
                 {
                     "citation": {

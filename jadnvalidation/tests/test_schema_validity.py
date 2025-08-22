@@ -7,12 +7,12 @@ def test_metadata_validity():
     root = "Metadata"    
   
     j_schema = {
-    "info": {
+    "meta": {
       "title": "JADN Metaschema",
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
       "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
       "license": "CC-BY-4.0",
-      "exports": ["Metadata"],
+      "roots": ["Metadata"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
@@ -20,7 +20,7 @@ def test_metadata_validity():
 
     "types": [
       ["Schema", "Record", [], "Definition of a JADN package", [
-        [1, "info", "Metadata", ["[0"], "Information about this package"],
+        [1, "meta", "Metadata", ["[0"], "Information about this package"],
         [2, "types", "Type", ["[1", "]-1"], "Types defined in this package"]
       ]],
       
@@ -34,7 +34,7 @@ def test_metadata_validity():
         [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
         [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
         [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
-        [9, "exports", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
+        [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
         [10, "config", "Config", ["[0"], "Configuration variables"],
         [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
       ]],
@@ -134,7 +134,7 @@ def test_metadata_validity():
     
     valid_data = {
     "package": "http://example.fake",
-    "exports": ["Record-Name"]
+    "roots": ["Record-Name"]
   }
 
     
@@ -156,12 +156,12 @@ def test_total_validity():
     root = "Schema"    
   
     j_schema = {
-    "info": {
+    "meta": {
       "title": "JADN Metaschema",
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
       "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
       "license": "CC-BY-4.0",
-      "exports": ["Schema"],
+      "roots": ["Schema"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
@@ -169,7 +169,7 @@ def test_total_validity():
 
     "types": [
       ["Schema", "Record", [], "Definition of a JADN package", [
-        [1, "info", "Metadata", ["[0"], "Information about this package"],
+        [1, "meta", "Metadata", ["[0"], "Information about this package"],
         [2, "types", "Type", ["[1", "]-1"], "Types defined in this package"]
       ]],
 
@@ -182,7 +182,7 @@ def test_total_validity():
         [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
         [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
         [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
-        [9, "exports", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
+        [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
         [10, "config", "Config", ["[0"], "Configuration variables"],
         [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
       ]],
@@ -268,49 +268,49 @@ def test_total_validity():
     
     valid_data_list = [ 
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Binary", [], ""]]        
         },        
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "String", ["[0"], "", []]]        
         },             
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Integer", ["[0"], "", []]]        
         },          
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Number", ["[0"], "", []]]        
         },    
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Array", [], "", [
                 [1, "thing", "String", [], ""]]
 
             ]]        
         },      
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Record", [], "", [
                 [1, "thing", "String", [], ""]]
             ]]        
         },      
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Map", [], "", [
                 [1, "thing", "String", [], ""]]
 
             ]]        
         },      
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "ArrayOf", ["*String"], ""
 
             ]]        
         },      
         {
-            "info" : {"package" : "http://example.fake"},
+            "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "MapOf", ["+Integer", "*String"], ""
 
             ]]        
@@ -336,12 +336,12 @@ def test_jadn_minimalist():
     root = "Schema"
     
     j_schema = {
-    "info": {
+    "meta": {
       "title": "JADN Metaschema",
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
       "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
       "license": "CC-BY-4.0",
-      "exports": ["Schema"],
+      "roots": ["Schema"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
@@ -349,13 +349,13 @@ def test_jadn_minimalist():
         "types": [
             
             ["Schema", "Record", [], "", [
-                [1, "info", "String", [], ""],
+                [1, "meta", "String", [], ""],
                 [2, "types", "String", ["[1", "]-1"], ""]]]
         ]}
       
     valid_data_list = [
         {
-            "info" : "package",
+            "meta" : "package",
             "types" : ["Typename2"]       
         }]
     
@@ -370,9 +370,9 @@ def test_types_validity():
     root = "Type"    
   
     j_schema = {
-    "info": {
+    "meta": {
       "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
-      "exports": ["Types-Map"],
+      "roots": ["Types-Map"],
       "config": {
         "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
       }
@@ -422,13 +422,13 @@ def test_types_validity():
 
 
 {
-  "info": {
+  "meta": {
     "title": "Music Library",
     "package": "http://fake-audio.org/music-lib",
     "version": "1.1",
     "description": "This information model defines a library of audio tracks, organized by album, with associated metadata regarding each track. It is modeled on the types of library data maintained by common websites and music file tag editors.",
     "license": "CC0-1.0",
-    "exports": ["Library"]
+    "roots": ["Library"]
   },
   "types": [
     ["Library", "MapOf", ["+Barcode", "*Album", "{1"], "Top level of the library is a map of CDs by barcode", []],
