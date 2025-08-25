@@ -237,3 +237,134 @@ def test_record_inheritance():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)
+    
+def test_map_inheritance():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Common-Items", "Map", [], "", [
+                [1, "common_1", "Integer", ["[0"]],
+                [2, "common_2", "Integer", ["[0"]],
+                [3, "common_3", "Integer", ["[0"]],
+            ]],            
+            ["Root-Test", "Map", ["eCommon-Items"], "", [
+                [111, "item_1", "String", [], ""],
+                [222, "item_2", "String", ["[0"], ""],
+                [333, "item_3", "String", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                # "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                "common_1" : 1, 
+                # "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                # "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                # "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                # "item_3" : "item_3 data"
+            },
+            {   
+                # "common_1" : 1, 
+                # "common_2" : 2, 
+                # "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                # "item_2" : "item_2 data", 
+                # "item_3" : "item_3 data"
+            },
+        ]
+    
+    invalid_data_list = [
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data",
+                "extra" : "extra data"
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "common_4" : 99, 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                # "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            },
+            {   
+        
+            },
+            {   
+                "common_1" : 1, 
+                "common_2" : 2, 
+                "common_3" : 3, 
+                "item_1" : 4, 
+                "item_2" : 5, 
+                "item_3" : 6
+            },
+            {   
+                "common_1" : "common_1 data", 
+                "common_2" : "common_2 data", 
+                "common_3" : "common_3 data", 
+                "item_1" : "item_1 data", 
+                "item_2" : "item_2 data", 
+                "item_3" : "item_3 data"
+            }
+        ]    
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)    
