@@ -368,3 +368,43 @@ def test_map_inheritance():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)    
+    
+def test_enum_inheritance():
+    root = "Root-Test"    
+    
+    j_schema = {
+        "types": [
+            ["Common-Items", "Enumerated", [], "", [
+                [1, "ace_of_clubs", ""],
+                [2, "ace_of_diamonds", ""],
+                [3, "ace_of_hearts", ""],
+                [4, "ace_of_spades", ""]
+            ]],            
+            ["Root-Test", "Enumerated", ["eCommon-Items"], "", [
+                [11, "king_of_clubs", ""],
+                [22, "king_of_diamonds", ""],
+                [33, "king_of_hearts", ""],
+                [44, "king_of_spades", ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            "ace_of_clubs",
+            "king_of_clubs",
+            "ace_of_spades",
+            "king_of_spades"
+        ]
+    
+    invalid_data_list = [
+            "ace_of_clubs_zzzz",
+            1,
+            11,
+            ""
+        ]    
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
+    assert err_count == len(invalid_data_list)  
