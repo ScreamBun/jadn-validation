@@ -292,19 +292,6 @@ def get_nested_value(data, keys, default=None):
             return default
     return current
 
-def is_even(n):
-    return n % 2 == 0
-
-def is_odd(n):
-    return n % 2 != 0
-
-def is_arg_format(format):
-    if format:
-        split_format = split_on_first_char(format)
-        if (split_format[0] in ["i", "u"]) & ((split_format[1]).isdigit()):
-            return True
-    else: return False
-
 def give_format_constraint(format: str, option_index: int):
     # the frankenstein logic from before was a larger version of this; its moved into the formats now, 
     # but if you want one here, itll be like this
@@ -320,7 +307,19 @@ def give_format_constraint(format: str, option_index: int):
         return struct[option_index]
     except ValueError as e:
         print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
-        
+
+def is_even(n):
+    return n % 2 == 0
+
+def is_odd(n):
+    return n % 2 != 0
+
+def is_arg_format(format):
+    if format:
+        split_format = split_on_first_char(format)
+        if (split_format[0] in ["i", "u"]) & ((split_format[1]).isdigit()):
+            return True
+    else: return False
         
 def merge_opts(opts1: list, opts2: list) -> list:
     """
@@ -351,8 +350,7 @@ def merge_opts(opts1: list, opts2: list) -> list:
     if duplicates:
         print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
 
-    return merged     
-        
+    return merged
 
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.
@@ -395,6 +393,37 @@ def split_on_second_char(string):
         return []
 
     return [string[:2], string[2:]]
+
+def sort_array_by_id(j_array: list, j_array2: list = None, is_allow_dups: bool = False) -> list:
+    """
+    Orders an array of JADN field definitions by their ID (first element of each field definition).
+    If a second array is provided, combines both arrays before ordering.
+    If is_allow_dups is False, raises a ValueError if duplicate IDs are found.
+
+    Args:
+        j_array (list): List of JADN field definitions, where each field is a list and the first element is the ID.
+        j_array2 (list, optional): Second list of JADN field definitions to combine with the first.
+        is_allow_dups (bool, optional): Whether to allow duplicate IDs. Defaults to False.
+
+    Returns:
+        list: The combined input lists ordered by the ID in ascending order.
+
+    Raises:
+        ValueError: If duplicate IDs are found and is_allow_dups is False.
+    """
+    combined = (j_array or []) + (j_array2 or [])
+    ids = [x[0] for x in combined if isinstance(x, list) and len(x) > 0]
+    if not is_allow_dups:
+        seen = set()
+        dups = set()
+        for id_ in ids:
+            if id_ in seen:
+                dups.add(id_)
+            else:
+                seen.add(id_)
+        if dups:
+            raise ValueError(f"Duplicate IDs found in combined array: {sorted(dups)}")
+    return sorted(combined, key=lambda x: x[0] if isinstance(x, list) and len(x) > 0 else float('inf'))
 
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)

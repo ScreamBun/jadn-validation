@@ -23,7 +23,6 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     
     return j_field_obj
 
-
 def get_choice_type(j_type_opts: List[str]) -> str:
     choice_type = Choice_Consts.CHOICE_ONE_OF
     
@@ -41,6 +40,18 @@ def get_choice_type(j_type_opts: List[str]) -> str:
         break
         
     return choice_type
+
+def get_inheritance(j_type_opts: List[str]) -> str:
+    inherit_from = None
+    
+    if j_type_opts is not None:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+            if opt_char_id == "e":
+                inherit_from = opt_val
+                break
+            
+    return inherit_from
 
 def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
     
