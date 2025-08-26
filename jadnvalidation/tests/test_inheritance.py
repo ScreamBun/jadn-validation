@@ -408,3 +408,99 @@ def test_enum_inheritance():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)  
+    
+def test_choice_inheritance():
+    root = "Root-Test"
+
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Common-Items", "Choice", [], "", [
+                [11, "common_value_1", "String", [], ""],
+                [22, "common_value_2", "String", [], ""]
+            ]],            
+            ["Root-Test", "Choice", ["eCommon-Items"], "", [
+                [1, "value_1", "String", [], ""],
+                [2, "value_2", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        {
+            "common_value_1": "revan"
+        }, 
+        {
+            "value_1": "darth traya"
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "common_value_3": "revan"
+        }, 
+        {
+            "value_1": 1
+        },
+        {
+            "common_value_1": "revan",
+            "value_1": "darth traya"
+        }          
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_choice_id_inheritance():
+    root = "Root-Test"
+
+    j_schema = {
+        "info": {
+            "package": "http://test.com",
+            "exports": ["Root-Test"]
+        },
+        "types": [
+            ["Common-Items", "Choice", [], "", [
+                [11, "common_value_1", "String", [], ""],
+                [22, "common_value_2", "String", [], ""]
+            ]],            
+            ["Root-Test", "Choice", ["=", "eCommon-Items"], "", [
+                [1, "value_1", "String", [], ""],
+                [2, "value_2", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        {
+            11: "revan"
+        }, 
+        {
+            1: "darth traya"
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            33: "revan"
+        }, 
+        {
+            1: 1
+        },
+        {
+            11: "revan",
+            1: "darth traya"
+        }          
+    ]    
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)     
