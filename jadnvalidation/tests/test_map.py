@@ -61,7 +61,7 @@ def test_map_non_sequential():
         "types": [
             ["Root-Test", "Map", [], "", [
                 [1, "field_value_1", "String", [], ""],
-                [7, "non-sequential", "String", [], ""],
+                [7, "non_sequential", "String", [], ""],
                 [4, "unordered", "String", [], ""]
             ]]
         ]
@@ -70,13 +70,13 @@ def test_map_non_sequential():
     valid_data_list = [
             {
                 "field_value_1": "placeat repellendus sit",
-                "non-sequential": "molestias, sit elit. sit",
+                "non_sequential": "molestias, sit elit. sit",
                 "unordered": "molestias, sit elit. sit"
             }, 
             {
                 "field_value_1": "molestias, amet nobis",
                 "unordered": "repellendus architecto",
-                "non-sequential": "repellendus architecto"
+                "non_sequential": "repellendus architecto"
             }
     ]
     
