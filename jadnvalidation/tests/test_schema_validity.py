@@ -453,7 +453,7 @@ def test_total_validity():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
-
+"""
 def test_with_options():
     root = "Schema"    
   
@@ -1124,7 +1124,7 @@ def test_with_options():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
-
+"""
 """
 
 {

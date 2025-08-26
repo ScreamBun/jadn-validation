@@ -4,35 +4,35 @@ from jadnvalidation.utils.general_utils import sort_array_by_id
 
 def test_order_array_by_id():
     
-    j_feilds_1 =  [
-                [1, "item_1", "String", []],
+    j_fields_1 =  [
                 [2, "item_2", "String", []],
-                [3, "item_3", "String", []],
+                [1, "item_1", "String", []],
+                [3, "item_3", "String", []]
             ]
     
-    ordered_array =  sort_array_by_id(j_feilds_1)
+    ordered_array =  sort_array_by_id(j_fields_1)
     
     assert ordered_array == [
                 [1, "item_1", "String", []],
                 [2, "item_2", "String", []],
-                [3, "item_3", "String", []],
+                [3, "item_3", "String", []]
             ]
     
 def test_order_arrays_by_id():
     
-    j_feilds_1 =  [
+    j_fields_1 =  [
                 [111, "common_1", "Integer", ["[0"]],
                 [222, "common_2", "Integer", ["[0"]],
-                [333, "common_3", "Integer", ["[0"]],
+                [333, "common_3", "Integer", ["[0"]]
             ]
     
-    j_feilds_2 =  [
+    j_fields_2 =  [
                 [1, "item_1", "String", []],
                 [2, "item_2", "String", []],
-                [3, "item_3", "String", []],
+                [3, "item_3", "String", []]
             ]
     
-    ordered_array =  sort_array_by_id(j_feilds_1, j_feilds_2)
+    ordered_array =  sort_array_by_id(j_fields_1, j_fields_2)
     
     assert ordered_array == [
                 [1, "item_1", "String", []],
@@ -40,24 +40,24 @@ def test_order_arrays_by_id():
                 [3, "item_3", "String", []],
                 [111, "common_1", "Integer", ["[0"]],
                 [222, "common_2", "Integer", ["[0"]],
-                [333, "common_3", "Integer", ["[0"]],
+                [333, "common_3", "Integer", ["[0"]]
             ]
     
 def test_invalid_arrays_id():
     
-    j_feilds_1 =  [
+    j_fields_1 =  [
                 [1, "common_1", "Integer", ["[0"]],  # < == DUPLICATE
                 [222, "common_2", "Integer", ["[0"]],
-                [333, "common_3", "Integer", ["[0"]],
+                [333, "common_3", "Integer", ["[0"]]
             ]
     
-    j_feilds_2 =  [
+    j_fields_2 =  [
                 [1, "item_1", "String", []], # < == DUPLICATE
                 [2, "item_2", "String", []],
                 [3, "item_3", "String", []],
             ]
     try:
-        ordered_array =  sort_array_by_id(j_feilds_1, j_feilds_2)
+        ordered_array =  sort_array_by_id(j_fields_1, j_fields_2)
     except ValueError as ve:
         assert str(ve) == "Duplicate IDs found in combined array: [1]"
     else:
