@@ -6,11 +6,12 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "type": "check_type",
+    "e": "check_inheritance",    
     "{": "check_min_length",
     "}": "check_max_length",
     "fields": "check_fields",
@@ -48,6 +49,21 @@ class Map:
     def check_type(self):
         if not isinstance(self.data, dict):
             raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
+        
+    def check_inheritance(self):
+        inherit_from = get_inheritance(self.j_type.type_options)
+        if inherit_from is not None:
+            inherited_type = get_reference_type(self.j_schema, inherit_from)
+            inherited_type_obj = build_j_type(inherited_type)
+            
+            if inherited_type is None:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from unknown type {inherit_from}")
+            
+            if self.j_type.base_type != inherited_type_obj.base_type:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
+            
+            # Prepend inherited fields to current fields
+            self.j_type.fields = inherited_type_obj.fields + self.j_type.fields        
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)

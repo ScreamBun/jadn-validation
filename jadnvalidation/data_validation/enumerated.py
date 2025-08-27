@@ -3,10 +3,11 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
-from jadnvalidation.utils.mapping_utils import is_derived_enumeration, use_field_ids
+from jadnvalidation.utils.mapping_utils import get_inheritance, is_derived_enumeration, use_field_ids
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
+    "e": "check_inheritance", 
     "value": "check_enumeration",
 }
 
@@ -58,6 +59,21 @@ class Enumerated:
             raise ValueError(f"Derived enumeration type not specified for {return_j_type.type_name}.") 
         
         return return_j_type
+    
+    def check_inheritance(self):
+        inherit_from = get_inheritance(self.j_type.type_options)
+        if inherit_from is not None:
+            inherited_type = get_reference_type(self.j_schema, inherit_from)
+            inherited_type_obj = build_j_type(inherited_type)
+            
+            if inherited_type is None:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from unknown type {inherit_from}")
+            
+            if self.j_type.base_type != inherited_type_obj.base_type:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
+            
+            # Prepend inherited fields to current fields
+            self.j_type.fields = inherited_type_obj.fields + self.j_type.fields     
         
     def json_check_type(self):
         if self.data is not None:

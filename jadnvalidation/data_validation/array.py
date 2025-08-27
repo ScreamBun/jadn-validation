@@ -1,16 +1,17 @@
 from typing import Union
 
 from build.lib.jadnvalidation.models.jadn.jadn_config import check_sys_char
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
+from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_structure
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, sort_array_by_id
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
     "type": "check_type",
+    "e": "check_inheritance",
     "/": "check_format",
     "{": "check_min_length",
     "}": "check_max_length",
@@ -32,7 +33,7 @@ class Array:
     errors = []
     continue_checks = True
     
-    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, tagged_data: any = None, data_format = JSON):
+    def __init__(self, j_schema: dict = {}, j_type: Jadn_Type = None, data: any = None, tagged_data: any = None, data_format = JSON):
         self.j_schema = j_schema
         
         if isinstance(j_type, list):
@@ -49,6 +50,26 @@ class Array:
     def check_type(self):
         if not isinstance(self.data, list):
             raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
+    
+    def check_inheritance(self):
+        inherit_from = get_inheritance(self.j_type.type_options)
+        if inherit_from is not None:
+            inherited_type = get_reference_type(self.j_schema, inherit_from)
+            inherited_type_obj = build_j_type(inherited_type)
+            
+            if inherited_type is None:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from unknown type {inherit_from}")
+            
+            if self.j_type.base_type != inherited_type_obj.base_type:
+                raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
+            
+            # Prepend inherited fields to current fields
+            self.j_type.fields = inherited_type_obj.fields + self.j_type.fields
+        
+    def check_and_order_fields(self):
+        if is_structure(self.j_type):
+            # Order fields by their ID
+            self.j_type.fields = sort_array_by_id(self.j_type.fields)        
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)

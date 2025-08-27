@@ -175,7 +175,7 @@ def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
                 type_name=j_type[1], 
                 base_type=j_type[2], 
                 type_options=j_type[3], 
-                type_description=j_type[4])
+                type_description=safe_get(j_type, 4, ""))
 
     else:
         print("unknown jadn item")
