@@ -192,7 +192,7 @@ class Choice:
         for j_index, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
                 
-            if j_field_obj.type_name is not self.tagged_data:    
+            if j_field_obj.type_name != self.tagged_data:    
                 continue
             else:
                 tagged_choice_found = True
