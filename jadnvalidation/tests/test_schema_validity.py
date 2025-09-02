@@ -1387,11 +1387,11 @@ def test_ui_issue_08282025():
   
 def test_ui_issue_09022025():
   data = {
-    "Binary-Fmt": {
+    # "Binary-Fmt": {
       "lower_x": "acbd",
       "upper_x": "ABCD",
       "base64": "ABCD"
-    }
+    # }
   }
   
   j_meta_schema = {
