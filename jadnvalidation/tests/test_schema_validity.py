@@ -1384,3 +1384,45 @@ def test_ui_issue_08282025():
       print(e)
     
   assert passed
+  
+def test_ui_issue_09022025():
+  data = {
+    "Binary-Fmt": {
+      "lower_x": "acbd",
+      "upper_x": "ABCD",
+      "base64": "ABCD"
+    }
+  }
+  
+  j_meta_schema = {
+    "meta": {
+      "package": "https://www.test.com/",
+      "roots": ["Decimal-Integer", "Binary-Fmt"]
+    },
+    "types": [
+      ["Decimal-Integer", "Record", [], "", [
+          [1, "i64", "Integer", ["/i64"], ""],
+          [2, "non_negative_integer", "Integer", ["/nonNegativeInteger"], ""],
+          [3, "negative_integer", "Integer", ["/negativeInteger"], ""],
+          [4, "non_positive_integer", "Integer", ["/nonPositiveInteger"], ""],
+          [5, "positive_integer", "Integer", ["/positiveInteger"], ""],
+          [6, "unsigned_short", "Integer", ["/u16"], ""]
+        ]],
+      ["Binary-Fmt", "Record", [], "", [
+          [1, "lower_x", "Binary", ["/x", "[0"], ""],
+          [2, "upper_x", "Binary", ["/X", "[0"], ""],
+          [3, "base64", "Binary", ["/b", "[0"], ""]
+        ]]
+    ]
+  }
+    
+    
+  passed = False  
+  try :
+      j_validation = DataValidation(j_meta_schema, "Schema", data)
+      j_validation.validate()
+      passed = True
+  except Exception as e:
+      print(e)
+    
+  assert passed  
