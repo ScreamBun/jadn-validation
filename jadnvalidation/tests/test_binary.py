@@ -129,3 +129,98 @@ def test_binary_ipv6_addr():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+    
+def test_binary_base64(): 
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Binary", ["/b64"], "", []]
+      ]
+    }  
+    
+    valid_data_list = [
+        b"SGVsbG8gd29ybGQ=",  # "Hello world"
+        b"U29tZSBkYXRh",      # "Some data"
+        b"VGVzdA=="           # "Test"
+      ]
+    
+    invalid_data_list = [
+        b"SGVsbG8gd29ybGQ",   # Missing padding
+        b"SGVsbG8@d29ybGQ=",  # Invalid character '@'
+        b"12345"             # Not valid base64
+      ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_binary_hex_binary_x(): 
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Binary", ["/x"], "", []]
+      ]
+    }  
+    
+    valid_data_list = [
+        "0A1B2C3D4E",         # Even length, valid hex characters
+        b"deadbeef",          # Bytes, valid hex
+        "ABCDEF123456",       # Uppercase, valid hex
+        b"00ff",              # Lowercase, valid hex
+        "abcdef",             # Lowercase, valid hex
+        "1234567890abcdef"   # Mixed digits and letters, even length
+      ]
+    
+    invalid_data_list = [
+        "0A1B2C3D4",          # Odd length
+        b"deadbee",           # Odd length
+        "0A1B2C3D4G",         # Contains invalid character 'G'
+        "xyz123",             # Contains invalid characters 'x', 'y', 'z'
+        b"deadbeeg",          # Contains invalid character 'g'
+        "12345",              # Odd length
+        12345                # Not a string or bytes
+      ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_binary_hex_binary_x(): 
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Binary", ["/X"], "", []]
+      ]
+    }  
+    
+    valid_data_list = [
+        "0A1B2C3D4E",         # Even length, valid hex characters
+        b"deadbeef",          # Bytes, valid hex
+        "ABCDEF123456",       # Uppercase, valid hex
+        b"00ff",              # Lowercase, valid hex
+        "abcdef",             # Lowercase, valid hex
+        "1234567890abcdef"   # Mixed digits and letters, even length
+      ]
+    
+    invalid_data_list = [
+        "0A1B2C3D4",          # Odd length
+        b"deadbee",           # Odd length
+        "0A1B2C3D4G",         # Contains invalid character 'G'
+        "xyz123",             # Contains invalid characters 'x', 'y', 'z'
+        b"deadbeeg",          # Contains invalid character 'g'
+        "12345",              # Odd length
+        12345                # Not a string or bytes
+      ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)     

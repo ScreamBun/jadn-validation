@@ -1412,7 +1412,7 @@ def test_ui_issue_09022025():
       ["Binary-Fmt", "Record", [], "", [
           [1, "lower_x", "Binary", ["/x", "[0"], ""],
           [2, "upper_x", "Binary", ["/X", "[0"], ""],
-          [3, "base64", "Binary", ["/b", "[0"], ""]
+          [3, "base64", "Binary", ["/b64", "[0"], ""]
         ]]
     ]
   }

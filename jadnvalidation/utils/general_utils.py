@@ -113,11 +113,18 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "GYearMonth" : "jadnvalidation.data_validation.formats.gyearmonth",
         "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
         "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
-        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer"
+        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
+        "HexBinary" : "jadnvalidation.data_validation.formats.hex_binary",
+        "B64" : "jadnvalidation.data_validation.formats.b64",
     }
     
     formatted_class_name = format_class_name(class_name)
-    module = importlib.import_module(modules.get(formatted_class_name))
+    
+    module = None
+    try:
+        module = importlib.import_module(modules.get(formatted_class_name))
+    except Exception as e:
+        print(f"Error importing module for format '{formatted_class_name}': {e}", file=sys.stderr)
     
     if module == None:
         raise ValueError("Unknown format type")

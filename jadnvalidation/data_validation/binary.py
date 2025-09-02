@@ -58,6 +58,11 @@ class Binary:
         
     def check_format(self):
         format = get_format(self.j_type)
+        
+        # Note: this format breaks the normal convention since it has two designators for the same format
+        if format is not None and format.lower() == 'x' or format.lower() == 'X':
+            format = "hex_binary"
+        
         if format is not None:
             fmt_clz_instance = create_fmt_clz_instance(format, self.data)
             fmt_clz_instance.validate()
