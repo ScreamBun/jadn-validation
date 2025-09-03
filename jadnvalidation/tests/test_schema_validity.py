@@ -1427,3 +1427,51 @@ def test_ui_issue_09022025():
       print(e)
     
   assert passed  
+
+def test_ui_issue_09032025():
+  data = {
+    "i64_value_1": 92233720368547760,
+    "i32_value_2": 2147483647,
+    "i16_value_3": 32767,
+    "i8_value_4": 127,
+    "nonneg_value_5": 0,
+    "posint_value_6": 1,
+    "u64_value_7": 18446744073709551615,
+    "u32_value_8": 4294967294,
+    "u16_value_9": 32767,
+    "u8_value_10": 127,
+    "nonpos_value_11": 0,
+    "negint_value_12": -1
+  }
+
+  j_meta_schema = {
+    "meta": {
+      "title": "JADN Schema Start Up Template",
+      "package": "http://JADN-Schema-Start-Up-Template-URI",
+      "roots": ["Schema"]
+    },
+    "types": [
+      ["Schema", "Record", [], "", [
+          [1, "i64_value_1", "Integer", ["/i64"], ""],
+          [2, "i32_value_2", "Integer", ["/i32"], ""],
+          [3, "i16_value_3", "Integer", ["/i16"], ""],
+          [4, "i8_value_4", "Integer", ["/i8"], ""],
+          [5, "nonneg_value_5", "Integer", ["/nonNegativeInteger"], ""],
+          [6, "posint_value_6", "Integer", ["/positiveInteger"], ""],
+          [7, "u64_value_7", "Integer", ["/u64"], ""],
+          [8, "u32_value_8", "Integer", ["/u32"], ""],
+          [9, "u16_value_9", "Integer", ["/u16"], ""],
+          [10, "u8_value_10", "Integer", ["/u8"], ""],
+          [11, "nonpos_value_11", "Integer", ["/nonPositiveInteger"], ""],
+          [12, "negint_value_12", "Integer", ["/negativeInteger"], ""]
+        ]]
+    ]
+  }
+
+  passed = False  
+  try :
+      j_validation = DataValidation(j_meta_schema, "Schema", data)
+      j_validation.validate()
+      passed = True
+  except Exception as e:
+      print(e)
