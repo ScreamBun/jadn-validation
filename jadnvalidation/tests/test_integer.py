@@ -406,6 +406,8 @@ def test_type_int_u8():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
+# TODO: Remove after testing
+    
 def test_xml_type_int_u8():
     root = "Root-Test"
     
