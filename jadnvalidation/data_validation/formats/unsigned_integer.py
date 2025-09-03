@@ -7,6 +7,14 @@ class UnsignedInteger:
         self.data = data
         self.bits = bits
 
+    '''
+    XML Schema defines various unsigned integer types, such as:
+        xs:unsignedByte: Represents an 8-bit unsigned integer, with a value range of 0 to 255.
+        xs:unsignedShort: Represents a 16-bit unsigned integer, with a value range of 0 to 65,535.
+        xs:unsignedInt: Represents a 32-bit unsigned integer, with a value range of 0 to 4,294,967,295.
+        xs:unsignedLong: Represents a 64-bit unsigned integer, with a value range of 0 to 18,446,744,073,709,551,615.
+    '''
+
     def validate(self):
         # Check if self.data is an integer and non-negative
         if not isinstance(self.data, int):
