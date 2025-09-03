@@ -415,7 +415,7 @@ def test_xml_type_int_u8():
       ]
     }
   
-    valid_xml_1 = """<Root-Test>257</Root-Test>"""
+    valid_xml_1 = """<Root-Test>255</Root-Test>"""
     valid_xml_2 = """<Root-Test>0</Root-Test>"""
     invalid_xml_1 = """<Root-Test>256</Root-Test>"""
     invalid_xml_2 = """<Root-Test>-1</Root-Test>"""
