@@ -397,8 +397,8 @@ def test_type_int_u8():
       ]
     }
     
-    valid_data_list = [127, 125, 1]      
-    invalid_data_list = [-129, 128, -1, "1"] 
+    valid_data_list = [255, 0]      
+    invalid_data_list = [-1, 256, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -415,16 +415,14 @@ def test_xml_type_int_u8():
       ]
     }
   
-    valid_xml_1 = """<Root-Test>1</Root-Test>"""
+    valid_xml_1 = """<Root-Test>255</Root-Test>"""
     valid_xml_2 = """<Root-Test>0</Root-Test>"""
-    valid_xml_3 = """<Root-Test>127</Root-Test>"""
-    invalid_xml_1 = """<Root-Test>128</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>256</Root-Test>"""
     invalid_xml_2 = """<Root-Test>-1</Root-Test>"""
-    invalid_xml_3 = """<Root-Test>1.75</Root-Test>"""
-    invalid_xml_4 = """<Root-Test>one</Root-Test>"""
+    invalid_xml_3 = """<Root-Test>one</Root-Test>"""
 
-    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
-    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4]
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0
@@ -441,8 +439,8 @@ def test_type_int_u16():
       ]
     }
     
-    valid_data_list = [32767, 0, 1]      
-    invalid_data_list = [-32769, 32768, -1, "1"] 
+    valid_data_list = [65535, 0]      
+    invalid_data_list = [65536, -1, "1"] 
   
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -459,16 +457,14 @@ def test_xml_type_int_u16():
       ]
     }
   
-    valid_xml_1 = """<Root-Test>32767</Root-Test>"""
+    valid_xml_1 = """<Root-Test>65535</Root-Test>"""
     valid_xml_2 = """<Root-Test>0</Root-Test>"""
-    valid_xml_3 = """<Root-Test>1</Root-Test>"""
-    invalid_xml_1 = """<Root-Test>-32769</Root-Test>"""
-    invalid_xml_2 = """<Root-Test>32768</Root-Test>"""
-    invalid_xml_3 = """<Root-Test>-1</Root-Test>"""
-    invalid_xml_4 = """<Root-Test>one</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>65536</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>-1</Root-Test>"""
+    invalid_xml_3 = """<Root-Test>one</Root-Test>"""
 
-    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
-    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4]
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3]
   
     err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0
