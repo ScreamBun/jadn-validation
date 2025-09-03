@@ -142,13 +142,17 @@ def test_binary_base64():
     valid_data_list = [
         b"SGVsbG8gd29ybGQ=",  # "Hello world"
         b"U29tZSBkYXRh",      # "Some data"
-        b"VGVzdA=="           # "Test"
+        b"VGVzdA==",           # "Test"
+        "ABCD",
+        "test",
+        "testtest"
       ]
     
     invalid_data_list = [
         b"SGVsbG8gd29ybGQ",   # Missing padding
         b"SGVsbG8@d29ybGQ=",  # Invalid character '@'
-        b"12345"             # Not valid base64
+        b"12345",             # Not valid base64
+        "test2"
       ]
 
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
