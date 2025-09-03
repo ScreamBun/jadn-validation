@@ -17,4 +17,4 @@ class UnsignedInteger:
         if unsig_min <= self.data <= unsig_max:
             pass
         else:
-            raise ValueError(f"Data {self.data} is out of range for a signed integer of {self.bits} bits.")
+            raise ValueError(f"Data {self.data} is out of range for an unsigned integer of {self.bits} bits.")

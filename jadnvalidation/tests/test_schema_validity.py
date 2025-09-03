@@ -1475,3 +1475,66 @@ def test_ui_issue_09032025():
       passed = True
   except Exception as e:
       print(e)
+
+def test_ui_issue_09032025_2():
+  data = {
+    "normalized_string": "letter",
+    "token": "Milwaukee",
+    "language": "en-US",
+    "name": "_name",
+    "any_uri": "http://www.test.com",
+    "qname": "www.example.com:Homepage"
+  }
+
+  j_meta_schema = {
+    "meta": {
+      "package": "https://www.test.com",
+      "roots": ["Decimal-Integer", "Binary-Fmt", "Integer-Fmts", "String-Fmts"]
+    },
+    "types": [
+      ["Decimal-Integer", "Record", [], "", [
+          [1, "u64", "Integer", ["/u64"], ""],
+          [2, "i64", "Integer", ["/i64"], ""],
+          [3, "non_negative_integer", "Integer", ["/nonNegativeInteger"], ""],
+          [4, "negative_integer", "Integer", ["/negativeInteger"], ""],
+          [5, "non_positive_integer", "Integer", ["/nonPositiveInteger"], ""],
+          [6, "positive_integer", "Integer", ["/positiveInteger"], ""],
+          [7, "unsigned_short", "Integer", ["/u16"], ""]
+        ]],
+      ["Binary-Fmt", "Record", [], "", [
+          [1, "lower_x", "Binary", ["/x", "[0"], ""],
+          [2, "upper_x", "Binary", ["/X", "[0"], ""],
+          [3, "base64", "Binary", ["/b64", "[0"], ""]
+        ]],
+      ["Integer-Fmts", "Record", [], "", [
+          [1, "int_date_time", "Integer", ["/date-time"], ""],
+          [2, "string_date_time", "String", ["/date-time"], ""],
+          [3, "int_date", "Integer", ["/date"], ""],
+          [4, "string_date", "String", ["/date"], ""],
+          [5, "time", "Integer", ["/time"], ""],
+          [6, "string_time", "String", ["/time"], ""],
+          [7, "g_year_month", "Integer", ["/gYearMonth"], ""],
+          [8, "g_year", "Integer", ["/gYear"], ""],
+          [9, "g_month_day", "Integer", ["/gMonthDay"], ""],
+          [10, "duration_test", "Integer", ["/duration"], ""],
+          [11, "day_time_duration", "Integer", ["/dayTimeDuration"], ""],
+          [12, "year_month_duration", "Integer", ["/yearMonthDuration"], ""]
+        ]],
+      ["String-Fmts", "Record", [], "", [
+          [1, "normalized_string", "String", ["/normalizedString"], ""],
+          [2, "token", "String", ["/token"], ""],
+          [3, "language", "String", ["/language"], ""],
+          [4, "name", "String", ["/name"], ""],
+          [5, "any_uri", "String", ["/anyUri"], ""],
+          [6, "qname", "String", ["/QName"], ""]
+        ]]
+    ]
+  }
+
+  passed = False  
+  try :
+      j_validation = DataValidation(j_meta_schema, "String-Fmts", data)
+      j_validation.validate()
+      passed = True
+  except Exception as e:
+      print(e)
