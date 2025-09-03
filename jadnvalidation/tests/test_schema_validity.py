@@ -1538,3 +1538,161 @@ def test_ui_issue_09032025_2():
       passed = True
   except Exception as e:
       print(e)
+
+def test_config_fields(): 
+    root = "Metadata"    
+  
+    j_schema = {
+    "meta": {
+      "title": "JADN Metaschema",
+      "package": "http://oasis-open.org/openc2/jadn/v2.0/schema",
+      "description": "Syntax of a JSON Abstract Data Notation (JADN) package.",
+      "license": "CC-BY-4.0",
+      "roots": ["Metadata"],
+      "config": {
+        "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$",
+      }
+    },
+
+    "types": [
+      ["Schema", "Record", [], "Definition of a JADN package", [
+        [1, "meta", "Metadata", ["[0"], "Information about this package"],
+        [2, "types", "Type", ["[1", "]-1"], "Types defined in this package"]
+      ]],
+      
+
+      ["Metadata", "Map", [], "Information about this package", [
+        [1, "package", "Namespace", [], "Unique name/version of this package"],
+        [2, "version", "String", ["{1", "[0"], "Incrementing version within package"],
+        [3, "title", "String", ["{1", "[0"], "Title"],
+        [4, "description", "String", ["{1", "[0"], "Description"],
+        [5, "comment", "String", ["{1", "[0"], "Comment"],
+        [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
+        [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
+        [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
+        [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
+        [10, "config", "Config", ["[0"], "Configuration variables"],
+        [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
+      ]],
+
+      ["PrefixNs", "Array", [], "Prefix corresponding to a namespace IRI", [
+        [1, "prefix", "NSID", [], "Namespace prefix string"],
+        [2, "namespace", "Namespace", [], "Namespace IRI"]
+      ]],
+
+      ["Config", "Map", ["{1"], "Config vars override JADN defaults", [
+        [1, "$MaxBinary", "Integer", ["y1", "[0"], "Package max octets, default = 255"],
+        [2, "$MaxString", "Integer", ["y1", "[0"], "Package max characters, default = 255"],
+        [3, "$MaxElements", "Integer", ["y1", "[0"], "Package max items/properties, default = 255"],
+        [4, "$Sys", "String", ["{1", "}1", "[0"], "System character for TypeName, default = '.'"],
+        [5, "$TypeName", "String", ["/regex", "[0"], "Default = ^[A-Z][-.A-Za-z0-9]{0,63}$"],
+        [6, "$FieldName", "String", ["/regex", "[0"], "Default = ^[a-z][_A-Za-z0-9]{0,63}$"],
+        [7, "$NSID", "String", ["/regex", "[0"], "Default = ^([A-Za-z][A-Za-z0-9]{0,7})?$"]
+      ]],
+
+      ["Namespace", "String", ["/uri"], "Unique name of a package"],
+
+      ["NSID", "String", ["%^([A-Za-z][A-Za-z0-9]{0,7})?$"], "Namespace prefix matching $NSID"],
+
+      ["TypeName", "String", ["%^[A-Z][-.A-Za-z0-9]{0,63}$"], "Name of a logical type"],
+
+      ["FieldName", "String", ["%^[a-z][_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
+
+      ["TypeRef", "String", [], "Reference to a type, matching ($NSID ':')? $TypeName"],
+
+      ["Type", "Array", [], "", [
+        [1, "type_name", "TypeName", [], ""],
+        [2, "core_type", "JADN-Type-Enum", ["#JADN-Type"]],
+        [3, "type_options", "Options", ["[0"], ""],
+        [4, "type_description", "Description", ["[0"]],
+        [5, "fields", "ArrayOf", ["*JADN-Type"]]
+      ]],
+
+      ["JADN-Type-Enum", "Enumerated", [], "", [
+        [1, "Binary"],
+        [2, "Boolean"],
+        [3, "Integer"],
+        [4, "Number"],
+        [5, "String"],
+        [6, "Enumerated"],
+        [7, "Choice"],
+        [8, "Array"],
+        [9, "ArrayOf"],
+        [10, "Map"],
+        [11, "MapOf"],
+        [12, "Record"]
+      ]],
+
+      ["JADN-Type", "Choice", [], "", [
+        [1, "Binary", "Empty", [], ""],
+        [2, "Boolean", "Empty", [], ""],
+        [3, "Integer", "Empty", [], ""],
+        [4, "Number", "Empty", [], ""],
+        [5, "String", "Empty", [], ""],
+        [6, "Enumerated", "Items", [], ""],
+        [7, "Choice", "Fields", [], ""],
+        [8, "Array", "Fields", [], ""],
+        [9, "ArrayOf", "Empty", [], ""],
+        [10, "Map", "Fields", [], ""],
+        [11, "MapOf", "Empty", [], ""],
+        [12, "Record", "Fields", [], ""]
+      ]],
+
+      ["Empty", "Array", ["}0"], "", []],
+
+      ["Items", "ArrayOf", ["*Item"]],
+
+      ["Fields", "ArrayOf", ["*Field"]],
+
+      ["Item", "Array", [], "", [
+        [1, "item_id", "FieldID"],
+        [2, "item_value", "String"],
+        [3, "item_description", "Description", ["[0"]]
+      ]],
+
+      ["Field", "Array", [], "", [
+        [1, "field_id", "FieldID"],
+        [2, "field_name", "FieldName"],
+        [3, "field_type", "TypeRef"],
+        [4, "field_options", "Options", ["[0"]],
+        [5, "field_description", "Description", ["[0"]]
+      ]],
+
+      ["FieldID", "Integer", ["y0"]],
+
+      ["Options", "ArrayOf", ["*Option"]],
+
+      ["Option", "String", ["{1"]],
+
+      ["Description", "String"]
+    ]
+  }
+    
+    valid_data = {
+    "package": "http://example.fake",
+    "roots": ["Record-Name"],
+    "config": {
+        "$MaxBinary": 255,
+        "$MaxString": 5555,
+        "$MaxElements": 555,
+        "$Sys": "$",
+        "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
+        "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+        "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+    }
+  }
+
+    
+    
+    valid_data_list = [ valid_data ]
+    invalid_data_list = [
+
+         {'SuitEnum': 10},'Aces', 10
+         
+         ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
