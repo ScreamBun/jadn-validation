@@ -178,7 +178,7 @@ def get_data_by_id(data: dict, id: int):
     return data.get(str(id))
 
 def get_data_by_name(data: dict, name: str):
-    return data.get(name)
+    return data.get(name) or get_nested_value(data, ["meta", name])
 
 def get_err_msgs(err: ValueError, err_list: list = []):
     
