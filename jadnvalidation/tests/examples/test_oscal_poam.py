@@ -1,4 +1,7 @@
-oscal = {
+from jadnvalidation.data_validation.data_validation import DataValidation
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
+
+oscal_poam_j_schema = {
   "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-poam-schema.json",
     "comment": "OSCAL Plan of Action and Milestones (POA&M) Model: JSON Schema",
@@ -1223,4 +1226,12 @@ oscal = {
 }
 
 def test_oscal_poam():
-    pass
+  is_errors = False
+  try :
+      j_validation = DataValidation(j_meta_schema, j_meta_roots, oscal_poam_j_schema)
+      j_validation.validate()
+  except Exception as err:
+      is_errors = True
+      print(err)  
+      
+  assert is_errors == False
